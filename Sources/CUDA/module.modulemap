@@ -1,0 +1,4 @@
+module CUDA [system] {
+  header "cuda.h"
+  export *
+}
