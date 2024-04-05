@@ -11,7 +11,7 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(name: "CUDA", type: libraryType, targets: ["CUDA"]),
-        .library(name: "swift-to-ptx", type: libraryType, targets: ["swift-to-ptx"]),
+        .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
@@ -24,7 +24,7 @@ let package = Package(
             path: "Sources/CUDA",
             pkgConfig: "cuda-11.4"),
         .target(
-            name: "swift-to-ptx",
+            name: "SwiftToPTX",
             dependencies: [
                 "CUDA",
                 .product(name: "Logging", package: "swift-log"),

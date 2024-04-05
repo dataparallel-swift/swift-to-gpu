@@ -16,7 +16,7 @@ struct BlockDescriptor : Hashable, Equatable {
     }
 }
 
-internal class CachingHostAllocator {
+public class CachingHostAllocator {
     let bin_growth: Int
     let min_bin: Int
     let max_bin: Int
@@ -29,7 +29,7 @@ internal class CachingHostAllocator {
     var cached_blocks: Array<Set<BlockDescriptor>>
     // var deferred_free: Set<BlockDescriptor>  // TODO
 
-    init(min_bin: Int = 2, max_bin: Int = 7, bin_growth: Int = 8) {
+    public init(min_bin: Int = 1, max_bin: Int = 9, bin_growth: Int = 8) {
         self.min_bin        = min_bin
         self.max_bin        = max_bin
         self.bin_growth     = bin_growth
@@ -43,7 +43,7 @@ internal class CachingHostAllocator {
         })
     }
 
-    func allocate(_ bytes : Int) -> UnsafeMutableRawPointer {
+    public func alloc(_ bytes : Int) -> UnsafeMutableRawPointer {
         var ptr : UnsafeMutableRawPointer? = nil
 
         // create a block descriptor for the current allocation
@@ -109,7 +109,7 @@ internal class CachingHostAllocator {
         return ptr!
     }
 
-    func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: Event) {
+    public func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: Event) {
         // Find corresponding block descriptor
         var cached: Bool = false
         let block = BlockDescriptor(ptr: ptr, ready_event: ready_event)
