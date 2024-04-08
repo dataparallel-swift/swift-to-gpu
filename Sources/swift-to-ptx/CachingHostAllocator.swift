@@ -1,5 +1,6 @@
 import CUDA
 import Logging
+import NIOConcurrencyHelpers
 
 private let logger = Logger(label: "CUDA CachingHostAllocator")
 
@@ -12,70 +13,79 @@ struct BlockDescriptor : Hashable, Equatable {
     }
 
     static func == (lhs: BlockDescriptor, rhs: BlockDescriptor) -> Bool {
-        return lhs.ptr == rhs.ptr
+        lhs.ptr == rhs.ptr
     }
 }
 
 public class CachingHostAllocator {
-    let bin_growth: Int
-    let min_bin: Int
-    let max_bin: Int
     let bin_size_bytes: Array<Int>
-    // let max_cached_bytes : Int
+    var cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
+    var live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
 
-    // TODO: These should be protected by locks (individually, per bin, because
-    // almost certainly the Set is not going to support concurrent updates)
-    var live_blocks: Array<Set<UnsafeMutableRawPointer>>
-    var cached_blocks: Array<Set<BlockDescriptor>>
-    // var deferred_free: Set<BlockDescriptor>  // TODO
+    public init(using bins: Array<Int>) {
+        // assert the input is monotonically increasing
+        assert(bins.count > 1)
+        assert(bins[0] > 0)
+        for i in 0..<bins.count - 1 {   // XXX: check this loop disappears in release mode
+            assert(bins[i] < bins[i+1])
+        }
 
-    public init(min_bin: Int = 1, max_bin: Int = 9, bin_growth: Int = 8) {
-        self.min_bin        = min_bin
-        self.max_bin        = max_bin
-        self.bin_growth     = bin_growth
-        self.live_blocks    = Array.init(repeating: Set.init(), count: max_bin)
-        self.cached_blocks  = Array.init(repeating: Set.init(), count: max_bin)
-        self.bin_size_bytes = Array.init(unsafeUninitializedCapacity: max_bin, initializingWith: { buffer, initialisedCount in
-            for i in 0..<max_bin {
-                buffer[i] = IntPow(bin_growth, i)
+        logger.info(".init(using: \(bins))")
+        self.cached_blocks  = .init(repeating: .init(.init()), count: bins.count)
+        self.live_blocks    = .init(.init())
+        self.bin_size_bytes = bins
+    }
+
+    public init(min_bin: Int = 3, max_bin: Int = 7, bin_growth: Int = 8) {
+        assert(bin_growth > 1)
+        assert(max_bin - min_bin > 0)
+
+        let count = max_bin - min_bin
+        let bins  = Array.init(unsafeUninitializedCapacity: count, initializingWith: { buffer, initialisedCount in
+            for i in 0..<count{
+                buffer[i] = pow(bin_growth, min_bin + i)
             }
-            initialisedCount = max_bin
+            initialisedCount = count
         })
+
+        logger.info(".init(min_bin: \(min_bin), max_bin: \(max_bin), bin_growth: \(bin_growth)) --> \(bins)")
+        self.cached_blocks  = .init(repeating: .init(.init()), count: bins.count)
+        self.live_blocks    = .init(.init())
+        self.bin_size_bytes = bins
+    }
+
+    func findBin(for value: Int) -> Int? {
+        for i in 0..<bin_size_bytes.count {
+            if value <= bin_size_bytes[i] {
+                return i
+            }
+        }
+        return nil
     }
 
     public func alloc(_ bytes : Int) -> UnsafeMutableRawPointer {
         var ptr : UnsafeMutableRawPointer? = nil
 
-        // create a block descriptor for the current allocation
-        var (bin, rounded_bytes) = NearestPowerOf(bin_growth, bytes)
+        if let bin = findBin(for: bytes) {
+            // This allocation is within one of the bins that we are caching.
 
-        if (bin > max_bin) {
-            // Bin is greater than the maximum bin size that we are caching.
-            // Allocate the request exactly and don't cache it for reuse.
-            cuda_safe_call{cuMemAllocHost_v2(&ptr, Int(bytes))}
-        }
-        else {
-            if (bin < min_bin) {
-                bin           = min_bin
-                rounded_bytes = bin_size_bytes[min_bin]
-            }
+            // First iterate through the cached blocks of the given bin size
+            // looking for an allocation that is ready to be reused.
+            cached_blocks[bin].withLockedValue() { blocks in
+                for block in blocks {
+                    if block.ready_event.complete() {
+                        blocks.remove(block)
+                        ptr = block.ptr
 
-            // mutex lock
-
-            // Iterate through the cached blocks of the same bin
-            for block in cached_blocks[bin] {
-                if block.ready_event.complete() {
-                    cached_blocks[bin].remove(block)
-                    ptr = block.ptr
-
-                    logger.info("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")
-                    break; // don't return directly; we need to unlock the mutex
+                        logger.info("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")
+                        break;
+                    }
                 }
             }
 
-            // Allocate a new block
+            // Otherwise, allocate a new block.
             if ptr == nil {
-                let result = cuMemAllocHost_v2(&ptr, rounded_bytes)
+                let result = cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])
                 switch result {
                     case CUDA_SUCCESS: break
                     case CUDA_ERROR_OUT_OF_MEMORY:
@@ -83,7 +93,7 @@ public class CachingHostAllocator {
                         // try to allocate again
                         logger.info("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freening cached allocations")
                         self.cleanup()
-                        cuda_safe_call{cuMemAllocHost_v2(&ptr, rounded_bytes)}
+                        cuda_safe_call{cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])}
 
                     default:
                         var name : UnsafePointer<CChar>? = nil
@@ -96,9 +106,16 @@ public class CachingHostAllocator {
             }
 
             assert(ptr != nil, "expected CUDA allocator to never return null-pointer")
-            live_blocks[bin].insert(ptr!)
-
-            // mutex unlock
+            let old = live_blocks.withLockedValue() { $0.updateValue(bin, forKey: ptr!) }
+            assert(old == nil, "unexpectedly, block already exists (ptr=\(ptr!))")
+        }
+        else {
+            // This is an allocation larger than the maximum bin size that we
+            // are caching. Allocate the request exactly and don't cache it for
+            // reuse.
+            cuda_safe_call{cuMemAllocHost_v2(&ptr, bytes)}
+            let old = live_blocks.withLockedValue() { $0.updateValue(nil, forKey: ptr!) }
+            assert(old == nil, "unexpectedly, block already exists (ptr=\(ptr!))")
         }
 
         // TODO: Check if there any large blocks to remove. This should probably
@@ -111,26 +128,23 @@ public class CachingHostAllocator {
 
     public func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: Event) {
         // Find corresponding block descriptor
-        var cached: Bool = false
         let block = BlockDescriptor(ptr: ptr, ready_event: ready_event)
 
-        for bin in min_bin..<max_bin {
-            for this in live_blocks[bin] {
-                if ptr == this {
-                    // Keep the returned allocation if we won't exceed the
-                    // maximum cached threshold (which we currently do not track)
-                    live_blocks[bin].remove(ptr)
-                    cached_blocks[bin].insert(block)
-                    cached = true
+        live_blocks.withLockedValue() { blocks in
+            if let exists = blocks[ptr] {
+                blocks.removeValue(forKey: ptr)
+                if let bin = exists {
+                    _ = cached_blocks[bin].withLockedValue() { $0.insert(block) }
+                } else {
+                    // This was a large-block allocation. We don't cache these, but just
+                    // deallocate them (which still needs to happen asynchronously)
+                    // deferred_free.insert(block)
+                    fatalError("TODO: asynchronously free large blocks")
                 }
             }
-        }
-
-        if !cached {
-            // This was a large-block allocation. We don't cache these, but just
-            // deallocate them (which still needs to happen asynchronously)
-            // deferred_free.insert(block)
-            fatalError("TODO: asynchronously free large blocks")
+            else {
+                fatalError("free() called on a value that was either not live, or not managed by this allocator (ptr=\(ptr))")
+            }
         }
     }
 
@@ -145,23 +159,25 @@ public class CachingHostAllocator {
         var cached_bytes_outstanding = 0
         var cached_bytes_freed = 0
 
-        for bin in min_bin..<max_bin {
-            let count = live_blocks[bin].count
+        for bin in 0..<bin_size_bytes.count {
+            let count = live_blocks.withLockedValue() { $0.count }
             num_live_blocks += count
             live_bytes += count * bin_size_bytes[bin]
         }
 
-        for bin in min_bin..<max_bin {
-            for block in cached_blocks[bin] {
-                if block.ready_event.complete() {
-                    cached_blocks[bin].remove(block)
-                    cuda_safe_call{cuMemFreeHost(block.ptr)}
+        for bin in 0..<bin_size_bytes.count {
+            cached_blocks[bin].withLockedValue() { blocks in
+                for block in blocks {
+                    if block.ready_event.complete() {
+                        blocks.remove(block)
+                        cuda_safe_call{cuMemFreeHost(block.ptr)}
 
-                    num_cached_blocks_freed += 1
-                    cached_bytes_freed += bin_size_bytes[bin]
-                } else {
-                    num_cached_blocks_outstanding += 1
-                    cached_bytes_outstanding += bin_size_bytes[bin]
+                        num_cached_blocks_freed += 1
+                        cached_bytes_freed += bin_size_bytes[bin]
+                    } else {
+                        num_cached_blocks_outstanding += 1
+                        cached_bytes_outstanding += bin_size_bytes[bin]
+                    }
                 }
             }
         }
@@ -170,18 +186,20 @@ public class CachingHostAllocator {
     }
 
     deinit {
-        for bin in min_bin..<max_bin {
-            assert(live_blocks[bin].count == 0, "allocator is still holding onto live memory")
+        for bin in 0..<bin_size_bytes.count {
+            assert(live_blocks.withLockedValue() { $0.count } == 0, "allocator is still holding onto live memory")
 
-            for block in cached_blocks[bin] {
-                block.ready_event.sync()
-                cuda_safe_call{cuMemFreeHost(block.ptr)}
+            cached_blocks[bin].withLockedValue() { blocks in
+                for block in blocks {
+                    block.ready_event.sync()
+                    cuda_safe_call{cuMemFreeHost(block.ptr)}
+                }
             }
         }
     }
 }
 
-func IntPow(_ base: Int, _ exp: Int) -> Int
+func pow(_ base: Int, _ exp: Int) -> Int
 {
     var r: Int = 1
     var b: Int = base
@@ -195,23 +213,5 @@ func IntPow(_ base: Int, _ exp: Int) -> Int
         e = e >> 1
     }
     return r
-}
-
-func NearestPowerOf(_ base: Int, _ value: Int) -> (Int, Int)
-{
-    var power: Int = 0
-    var rounded_value: Int = 1;
-
-    if (value * base < value) {
-        // overflow
-        return (MemoryLayout<Int>.stride * 8, Int.max)
-    }
-
-    while (rounded_value < value) {
-        rounded_value *= base
-        power += 1
-    }
-
-    return (power, rounded_value)
 }
 
