@@ -40,7 +40,7 @@ public class CachingHostAllocator {
         assert(bin_growth > 1)
         assert(max_bin - min_bin > 0)
 
-        let count = max_bin - min_bin
+        let count = max_bin - min_bin + 1
         let bins  = Array.init(unsafeUninitializedCapacity: count, initializingWith: { buffer, initialisedCount in
             for i in 0..<count{
                 buffer[i] = pow(bin_growth, min_bin + i)
