@@ -1,10 +1,12 @@
 import CUDA
 
 public struct Event {
-    internal var rawEvent : CUevent? = nil
+    internal var rawEvent : CUevent
 
     public init(withFlags: [CUevent_flags] = [CU_EVENT_DISABLE_TIMING]) {
-        cuda_safe_call{cuEventCreate(&self.rawEvent, withFlags.reduce(0, {$0 | $1.rawValue}))}
+        var tmp : CUevent? = nil
+        cuda_safe_call{cuEventCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
+        self.rawEvent = tmp!    // cuEventCreate will error before this is nil
     }
 
     public init(rawEvent: CUevent) {

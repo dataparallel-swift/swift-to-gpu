@@ -34,7 +34,7 @@ fileprivate struct BlockDescriptor : Hashable, Equatable {
  *     `max_cached_bytes`, allocations are freed when they are deallocated
  *     rather than being returned to their bin-cache.
  */
-public class CachingHostAllocator {
+public final class CachingHostAllocator {
     fileprivate let bin_size_bytes: Array<Int>
     fileprivate var cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
     fileprivate var live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
@@ -242,4 +242,6 @@ func pow(_ base: Int, _ exp: Int) -> Int
     }
     return r
 }
+
+public let smallBlockAllocator = CachingHostAllocator.init(using: [4,8,12,16,24,32,64,128,192,256])
 

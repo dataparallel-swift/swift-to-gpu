@@ -4,10 +4,12 @@ import CUDA
 // instantiate for either the CPU or GPU with appropriate (associated?) types.
 
 public struct Stream {
-    internal var rawStream : CUstream? = nil
+    internal var rawStream : CUstream
 
     public init(withFlags: [CUstream_flags] = []) {
-        cuda_safe_call{cuStreamCreate(&rawStream,  withFlags.reduce(0, {$0 | $1.rawValue}))}
+        var tmp : CUstream? = nil
+        cuda_safe_call{cuStreamCreate(&tmp,  withFlags.reduce(0, {$0 | $1.rawValue}))}
+        self.rawStream = tmp!   // cuStreamCreate will error before this is nil
     }
 
     public init(rawStream: CUstream) {
