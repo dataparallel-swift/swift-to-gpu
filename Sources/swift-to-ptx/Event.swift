@@ -1,7 +1,7 @@
 import CUDA
 
-public class Event {
-    var rawEvent : CUevent? = nil
+public struct Event {
+    internal var rawEvent : CUevent? = nil
 
     public init(withFlags: [CUevent_flags] = [CU_EVENT_DISABLE_TIMING]) {
         cuda_safe_call{cuEventCreate(&self.rawEvent, withFlags.reduce(0, {$0 | $1.rawValue}))}
@@ -31,7 +31,10 @@ public class Event {
         }
     }
 
-    deinit {
+    // The event may be destroyed before it is 'complete'. In this case the call
+    // does _not_ block on completion of the event, and any associated resources
+    // will automatically be released asynchronously upon completion.
+    public func destroy() {
         cuda_safe_call{cuEventDestroy_v2(self.rawEvent)}
     }
 }

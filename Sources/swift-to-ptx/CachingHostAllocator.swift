@@ -4,7 +4,7 @@ import NIOConcurrencyHelpers
 
 private let logger = Logger(label: "CUDA CachingHostAllocator")
 
-struct BlockDescriptor : Hashable, Equatable {
+fileprivate struct BlockDescriptor : Hashable, Equatable {
     let ptr: UnsafeMutableRawPointer
     let ready_event: Event
 
@@ -17,11 +17,30 @@ struct BlockDescriptor : Hashable, Equatable {
     }
 }
 
+/* A thread-safe caching block allocator for pinned host memory
+ *   - Allocations are categorised and cached by bin size. A new allocation
+ *     request of a given size will only consider cached allocations within the
+ *     corresponding bin.
+ *   - Bin limits progress geometrically in accordance with the growth factor
+ *     `bin_growth` provided during construction. Unused allocations within a
+ *     larger bin cache are not reused for allocation requests that categorise
+ *     to smaller bin sizes.
+ *   - Allocation requests below `bin_growth` ^ `min_bin` are rounded up to
+ *     `bin_growth` ^ `min_bin`
+ *   - TODO: Allocations above `bin_growth` ^ `max_bin` are not rounded up to the
+ *     nearest bin and are simply freed when they are deallocated instead of
+ *     being returned to the bin-cache.
+ *   - TODO: If the total storage of cached allocations exceeds
+ *     `max_cached_bytes`, allocations are freed when they are deallocated
+ *     rather than being returned to their bin-cache.
+ */
 public class CachingHostAllocator {
-    let bin_size_bytes: Array<Int>
-    var cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
-    var live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
+    fileprivate let bin_size_bytes: Array<Int>
+    fileprivate var cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
+    fileprivate var live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
 
+    // Initialise the allocator using the given bin sizes, given in bytes. The
+    // sizes must be monotonically increasing.
     public init(using bins: Array<Int>) {
         // assert the input is monotonically increasing
         assert(bins.count > 1)
@@ -36,6 +55,8 @@ public class CachingHostAllocator {
         self.bin_size_bytes = bins
     }
 
+    // Initialise the allocator using the given bin parameters. The default
+    // parameters delineate five bin sizes: 512B, 4KB, 32KB, 256KB, and 2MB.
     public init(min_bin: Int = 3, max_bin: Int = 7, bin_growth: Int = 8) {
         assert(bin_growth > 1)
         assert(max_bin - min_bin > 0)
@@ -63,6 +84,7 @@ public class CachingHostAllocator {
         return nil
     }
 
+    // Return a suitable allocation for the given size
     public func alloc(_ bytes : Int) -> UnsafeMutableRawPointer {
         var ptr : UnsafeMutableRawPointer? = nil
 
@@ -74,6 +96,7 @@ public class CachingHostAllocator {
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     if block.ready_event.complete() {
+                        block.ready_event.destroy()
                         blocks.remove(block)
                         ptr = block.ptr
 
@@ -126,6 +149,9 @@ public class CachingHostAllocator {
         return ptr!
     }
 
+    // Free a live allocation, returning it to the bin-cache. Once freed, the
+    // allocation becomes available for reuse once the given `ready_event` is
+    // complete.
     public func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: Event) {
         // Find corresponding block descriptor
         let block = BlockDescriptor(ptr: ptr, ready_event: ready_event)
@@ -169,6 +195,7 @@ public class CachingHostAllocator {
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     if block.ready_event.complete() {
+                        block.ready_event.destroy()
                         blocks.remove(block)
                         cuda_safe_call{cuMemFreeHost(block.ptr)}
 
@@ -192,6 +219,7 @@ public class CachingHostAllocator {
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     block.ready_event.sync()
+                    block.ready_event.destroy()
                     cuda_safe_call{cuMemFreeHost(block.ptr)}
                 }
             }

@@ -3,7 +3,7 @@ import Logging
 
 private let logger = Logger(label: "CUDA Context")
 
-public class Context {
+public struct Context {
     internal var rawDevice : CUdevice = 0
     internal var rawContext : CUcontext? = nil
 
@@ -12,9 +12,8 @@ public class Context {
         cuda_safe_call{cuDeviceGet(&self.rawDevice, Int32(deviceID))}
         cuda_safe_call{cuCtxCreate_v2(&self.rawContext, CU_CTX_MAP_HOST.rawValue, self.rawDevice)}
 
-        // Nicely format some information about the selected device
+        // Nicely format some information about the selected device, e.g.:
         // Device 0: GeForce 9600M GT (compute capability 1.1), 4 multiprocessors @ 1.25GHz (32 cores), 512MB global memory
-        //
         let name = withUnsafeTemporaryAllocation(of: CChar.self, capacity: 128, { buffer in
             cuda_safe_call{cuDeviceGetName(buffer.baseAddress, 128, self.rawDevice)}
             return String.init(cString: buffer.baseAddress!)
@@ -51,7 +50,7 @@ public class Context {
         logger.info("Device \(deviceID): \(name) (compute capability \(major).\(minor)), \(multiProcessorCount) multiprocessors @ \(gpuClock / 1000) MHz (\(coresPerMP * multiProcessorCount) cores), \(totalGlobalMem / (1024 * 1024)) MB global memory")
     }
 
-    deinit {
+    public func destroy() {
         cuda_safe_call{cuCtxDestroy_v2(self.rawContext)}
     }
 }

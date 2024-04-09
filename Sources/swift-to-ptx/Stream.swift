@@ -3,8 +3,8 @@ import CUDA
 // As with Event, this should probably be an interface (protocol?), that we can
 // instantiate for either the CPU or GPU with appropriate (associated?) types.
 
-public class Stream {
-    var rawStream : CUstream? = nil
+public struct Stream {
+    internal var rawStream : CUstream? = nil
 
     public init(withFlags: [CUstream_flags] = []) {
         cuda_safe_call{cuStreamCreate(&rawStream,  withFlags.reduce(0, {$0 | $1.rawValue}))}
@@ -14,6 +14,7 @@ public class Stream {
         self.rawStream = rawStream
     }
 
+    // Wait until the device has completed all operations in this stream.
     public func sync() {
         cuda_safe_call{cuStreamSynchronize(self.rawStream)}
     }
@@ -34,7 +35,11 @@ public class Stream {
         cuda_safe_call{cuStreamWaitEvent(self.rawStream, event.rawEvent, 0)}
     }
 
-    deinit {
+    // The work stream may be destroyed while the device is still doing work in
+    // it. In this case the call does _not_ block on completion of the work, and
+    // the resources associated with this stream will be released asynchronously
+    // once the device completes work in this stream.
+    public func destroy() {
         cuda_safe_call{cuStreamDestroy_v2(self.rawStream)}
     }
 }
