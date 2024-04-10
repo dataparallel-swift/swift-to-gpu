@@ -4,6 +4,7 @@
 // kernel such that all `iterations` are executed at once in data-parallel.
 //
 @inline(never)  // we need to access this from the llvm-plugin
+@discardableResult
 public func parallel_for
 (
     iterations: Int,
@@ -11,14 +12,17 @@ public func parallel_for
     context:    Context = defaultContext,
     allocator:  CachingHostAllocator = smallBlockAllocator,
     stream:     Stream = streamPerThread
-)
+) -> Event
 {
     dontLetTheCompilerOptimizeThisAway(context)
     dontLetTheCompilerOptimizeThisAway(allocator)
     dontLetTheCompilerOptimizeThisAway(stream)
+
     for i in 0..<iterations {
         body(i)
     }
+
+    return Event.init()
 }
 
 private var blackhole: Any?

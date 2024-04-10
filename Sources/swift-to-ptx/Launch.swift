@@ -5,11 +5,14 @@ private let logger = Logger(label: "CUDA Launch")
 
 // XXX: This module will be loaded into a specific CUDA context, but on
 // subsequent invocations this isn't checked. If we try to call the kernel again
-// in a different context, we'll crash with a (weird?) error message.
+// from a different context, the launch will fail. Once we move to CUDA 12 the
+// CUfunction can be swapped for a CUkernel, which is context independent
+// (automatically loaded into different contexts as necessary, by the driver).
+//
 public struct ParallelForKernel {
     let image : UnsafePointer<UInt8>
-    var function : CUfunction?
     var module : CUmodule?
+    var function : CUfunction
     var blockSize : Int32
     var maxGridSize : Int32
 }
@@ -28,20 +31,30 @@ public func launch_parallel_for
         var minGridSize : Int32 = 0
         var activeBlocks : Int32 = 0
         let dynamicSharedMem : Int = 0
+        var function : CUfunction?
 
         cuda_safe_call{cuModuleLoadData(&kernel.module, kernel.image)}
-        cuda_safe_call{cuModuleGetFunction(&kernel.function, kernel.module, "parallel_for")}
-        cuda_safe_call{cuOccupancyMaxPotentialBlockSize(&minGridSize, &kernel.blockSize, kernel.function, nil, dynamicSharedMem, 0)}
-        cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, kernel.function, kernel.blockSize, dynamicSharedMem)}
+        cuda_safe_call{cuModuleGetFunction(&function, kernel.module, "parallel_for")}
+        cuda_safe_call{cuOccupancyMaxPotentialBlockSize(&minGridSize, &kernel.blockSize, function, nil, dynamicSharedMem, 0)}
+        cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, kernel.blockSize, dynamicSharedMem)}
 
+        kernel.function = function!
         kernel.maxGridSize = context.multiProcessorCount * activeBlocks
     }
 
     let gridSize = min(kernel.maxGridSize, Int32((iterations + Int(kernel.blockSize) - 1) / Int(kernel.blockSize)))
     logger.info("launching parellel_for<<<\(gridSize), \(kernel.blockSize)>>>(\(iterations), \(env))")
 
-    // Marshalling the environment is a PITA. We want the equivalent of this C:
-    // void* params = { &iterations, &env }
+    // To marshal the environment we want the equivalent of this C:
+    //
+    //   void* params[] = { &iterations, &env }
+    //
+    // We use withUnsafeTemporaryAllocation here rather than using the built-in
+    // array declaration syntax [...] because we want this to be allocated on
+    // the stack (using alloca) rather than allocating a full
+    // dynamically-resizable array on the heap. This is perhaps one of those cases where
+    // the Swift/C++ interop is a bit sharp, but the extra effort is worth it.
+    //
     var _iterations = iterations
     var _env = env
     withUnsafeTemporaryAllocation(of: UnsafeMutableRawPointer?.self, capacity: 2, { buffer in

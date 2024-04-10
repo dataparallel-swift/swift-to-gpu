@@ -76,6 +76,11 @@ public final class CachingHostAllocator {
     }
 
     func findBin(for value: Int) -> Int? {
+        // XXX: We could certainly be clever here--for example, doing binary
+        // search or computing the value directly if we initialised the
+        // allocator using geometrically increasing bin sizes--but we assume
+        // that the number of bins is relatively small and so doing the dumb
+        // thing is actually probably fastest.
         for i in 0..<bin_size_bytes.count {
             if value <= bin_size_bytes[i] {
                 return i

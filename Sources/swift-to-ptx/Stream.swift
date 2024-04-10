@@ -7,8 +7,13 @@ public struct Stream {
     internal var rawStream : CUstream
 
     public init(withFlags: [CUstream_flags] = []) {
+        // NOTE: We do some extra juggling here so that the struct will store a
+        // non-optional CUstream value. This just avoids an extra inttoptr
+        // instruction every time we wish to use it, making this struct
+        // isomorphic to the usual CUstream and simplifying how it is used from
+        // the LLVM plugin. We do the same thing with Event.
         var tmp : CUstream? = nil
-        cuda_safe_call{cuStreamCreate(&tmp,  withFlags.reduce(0, {$0 | $1.rawValue}))}
+        cuda_safe_call{cuStreamCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
         self.rawStream = tmp!   // cuStreamCreate will error before this is nil
     }
 
@@ -47,7 +52,7 @@ public struct Stream {
 }
 
 // https://docs.nvidia.com/cuda/archive/11.4.4/cuda-driver-api/stream-sync-behavior.html#stream-sync-behavior
-public let streamDefault   = Stream.init(rawStream: OpaquePointer(bitPattern: 0)!)
+public let streamDefault   = Stream.init(rawStream: OpaquePointer(bitPattern: 0)!) // XXX: guaranteed to fail?
 public let streamLegacy    = Stream.init(rawStream: OpaquePointer(bitPattern: 0x1)!)
 public let streamPerThread = Stream.init(rawStream: OpaquePointer(bitPattern: 0x2)!)
 

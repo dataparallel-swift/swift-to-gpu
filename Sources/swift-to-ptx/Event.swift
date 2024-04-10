@@ -4,6 +4,7 @@ public struct Event {
     internal var rawEvent : CUevent
 
     public init(withFlags: [CUevent_flags] = [CU_EVENT_DISABLE_TIMING]) {
+        // See note in Stream.init()
         var tmp : CUevent? = nil
         cuda_safe_call{cuEventCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
         self.rawEvent = tmp!    // cuEventCreate will error before this is nil
