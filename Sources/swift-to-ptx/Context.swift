@@ -4,9 +4,9 @@ import Logging
 private let logger = Logger(label: "CUDA Context")
 
 public struct Context {
-    internal let rawDevice : CUdevice
-    internal let rawContext : CUcontext
-
+    internal let rawContext : CUcontext     // opaque pointer
+    internal let rawDevice : CUdevice       // int32_t
+                                            // -> context first for better alignment & packing
     internal let multiProcessorCount : Int32
     internal let maxThreadsPerMultiprocessor : Int32
     internal let warpSize : Int32 = 32
