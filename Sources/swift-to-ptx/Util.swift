@@ -1,5 +1,6 @@
 import CUDA
 
+@usableFromInline
 func cuda_safe_call(file: StaticString = #file, line: UInt = #line, _ function: () -> CUresult) -> ()
 {
     let result = function()

@@ -8,10 +8,10 @@
 public func parallel_for
 (
     iterations: Int,
-    _ body:     (Int) -> (),
     context:    Context = defaultContext,
     allocator:  CachingHostAllocator = smallBlockAllocator,
-    stream:     Stream = streamPerThread
+    stream:     Stream = streamPerThread,
+    _ body:     (Int) -> ()
 ) -> Event
 {
     dontLetTheCompilerOptimizeThisAway(context)

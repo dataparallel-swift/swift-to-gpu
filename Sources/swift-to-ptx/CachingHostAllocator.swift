@@ -8,10 +8,12 @@ fileprivate struct BlockDescriptor : Hashable, Equatable {
     let ptr: UnsafeMutableRawPointer
     let ready_event: Event
 
+    @inlinable
     func hash(into hasher: inout Hasher) {
         hasher.combine(ptr)
     }
 
+    @inlinable
     static func == (lhs: BlockDescriptor, rhs: BlockDescriptor) -> Bool {
         lhs.ptr == rhs.ptr
     }
@@ -39,8 +41,8 @@ public final class CachingHostAllocator {
     fileprivate var cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
     fileprivate var live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
 
-    // Initialise the allocator using the given bin sizes, given in bytes. The
-    // sizes must be monotonically increasing.
+    // Initialise the allocator using the given bin sizes, in bytes. The sizes
+    // must be monotonically increasing.
     public init(using bins: Array<Int>) {
         // assert the input is monotonically increasing
         assert(bins.count > 1)
@@ -105,7 +107,7 @@ public final class CachingHostAllocator {
                         blocks.remove(block)
                         ptr = block.ptr
 
-                        logger.info("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")
+                        logger.info("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")   // XXX: should probably move this outside the critical section
                         break;
                     }
                 }
@@ -232,6 +234,7 @@ public final class CachingHostAllocator {
     }
 }
 
+@inlinable
 func pow(_ base: Int, _ exp: Int) -> Int
 {
     var r: Int = 1

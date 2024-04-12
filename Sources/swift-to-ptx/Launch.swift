@@ -18,6 +18,7 @@ public struct ParallelForKernel {
 }
 
 @inline(never)  // we need to access this from the llvm-plugin
+@discardableResult
 public func launch_parallel_for
 (
     iterations: Int,
