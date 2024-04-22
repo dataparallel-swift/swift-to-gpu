@@ -4,7 +4,7 @@ import NIOConcurrencyHelpers
 
 private let logger = Logger(label: "CUDA CachingHostAllocator")
 
-fileprivate struct BlockDescriptor : Hashable, Equatable {
+struct BlockDescriptor : Hashable, Equatable {
     let ptr: UnsafeMutableRawPointer
     let ready_event: Event
 
@@ -36,10 +36,13 @@ fileprivate struct BlockDescriptor : Hashable, Equatable {
  *     `max_cached_bytes`, allocations are freed when they are deallocated
  *     rather than being returned to their bin-cache.
  */
-public final class CachingHostAllocator {
-    fileprivate let bin_size_bytes: Array<Int>
-    fileprivate var cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
-    fileprivate var live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
+public struct CachingHostAllocator {
+    // Because NIOLockedValueBox has reference semantics, we can actually make
+    // this a struct (rather than a class) and its fields/member functions
+    // non-mutating, and still have the cache shared between users.
+    let bin_size_bytes: Array<Int>
+    let cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>
+    let live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
 
     // Initialise the allocator using the given bin sizes, in bytes. The sizes
     // must be monotonically increasing.
@@ -219,7 +222,7 @@ public final class CachingHostAllocator {
         logger.info("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
     }
 
-    deinit {
+    public func destroy() {
         for bin in 0..<bin_size_bytes.count {
             assert(live_blocks.withLockedValue() { $0.count } == 0, "allocator is still holding onto live memory")
 
