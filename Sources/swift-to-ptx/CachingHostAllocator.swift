@@ -20,18 +20,23 @@ struct BlockDescriptor : Hashable, Equatable {
 }
 
 /* A thread-safe caching block allocator for pinned host memory
+ *
  *   - Allocations are categorised and cached by bin size. A new allocation
  *     request of a given size will only consider cached allocations within the
  *     corresponding bin.
+ *
  *   - Bin limits progress geometrically in accordance with the growth factor
  *     `bin_growth` provided during construction. Unused allocations within a
  *     larger bin cache are not reused for allocation requests that categorise
  *     to smaller bin sizes.
+ *
  *   - Allocation requests below `bin_growth` ^ `min_bin` are rounded up to
  *     `bin_growth` ^ `min_bin`
+ *
  *   - TODO: Allocations above `bin_growth` ^ `max_bin` are not rounded up to the
  *     nearest bin and are simply freed when they are deallocated instead of
  *     being returned to the bin-cache.
+ *
  *   - TODO: If the total storage of cached allocations exceeds
  *     `max_cached_bytes`, allocations are freed when they are deallocated
  *     rather than being returned to their bin-cache.
@@ -254,5 +259,8 @@ func pow(_ base: Int, _ exp: Int) -> Int
     return r
 }
 
+// XXX: I have noticed @swift_retain and @swift_release calls in the generated
+// LLVM, but we don't want this to ever to be deallocated once initialised; need
+// to check this. ---TLM 2024-04-22
 public let smallBlockAllocator = CachingHostAllocator.init(using: [4,8,12,16,24,32,64,128,192,256])
 
