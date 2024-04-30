@@ -2,7 +2,7 @@ import CUDA
 import Logging
 import NIOConcurrencyHelpers
 
-private let logger = Logger(label: "CUDA CachingHostAllocator")
+private let logger = Logger(label: "CachingHostAllocator")
 
 struct BlockDescriptor : Hashable, Equatable {
     let ptr: UnsafeMutableRawPointer
@@ -111,7 +111,6 @@ public struct CachingHostAllocator {
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     if block.ready_event.complete() {
-                        block.ready_event.destroy()
                         blocks.remove(block)
                         ptr = block.ptr
 
@@ -176,6 +175,7 @@ public struct CachingHostAllocator {
                 blocks.removeValue(forKey: ptr)
                 if let bin = exists {
                     _ = cached_blocks[bin].withLockedValue() { $0.insert(block) }
+                    logger.info("Freeing block \(ptr) (\(bin_size_bytes[bin]) bytes, ready_event: \(ready_event.rawEvent))")
                 } else {
                     // This was a large-block allocation. We don't cache these, but just
                     // deallocate them (which still needs to happen asynchronously)
@@ -184,7 +184,7 @@ public struct CachingHostAllocator {
                 }
             }
             else {
-                fatalError("free() called on a value that was either not live, or not managed by this allocator (ptr=\(ptr))")
+                fatalError("free() called on a value that was either not live, or not managed by this allocator (\(ptr))")
             }
         }
     }
@@ -210,7 +210,6 @@ public struct CachingHostAllocator {
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     if block.ready_event.complete() {
-                        block.ready_event.destroy()
                         blocks.remove(block)
                         cuda_safe_call{cuMemFreeHost(block.ptr)}
 
@@ -234,7 +233,7 @@ public struct CachingHostAllocator {
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     block.ready_event.sync()
-                    block.ready_event.destroy()
+                    blocks.remove(block)
                     cuda_safe_call{cuMemFreeHost(block.ptr)}
                 }
             }

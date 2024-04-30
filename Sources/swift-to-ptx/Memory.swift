@@ -1,10 +1,14 @@
 import CUDA
+import Logging
 
-@inlinable
+private let logger = Logger(label: "Marshal")
+
 public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ count: Int, _ stride: Int) -> CUdeviceptr
 {
     var dptr : CUdeviceptr = 0
-    let result = cuMemHostRegister_v2(ptr, count * stride, UInt32(CU_MEMHOSTREGISTER_DEVICEMAP))
+    let bytes = count * stride
+
+    let result = cuMemHostRegister_v2(ptr, bytes, UInt32(CU_MEMHOSTREGISTER_DEVICEMAP))
     switch result {
         // Allowing the ALREADY_REGISTERED case to count as success might hide
         // some subtle bugs (e.g. choosing the size of the array incorrectly, or
@@ -16,14 +20,15 @@ public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ count: Int, _ str
             var desc : UnsafePointer<CChar>? = nil
             cuGetErrorName(result, &name)
             cuGetErrorString(result, &desc)
-            fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!))")
+            fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!)): ptr=\(ptr), count=\(count), stride=\(stride)")
     }
 
     cuda_safe_call{cuMemHostGetDevicePointer_v2(&dptr, ptr, 0)}
+
+    logger.info("Registered \(bytes) bytes of memory @ \(ptr)")
     return dptr
 }
 
-@inlinable
 public func getDevicePointer<T>(_ ptr: UnsafeMutablePointer<T>, _ count: Int) -> CUdeviceptr
 {
     getDevicePointer(ptr, count, MemoryLayout<T>.stride)

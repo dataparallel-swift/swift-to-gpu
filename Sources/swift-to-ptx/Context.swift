@@ -1,7 +1,7 @@
 import CUDA
 import Logging
 
-private let logger = Logger(label: "CUDA Context")
+private let logger = Logger(label: "Context")
 
 public struct Context {
     internal let rawContext : CUcontext     // opaque pointer
