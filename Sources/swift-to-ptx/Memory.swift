@@ -3,11 +3,10 @@ import Logging
 
 private let logger = Logger(label: "Marshal")
 
-public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ count: Int, _ stride: Int) -> CUdeviceptr
+@inlinable
+internal func cuMemHostRegisterAndGetDevicePointer(_ ptr: UnsafeMutableRawPointer, _ bytes: Int) -> CUdeviceptr
 {
     var dptr : CUdeviceptr = 0
-    let bytes = count * stride
-
     let result = cuMemHostRegister_v2(ptr, bytes, UInt32(CU_MEMHOSTREGISTER_DEVICEMAP))
     switch result {
         // Allowing the ALREADY_REGISTERED case to count as success might hide
@@ -20,18 +19,34 @@ public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ count: Int, _ str
             var desc : UnsafePointer<CChar>? = nil
             cuGetErrorName(result, &name)
             cuGetErrorString(result, &desc)
-            fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!)): ptr=\(ptr), count=\(count), stride=\(stride)")
+            fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!)): ptr=\(ptr), bytes=\(bytes)")
     }
 
     cuda_safe_call{cuMemHostGetDevicePointer_v2(&dptr, ptr, 0)}
+    return dptr
+}
 
+public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ bytes: Int) -> CUdeviceptr
+{
+    let dptr = cuMemHostRegisterAndGetDevicePointer(ptr, bytes)
     logger.info("Registered \(bytes) bytes of memory @ \(ptr)")
+    return dptr
+}
+
+public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ count: Int, _ stride: Int) -> CUdeviceptr
+{
+    let bytes = count * stride
+    let dptr = cuMemHostRegisterAndGetDevicePointer(ptr, bytes)
+    logger.info("Registered \(bytes) bytes of memory @ \(ptr) (count=\(count), stride=\(stride))")
     return dptr
 }
 
 public func getDevicePointer<T>(_ ptr: UnsafeMutablePointer<T>, _ count: Int) -> CUdeviceptr
 {
-    getDevicePointer(ptr, count, MemoryLayout<T>.stride)
+    let bytes = count * MemoryLayout<T>.stride
+    let dptr = cuMemHostRegisterAndGetDevicePointer(ptr, bytes)
+    logger.info("Registered \(bytes) bytes of memory @ \(ptr) (count=\(count), type=\(T.self))")
+    return dptr
 }
 
 // public func getDevicePointer(_ buffer: UnsafeMutableRawBufferPointer, _ count: Int, stride: Int) -> CUdeviceptr
