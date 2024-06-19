@@ -23,7 +23,8 @@ let package = Package(
         .systemLibrary(
             name: "CUDA",
             path: "Sources/CUDA",
-            pkgConfig: "cuda-11.4"),
+            pkgConfig: "cuda-11.4"
+        ),
         .target(
             name: "SwiftToPTX",
             dependencies: [
@@ -31,6 +32,7 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
-            path: "Sources/swift-to-ptx"),
+            path: "Sources/swift-to-ptx"
+        ),
     ]
 )
