@@ -23,7 +23,7 @@ let package = Package(
         .systemLibrary(
             name: "CUDA",
             path: "Sources/CUDA",
-            pkgConfig: "cuda-11.4"
+            pkgConfig: "cuda-12.2"
         ),
         .target(
             name: "SwiftToPTX",
