@@ -54,5 +54,11 @@ swift-to-ptx compiler transformation, e.g. available from here:
 
 ...
 
+## Limitations
+
+  * All code to be lifted to the device must be present in a single module
+
 ## TODO
+
+  * Memory that is registered to be accessible from the device is never de-registered
 
