@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
+        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.3.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -33,6 +34,13 @@ let package = Package(
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
             path: "Sources/swift-to-ptx"
+        ),
+        .testTarget(
+            name: "SwiftToPTXTests",
+            dependencies: [
+                "SwiftToPTX",
+                "Randy",
+            ]
         ),
     ]
 )
