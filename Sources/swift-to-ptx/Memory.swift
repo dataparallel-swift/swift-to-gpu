@@ -29,7 +29,7 @@ internal func cuMemHostRegisterAndGetDevicePointer(_ ptr: UnsafeMutableRawPointe
 public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ bytes: Int) -> CUdeviceptr
 {
     let dptr = cuMemHostRegisterAndGetDevicePointer(ptr, bytes)
-    logger.info("Registered \(bytes) bytes of memory @ \(ptr)")
+    logger.trace("Registered \(bytes) bytes of memory @ \(ptr)")
     return dptr
 }
 
@@ -37,7 +37,7 @@ public func getDevicePointer(_ ptr: UnsafeMutableRawPointer, _ count: Int, _ str
 {
     let bytes = count * stride
     let dptr = cuMemHostRegisterAndGetDevicePointer(ptr, bytes)
-    logger.info("Registered \(bytes) bytes of memory @ \(ptr) (count=\(count), stride=\(stride))")
+    logger.trace("Registered \(bytes) bytes of memory @ \(ptr) (count=\(count), stride=\(stride))")
     return dptr
 }
 
@@ -45,7 +45,7 @@ public func getDevicePointer<T>(_ ptr: UnsafeMutablePointer<T>, _ count: Int) ->
 {
     let bytes = count * MemoryLayout<T>.stride
     let dptr = cuMemHostRegisterAndGetDevicePointer(ptr, bytes)
-    logger.info("Registered \(bytes) bytes of memory @ \(ptr) (count=\(count), type=\(T.self))")
+    logger.trace("Registered \(bytes) bytes of memory @ \(ptr) (count=\(count), type=\(T.self))")
     return dptr
 }
 

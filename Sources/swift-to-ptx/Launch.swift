@@ -55,14 +55,18 @@ public func launch_parallel_for
         cuda_safe_call{cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function)}
         cuda_safe_call{cuFuncGetAttribute(&localMem, CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, kernel.function)}
 
-        logger.info("Kernel function \"parallel_for\" used \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, \(constantMem) bytes constant memory")
-        logger.info("Multiprocessor occupancy \(occupancy) % : \(activeThreads) threads over \(activeWarps) warps in \(activeBlocks) blocks")
+        logger.trace(
+            """
+            Kernel function \"parallel_for\" used \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, \(constantMem) bytes constant memory
+            Multiprocessor occupancy \(occupancy) % : \(activeThreads) threads over \(activeWarps) warps in \(activeBlocks) blocks
+            """
+        )
     }
 
     let gridSize = min(kernel.maxGridSize, Int32((iterations + Int(kernel.blockSize) - 1) / Int(kernel.blockSize)))
 
     if gridSize > 0 {
-        logger.info("launching parallel_for<<<\(gridSize), \(kernel.blockSize)>>>(\(iterations), \(env))")
+        logger.trace("launching parallel_for<<<\(gridSize), \(kernel.blockSize)>>>(\(iterations), \(env))")
 
         // To marshal the environment we want the equivalent of this C:
         //

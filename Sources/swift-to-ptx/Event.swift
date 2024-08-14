@@ -11,12 +11,12 @@ public final class Event {
         var tmp : CUevent? = nil
         cuda_safe_call{cuEventCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
         self.rawEvent = tmp!    // cuEventCreate will error before this is nil
-        logger.info(".init(withFlags: \(withFlags)) -> \(self.rawEvent)")
+        logger.trace(".init(withFlags: \(withFlags)) -> \(self.rawEvent)")
     }
 
     public init(rawEvent: CUevent) {
         self.rawEvent = rawEvent
-        logger.info(".init(rawEvent: \(self.rawEvent))")
+        logger.trace(".init(rawEvent: \(self.rawEvent))")
     }
 
     // Wait for this event to be completed. This is a blocking call.
@@ -43,7 +43,7 @@ public final class Event {
     // does _not_ block on completion of the event, and any associated resources
     // will automatically be released asynchronously upon completion.
     deinit {
-        logger.info("Destroy event \(self.rawEvent)")
+        logger.trace("Destroy event \(self.rawEvent)")
         cuda_safe_call{cuEventDestroy_v2(self.rawEvent)}
     }
 }

@@ -57,7 +57,7 @@ public struct Context {
         var gpuClock : Int32 = 0
         cuda_safe_call{cuDeviceGetAttribute(&gpuClock, CU_DEVICE_ATTRIBUTE_CLOCK_RATE, rawDevice)}
 
-        logger.info("Device \(deviceID): \(name) (compute capability \(major).\(minor)), \(multiProcessorCount) multiprocessors @ \(gpuClock / 1000) MHz (\(coresPerMP * multiProcessorCount) cores), \(totalGlobalMem / (1024 * 1024)) MB global memory")
+        logger.trace("Device \(deviceID): \(name) (compute capability \(major).\(minor)), \(multiProcessorCount) multiprocessors @ \(gpuClock / 1000) MHz (\(coresPerMP * multiProcessorCount) cores), \(totalGlobalMem / (1024 * 1024)) MB global memory")
 
         self.rawDevice = rawDevice
         self.rawContext = rawContext!

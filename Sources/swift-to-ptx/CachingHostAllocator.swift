@@ -59,7 +59,7 @@ public struct CachingHostAllocator {
             assert(bins[i] < bins[i+1])
         }
 
-        logger.info(".init(using: \(bins))")
+        logger.trace(".init(using: \(bins))")
         self.cached_blocks  = .init(repeating: .init(.init()), count: bins.count)
         self.live_blocks    = .init(.init())
         self.bin_size_bytes = bins
@@ -79,7 +79,7 @@ public struct CachingHostAllocator {
             initialisedCount = count
         })
 
-        logger.info(".init(min_bin: \(min_bin), max_bin: \(max_bin), bin_growth: \(bin_growth)) --> \(bins)")
+        logger.trace(".init(min_bin: \(min_bin), max_bin: \(max_bin), bin_growth: \(bin_growth)) --> \(bins)")
         self.cached_blocks  = .init(repeating: .init(.init()), count: bins.count)
         self.live_blocks    = .init(.init())
         self.bin_size_bytes = bins
@@ -114,7 +114,7 @@ public struct CachingHostAllocator {
                         blocks.remove(block)
                         ptr = block.ptr
 
-                        logger.info("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")   // XXX: should probably move this outside the critical section
+                        logger.trace("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")   // XXX: should probably move this outside the critical section
                         break;
                     }
                 }
@@ -128,7 +128,7 @@ public struct CachingHostAllocator {
                     case CUDA_ERROR_OUT_OF_MEMORY:
                         // If the allocation fails, free the cached blocks and
                         // try to allocate again
-                        logger.info("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freening cached allocations")
+                        logger.trace("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freening cached allocations")
                         self.cleanup()
                         cuda_safe_call{cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])}
 
@@ -139,7 +139,7 @@ public struct CachingHostAllocator {
                         cuGetErrorString(result, &desc)
                         fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!))")
                 }
-                logger.info("Allocated new block at \(ptr!) (\(bin_size_bytes[bin]) bytes)")
+                logger.trace("Allocated new block at \(ptr!) (\(bin_size_bytes[bin]) bytes)")
             }
 
             assert(ptr != nil, "expected CUDA allocator to never return null-pointer")
@@ -175,7 +175,7 @@ public struct CachingHostAllocator {
                 blocks.removeValue(forKey: ptr)
                 if let bin = exists {
                     _ = cached_blocks[bin].withLockedValue() { $0.insert(block) }
-                    logger.info("Freeing block \(ptr) (\(bin_size_bytes[bin]) bytes, ready_event: \(ready_event.rawEvent))")
+                    logger.trace("Freeing block \(ptr) (\(bin_size_bytes[bin]) bytes, ready_event: \(ready_event.rawEvent))")
                 } else {
                     // This was a large-block allocation. We don't cache these, but just
                     // deallocate them (which still needs to happen asynchronously)
@@ -223,7 +223,7 @@ public struct CachingHostAllocator {
             }
         }
 
-        logger.info("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
+        logger.trace("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
     }
 
     public func destroy() {
