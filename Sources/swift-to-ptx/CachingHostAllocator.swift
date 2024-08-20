@@ -60,7 +60,7 @@ public struct CachingHostAllocator {
         }
 
         logger.trace(".init(using: \(bins))")
-        self.cached_blocks  = .init(repeating: .init(.init()), count: bins.count)
+        self.cached_blocks  = .init(count: bins.count, generator: { _ in .init(.init()) })
         self.live_blocks    = .init(.init())
         self.bin_size_bytes = bins
     }
@@ -80,7 +80,7 @@ public struct CachingHostAllocator {
         })
 
         logger.trace(".init(min_bin: \(min_bin), max_bin: \(max_bin), bin_growth: \(bin_growth)) --> \(bins)")
-        self.cached_blocks  = .init(repeating: .init(.init()), count: bins.count)
+        self.cached_blocks  = .init(count: bins.count, generator: { _ in .init(.init()) })
         self.live_blocks    = .init(.init())
         self.bin_size_bytes = bins
     }
@@ -113,8 +113,6 @@ public struct CachingHostAllocator {
                     if block.ready_event.complete() {
                         blocks.remove(block)
                         ptr = block.ptr
-
-                        logger.trace("Reused cached block at \(block.ptr) (\(bin_size_bytes[bin]) bytes)")   // XXX: should probably move this outside the critical section
                         break;
                     }
                 }
@@ -128,7 +126,7 @@ public struct CachingHostAllocator {
                     case CUDA_ERROR_OUT_OF_MEMORY:
                         // If the allocation fails, free the cached blocks and
                         // try to allocate again
-                        logger.trace("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freening cached allocations")
+                        logger.trace("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freeing cached allocations")
                         self.cleanup()
                         cuda_safe_call{cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])}
 
@@ -140,6 +138,9 @@ public struct CachingHostAllocator {
                         fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!))")
                 }
                 logger.trace("Allocated new block at \(ptr!) (\(bin_size_bytes[bin]) bytes)")
+            }
+            else {
+                logger.trace("Reused cached block at \(ptr!) (\(bin_size_bytes[bin]) bytes)")
             }
 
             assert(ptr != nil, "expected CUDA allocator to never return null-pointer")
@@ -175,7 +176,6 @@ public struct CachingHostAllocator {
                 blocks.removeValue(forKey: ptr)
                 if let bin = exists {
                     _ = cached_blocks[bin].withLockedValue() { $0.insert(block) }
-                    logger.trace("Freeing block \(ptr) (\(bin_size_bytes[bin]) bytes, ready_event: \(ready_event.rawEvent))")
                 } else {
                     // This was a large-block allocation. We don't cache these, but just
                     // deallocate them (which still needs to happen asynchronously)
@@ -200,10 +200,9 @@ public struct CachingHostAllocator {
         var cached_bytes_outstanding = 0
         var cached_bytes_freed = 0
 
-        for bin in 0..<bin_size_bytes.count {
-            let count = live_blocks.withLockedValue() { $0.count }
-            num_live_blocks += count
-            live_bytes += count * bin_size_bytes[bin]
+        live_blocks.withLockedValue() { blocks in
+            num_live_blocks = blocks.count
+            live_bytes      = blocks.values.reduce(0, { x, y in x + y! })
         }
 
         for bin in 0..<bin_size_bytes.count {
@@ -223,7 +222,7 @@ public struct CachingHostAllocator {
             }
         }
 
-        logger.trace("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
+        logger.info("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
     }
 
     public func destroy() {
@@ -241,8 +240,7 @@ public struct CachingHostAllocator {
     }
 }
 
-@inlinable
-func pow(_ base: Int, _ exp: Int) -> Int
+fileprivate func pow(_ base: Int, _ exp: Int) -> Int
 {
     var r: Int = 1
     var b: Int = base
@@ -256,6 +254,20 @@ func pow(_ base: Int, _ exp: Int) -> Int
         e = e >> 1
     }
     return r
+}
+
+fileprivate extension Array {
+    init(count: Int, generator: @escaping (Int) -> Element) {
+        precondition(count >= 0, "arrays must have non-negative sizes")
+        self.init(
+            unsafeUninitializedCapacity: count,
+            initializingWith: { buffer, initializedCount in
+                for i in 0..<count {
+                    buffer[i] = generator(i)
+                }
+                initializedCount = count
+            })
+    }
 }
 
 // XXX: I have noticed @swift_retain and @swift_release calls in the generated
