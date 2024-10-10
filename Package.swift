@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
+        .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.3.0"),
     ],
     targets: [
@@ -46,6 +47,7 @@ let package = Package(
             name: "SwiftToPTXTests",
             dependencies: [
                 "Randy",
+                "SwiftCheck",
                 "SwiftToPTX",
             ]
         ),

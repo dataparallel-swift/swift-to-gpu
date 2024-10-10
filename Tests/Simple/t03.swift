@@ -1,7 +1,7 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
 
-fileprivate func test(size: Int) -> Array<Float>
+func test03(size: Int) -> Array<Float>
 {
     Array<Float>.init(
         unsafeUninitializedCapacity: size,
@@ -15,11 +15,13 @@ fileprivate func test(size: Int) -> Array<Float>
 
 extension Simple {
     func testFillWithIndex() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let expected = Array(stride(from: 0, to: Float(count), by: 1))
-        let actual   = test(size: count)
+        property("fill with index") <- forAll { (i : Positive<Int>) in
+            let count    = i.getPositive
+            let expected = Array(stride(from: 0, to: Float(count), by: 1))
+            let actual   = test03(size: count)
 
-        XCTAssertEqual(actual, expected)
+            return (actual == expected)
+        }
     }
 }
 

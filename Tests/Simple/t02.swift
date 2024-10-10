@@ -1,8 +1,8 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
 
 // Fill an array with a given scalar value
-fileprivate func test(count: Int, value: Float) -> Array<Float>
+func test02(count: Int, value: Float) -> Array<Float>
 {
     Array<Float>.init(
         unsafeUninitializedCapacity: count,
@@ -15,13 +15,14 @@ fileprivate func test(count: Int, value: Float) -> Array<Float>
 }
 
 extension Simple {
-    func testFillWithGivenValue() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let value    = Float.random(using: &generator)
-        let expected = Array<Float>.init(repeating: value, count: count)
-        let actual   = test(count: count, value: value)
+    func testFillWithGivenValue() throws {
+        property("fill with given value") <- forAll { (i : Positive<Int>, value : Float) in
+            let count    = i.getPositive
+            let expected = Array<Float>.init(repeating: value, count: count)
+            let actual   = test02(count: count, value: value)
 
-        XCTAssertEqual(actual, expected)
+            return (actual == expected)
+        }
     }
 }
 

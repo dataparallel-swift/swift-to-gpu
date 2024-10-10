@@ -1,5 +1,6 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
+import Foundation
 
 // Test a noinline function.
 // This propagates the annotation to the generated kernel as well.
@@ -10,7 +11,7 @@ fileprivate func body(_ x: Float) -> Float
     return sin(x) * cos(y)
 }
 
-fileprivate func test(_ arr: Array<Float>) -> Array<Float>
+func test08(_ arr: Array<Float>) -> Array<Float>
 {
     Array<Float>.init(
         unsafeUninitializedCapacity: arr.count,
@@ -24,12 +25,12 @@ fileprivate func test(_ arr: Array<Float>) -> Array<Float>
 
 extension Simple {
     func testNoinline() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let xs       = Array<Float>.random(count: count, using: &generator)
-        let expected = xs.map{ body($0) }
-        let actual   = test(xs)
+        property("noinline") <- forAll { (xs : Array<Float>) in
+            let expected = xs.map{ body($0) }
+            let actual   = test08(xs)
 
-        XCTAssert(actual ~= expected)
+            return (actual ~= expected)
+        }
     }
 }
 

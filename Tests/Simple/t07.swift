@@ -1,12 +1,13 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
+import Foundation
 
 // standard `map` operation, but the output array is allocated first.
 //
 // NOTE: We need to array via withUnsafeMutableBufferPointer(), to ensure that
 // it is available for the lifetime of the kernel invocation, and (it seems) to
 // work around the CoW mechanism of arrays, which is not thread safe?
-fileprivate func test(_ arr: Array<Float>) -> Array<Float>
+func test07(_ arr: Array<Float>) -> Array<Float>
 {
     var result = Array<Float>.init(repeating: 0, count: arr.count)
 
@@ -22,12 +23,12 @@ fileprivate func test(_ arr: Array<Float>) -> Array<Float>
 
 extension Simple {
     func testWithUnsafeMutableBufferPointer() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let xs       = Array<Float>.random(count: count, using: &generator)
-        let expected = xs.map{ x in sin(x) * cos(x) }
-        let actual   = test(xs)
+        property("unsafeMutableBufferPointer") <- forAll { (xs : Array<Float>) in
+            let expected = xs.map{ x in sin(x) * cos(x) }
+            let actual   = test07(xs)
 
-        XCTAssert(actual ~= expected)
+            return (actual ~= expected)
+        }
     }
 }
 

@@ -1,8 +1,8 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
 
 // Fill an array with a known constant value
-fileprivate func test(count: Int) -> Array<Float>
+func test01(count: Int) -> Array<Float>
 {
     Array<Float>.init(
         unsafeUninitializedCapacity: count,
@@ -16,12 +16,14 @@ fileprivate func test(count: Int) -> Array<Float>
 }
 
 extension Simple {
-    func testFillWithKnownValue() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let expected = Array<Float>.init(repeating: 42, count: count)
-        let actual   = test(count: count)
+    func testFillWithKnownValue() throws {
+        property("fill with known value") <- forAll { (i : Positive<Int>) in
+            let count    = i.getPositive
+            let expected = Array<Float>.init(repeating: 42, count: count)
+            let actual   = test01(count: count)
 
-        XCTAssertEqual(actual, expected)
+            return (actual == expected)
+        }
     }
 }
 

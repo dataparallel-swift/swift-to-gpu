@@ -1,8 +1,8 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
 
 // standard `compact` (a.k.a. filter) operation
-fileprivate func test(_ keep: Array<Bool>, _ arr: Array<Float>) -> Array<Float>
+func test12(_ keep: Array<Bool>, _ arr: Array<Float>) -> Array<Float>
 {
     // let (offset, count) = scanl' (+) 0 (map boolToInt keep)
     // TODO: parallel scans, reductions, etc...
@@ -36,13 +36,15 @@ fileprivate func test(_ keep: Array<Bool>, _ arr: Array<Float>) -> Array<Float>
 
 extension Simple {
     func testCompact() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let xs       = Array<Float>.random(count: count, using: &generator)
-        let keep     = Array<Bool>.random(count: count, using: &generator)
-        let expected = zip(keep, xs).filter{ $0.0 }.map{ $0.1 }
-        let actual   = test(keep, xs)
+        property("compact") <- forAll { (i : Positive<Int>) in
+            let count    = i.getPositive
+            let xs       = Array<Float>.random(count: count, using: &self.generator)
+            let keep     = Array<Bool>.random(count: count, using: &self.generator)
+            let expected = zip(keep, xs).filter{ $0.0 }.map{ $0.1 }
+            let actual   = test12(keep, xs)
 
-        XCTAssertEqual(actual, expected)
+            return (actual == expected)
+        }
     }
 }
 

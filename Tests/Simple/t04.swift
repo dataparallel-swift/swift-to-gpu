@@ -1,8 +1,9 @@
 import SwiftToPTX
+import SwiftCheck
 import XCTest
 
 // standard `map` operation
-fileprivate func test(_ arr: Array<Float>) -> Array<Float>
+func test04(_ arr: Array<Float>) -> Array<Float>
 {
     Array<Float>.init(
         unsafeUninitializedCapacity: arr.count,
@@ -18,12 +19,12 @@ fileprivate func test(_ arr: Array<Float>) -> Array<Float>
 
 extension Simple {
     func testMapSquare() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let xs       = Array<Float>.random(count: count, using: &generator)
-        let expected = xs.map { x in x * x}
-        let actual   = test(xs)
+        property("map square") <- forAll { (xs : Array<Float>) in
+            let expected = xs.map { x in x * x}
+            let actual   = test04(xs)
 
-        XCTAssertEqual(actual, expected)
+            return (actual ~= expected)
+        }
     }
 }
 

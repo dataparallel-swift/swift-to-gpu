@@ -1,8 +1,9 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
+import Foundation
 
 // test lowering to libdevice
-fileprivate func test(_ arr: Array<Float>) -> Array<Float>
+func test05(_ arr: Array<Float>) -> Array<Float>
 {
     Array<Float>.init(
         unsafeUninitializedCapacity: arr.count,
@@ -16,12 +17,12 @@ fileprivate func test(_ arr: Array<Float>) -> Array<Float>
 
 extension Simple {
     func testMapSin() {
-        let count    = Int.random(in: sizeRange, using: &generator)
-        let xs       = Array<Float>.random(count: count, using: &generator)
-        let expected = xs.map { sin($0) }
-        let actual   = test(xs)
+        property("map sin") <- forAll { (xs : Array<Float>) in
+            let expected = xs.map { sin($0) }
+            let actual   = test05(xs)
 
-        XCTAssert(actual ~= expected)
+            return (actual ~= expected)
+        }
     }
 }
 

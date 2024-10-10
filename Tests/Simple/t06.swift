@@ -1,8 +1,8 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
 
 // standard `zipWith` operation (with intersection semantics)
-fileprivate func test(_ xs: Array<Float>, _ ys: Array<Float>) -> Array<Float>
+func test06(_ xs: Array<Float>, _ ys: Array<Float>) -> Array<Float>
 {
     let count = min(xs.count, ys.count)
     return Array<Float>.init(
@@ -18,12 +18,12 @@ fileprivate func test(_ xs: Array<Float>, _ ys: Array<Float>) -> Array<Float>
 
 extension Simple {
     func testZipWithPlus() {
-        let xs       = Array<Float>.random(count: .random(in: sizeRange, using: &generator), using: &generator)
-        let ys       = Array<Float>.random(count: .random(in: sizeRange, using: &generator), using: &generator)
-        let expected = zip(xs, ys).map{ (x,y) in x + y }
-        let actual   = test(xs, ys)
+        property("zipWith (+)") <- forAll { (xs : Array<Float>, ys : Array<Float>) in
+            let expected = zip(xs, ys).map{ (x,y) in x + y }
+            let actual   = test06(xs, ys)
 
-        XCTAssert(actual ~= expected)
+            return (actual ~= expected)
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 import SwiftToPTX
-import XCTest
+import SwiftCheck
 
-fileprivate func test(_ xs: Array<Float>, _ idx: Array<Int>) -> (Array<Float>, Array<Float>)
+func test16(_ xs: Array<Float>, _ idx: Array<Int>) -> (Array<Float>, Array<Float>)
 {
     var result1 = Array<Float>.init(repeating: 0, count: xs.count)
     let result2 = Array<Float>.init(
@@ -21,16 +21,19 @@ fileprivate func test(_ xs: Array<Float>, _ idx: Array<Int>) -> (Array<Float>, A
 
 extension Simple {
     func testMultipleOutputs() {
-        let lorge = 1_000_000
-        let smol  = Int.random(in: sizeRange, using: &generator)
-        let input = Array<Float>.random(count: lorge, using: &generator)
-        let idx   = (0..<smol).map{ _ in Int.random(in: 0..<lorge, using: &generator) }
+        property("multiple outputs") <- forAll { (i : Positive<Int>) in
 
-        let expected = ( (0..<lorge).map{ i in input[input.count - i - 1] }
-                       , (0..<lorge).map{ i in input[idx[i % idx.count]]  } )
-        let actual   = test(input, idx)
+            let lorge = 100_000
+            let smol  = i.getPositive
+            let input = Array<Float>.random(count: lorge, using: &self.generator)
+            let idx   = (0..<smol).map{ _ in Int.random(in: 0..<lorge, using: &self.generator) }
 
-        XCTAssert(actual == expected)
+            let expected = ( (0..<lorge).map{ i in input[input.count - i - 1] }
+                           , (0..<lorge).map{ i in input[idx[i % idx.count]]  } )
+            let actual   = test16(input, idx)
+
+            return (actual == expected)
+        }
     }
 }
 
