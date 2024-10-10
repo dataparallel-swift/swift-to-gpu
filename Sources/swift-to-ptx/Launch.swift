@@ -9,6 +9,10 @@ private let logger = Logger(label: "Launch")
 // CUfunction can be swapped for a CUkernel, which is context independent
 // (automatically loaded into different contexts as necessary, by the driver).
 //
+// XXX: The CUDA module should only be initialised once. It's (I think) not
+// really an error if multiple threads race at this point, since they should all
+// produce the same result, but it is definitely a memory leak.
+//
 public struct ParallelForKernel {
     let image : UnsafePointer<UInt8>
     var module : CUmodule?

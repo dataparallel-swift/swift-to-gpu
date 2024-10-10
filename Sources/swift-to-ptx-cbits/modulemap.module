@@ -1,0 +1,6 @@
+module SwiftToPTX_cbits {
+  header "include/swift-to-ptx-cbits.hpp"
+  requires cplusplus11
+  export *
+}
+

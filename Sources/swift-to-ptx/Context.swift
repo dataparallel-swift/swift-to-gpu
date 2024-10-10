@@ -1,5 +1,6 @@
 import CUDA
 import Logging
+import SwiftToPTX_cbits
 
 private let logger = Logger(label: "Context")
 
@@ -11,13 +12,17 @@ public struct Context {
     internal let maxThreadsPerMultiprocessor : Int32
     internal let warpSize : Int32 = 32
 
-    public init(deviceID: Int = 0) {
-        var rawDevice : CUdevice = 0
-        var rawContext : CUcontext? = nil
+    // See Note: [SwiftToPTX context]
+    public init(/*deviceID: Int = 0*/) {
+        // var rawDevice : CUdevice = 0
+        // var rawContext : CUcontext? = nil
 
-        cuda_safe_call{cuInit(0)}
-        cuda_safe_call{cuDeviceGet(&rawDevice, Int32(deviceID))}
-        cuda_safe_call{cuCtxCreate_v2(&rawContext, CU_CTX_MAP_HOST.rawValue, rawDevice)}
+        // cuda_safe_call{cuInit(0)}
+        // cuda_safe_call{cuDeviceGet(&rawDevice, Int32(deviceID))}
+        // cuda_safe_call{cuCtxCreate_v2(&rawContext, CU_CTX_MAP_HOST.rawValue, rawDevice)}
+
+        let rawDevice : CUdevice = default_device
+        let rawContext : CUcontext? = default_context
 
         // Nicely format some information about the selected device, e.g.:
         // Device 0: GeForce 9600M GT (compute capability 1.1), 4 multiprocessors @ 1.25GHz (32 cores), 512MB global memory
@@ -57,7 +62,7 @@ public struct Context {
         var gpuClock : Int32 = 0
         cuda_safe_call{cuDeviceGetAttribute(&gpuClock, CU_DEVICE_ATTRIBUTE_CLOCK_RATE, rawDevice)}
 
-        logger.trace("Device \(deviceID): \(name) (compute capability \(major).\(minor)), \(multiProcessorCount) multiprocessors @ \(gpuClock / 1000) MHz (\(coresPerMP * multiProcessorCount) cores), \(totalGlobalMem / (1024 * 1024)) MB global memory")
+        logger.trace("Device \(default_device_id): \(name) (compute capability \(major).\(minor)), \(multiProcessorCount) multiprocessors @ \(gpuClock / 1000) MHz (\(coresPerMP * multiProcessorCount) cores), \(totalGlobalMem / (1024 * 1024)) MB global memory")
 
         self.rawDevice = rawDevice
         self.rawContext = rawContext!
@@ -66,7 +71,7 @@ public struct Context {
     }
 
     public func destroy() {
-        cuda_safe_call{cuCtxDestroy_v2(self.rawContext)}
+        // cuda_safe_call{cuCtxDestroy_v2(self.rawContext)}
     }
 }
 

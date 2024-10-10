@@ -52,7 +52,8 @@ public struct Stream {
 }
 
 // https://docs.nvidia.com/cuda/archive/11.4.4/cuda-driver-api/stream-sync-behavior.html#stream-sync-behavior
-public let streamDefault   = Stream.init(rawStream: OpaquePointer(bitPattern: 0)!) // XXX: guaranteed to fail?
-public let streamLegacy    = Stream.init(rawStream: OpaquePointer(bitPattern: 0x1)!)
-public let streamPerThread = Stream.init(rawStream: OpaquePointer(bitPattern: 0x2)!)
+// See also: driver_types.h
+public let streamDefault   = unsafeBitCast(0x0, to: Stream.self)
+public let streamLegacy    = unsafeBitCast(0x1, to: Stream.self)
+public let streamPerThread = unsafeBitCast(0x2, to: Stream.self)
 

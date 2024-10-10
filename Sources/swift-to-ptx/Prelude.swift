@@ -10,7 +10,7 @@ public func parallel_for
     iterations: Int,
     context:    Context = defaultContext,
     allocator:  CachingHostAllocator = smallBlockAllocator,
-    stream:     Stream = streamPerThread,
+    stream:     Stream = streamDefault,
     _ body:     (Int) -> ()
 ) -> Event
 {
