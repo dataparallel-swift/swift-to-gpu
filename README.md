@@ -8,7 +8,7 @@ Add to your `Package.swift`:
 
 ```swift
     dependencies: [
-        .package(url: "git@gitlab.com/PassiveLogic/swift-to-ptx")
+        .package(url: "git@gitlab.com/PassiveLogic/Experiments/swift-to-ptx")
     ]
 ```
 
@@ -47,12 +47,12 @@ the size we require _before_ entering the parallel section: avoid using
 inherently sequential operations such as Array.append().
 
 You should (almost) never be using that anyway: figure out what the requirements
-of your program are instead.
+of your program are instead!
 
 You will need to compile your project with a swift toolchain that includes the
 swift-to-ptx compiler transformation, e.g. available from here:
 
-...
+https://gitlab.com/PassiveLogic/experiments/swift
 
 ## Limitations
 
@@ -60,5 +60,5 @@ swift-to-ptx compiler transformation, e.g. available from here:
 
 ## TODO
 
-  * Memory that is registered to be accessible from the device is never de-registered
+  * ...
 
