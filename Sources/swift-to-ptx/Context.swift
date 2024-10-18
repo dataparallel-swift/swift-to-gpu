@@ -1,4 +1,5 @@
 import CUDA
+import Tracy
 import Logging
 import SwiftToPTX_cbits
 
@@ -14,6 +15,9 @@ public struct Context {
 
     // See Note: [SwiftToPTX context]
     public init(/*deviceID: Int = 0*/) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         // var rawDevice : CUdevice = 0
         // var rawContext : CUcontext? = nil
 

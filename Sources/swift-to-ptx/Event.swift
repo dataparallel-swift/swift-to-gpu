@@ -1,4 +1,5 @@
 import CUDA
+import Tracy
 import Logging
 
 private let logger = Logger(label: "Event")
@@ -7,6 +8,9 @@ public final class Event {
     internal var rawEvent : CUevent
 
     public init(withFlags: [CUevent_flags] = [CU_EVENT_DISABLE_TIMING]) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         // See note in Stream.init()
         var tmp : CUevent? = nil
         cuda_safe_call{cuEventCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
@@ -15,17 +19,26 @@ public final class Event {
     }
 
     public init(rawEvent: CUevent) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         self.rawEvent = rawEvent
         logger.trace(".init(rawEvent: \(self.rawEvent))")
     }
 
     // Wait for this event to be completed. This is a blocking call.
     public func sync() {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         cuda_safe_call{cuEventSynchronize(self.rawEvent)}
     }
 
     // Returns 'true' if this event is complete
     public func complete() -> Bool {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         let result = cuEventQuery(self.rawEvent)
         switch result {
             case CUDA_SUCCESS: return true

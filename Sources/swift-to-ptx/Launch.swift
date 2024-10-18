@@ -1,4 +1,5 @@
 import CUDA
+import Tracy
 import Logging
 
 private let logger = Logger(label: "Launch")
@@ -32,6 +33,9 @@ public func launch_parallel_for
     stream:     Stream
 ) -> Event
 {
+    let __zone = #Zone
+    defer { __zone.end() }
+
     if kernel.module == nil {
         var minGridSize : Int32 = 0
         var activeBlocks : Int32 = 0

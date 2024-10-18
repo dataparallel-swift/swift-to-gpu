@@ -1,4 +1,5 @@
 import CUDA
+import Tracy
 
 // As with Event, this should probably be an interface (protocol?), that we can
 // instantiate for either the CPU or GPU with appropriate (associated?) types.
@@ -7,6 +8,9 @@ public struct Stream {
     internal var rawStream : CUstream
 
     public init(withFlags: [CUstream_flags] = []) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         // NOTE: We do some extra juggling here so that the struct will store a
         // non-optional CUstream value. This just avoids an extra inttoptr
         // instruction every time we wish to use it, making this struct
@@ -18,11 +22,17 @@ public struct Stream {
     }
 
     public init(rawStream: CUstream) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         self.rawStream = rawStream
     }
 
     // Wait until the device has completed all operations in this stream.
     public func sync() {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         cuda_safe_call{cuStreamSynchronize(self.rawStream)}
     }
 
@@ -30,6 +40,9 @@ public struct Stream {
     // calls to 'Event.complete' and 'Stream.waitOn' will examine or wait for
     // completion of the work that was captured.
     public func record() -> Event {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         let event = Event.init()
         cuda_safe_call{cuEventRecord(event.rawEvent, self.rawStream)}
         return event
@@ -39,6 +52,9 @@ public struct Stream {
     // complete before continuing. The synchronisation will be performed
     // efficiently on the device, where possible.
     public func waitOn(event: Event) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         cuda_safe_call{cuStreamWaitEvent(self.rawStream, event.rawEvent, 0)}
     }
 
@@ -47,6 +63,9 @@ public struct Stream {
     // the resources associated with this stream will be released asynchronously
     // once the device completes work in this stream.
     public func destroy() {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         cuda_safe_call{cuStreamDestroy_v2(self.rawStream)}
     }
 }

@@ -1,4 +1,5 @@
 import CUDA
+import Tracy
 import Logging
 import NIOConcurrencyHelpers
 
@@ -52,6 +53,9 @@ public struct CachingHostAllocator {
     // Initialise the allocator using the given bin sizes, in bytes. The sizes
     // must be monotonically increasing.
     public init(using bins: Array<Int>) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         // assert the input is monotonically increasing
         assert(bins.count > 1)
         assert(bins[0] > 0)
@@ -71,6 +75,9 @@ public struct CachingHostAllocator {
         assert(bin_growth > 1)
         assert(max_bin - min_bin > 0)
 
+        let __zone = #Zone
+        defer { __zone.end() }
+
         let count = max_bin - min_bin + 1
         let bins  = Array.init(unsafeUninitializedCapacity: count, initializingWith: { buffer, initialisedCount in
             for i in 0..<count{
@@ -86,6 +93,9 @@ public struct CachingHostAllocator {
     }
 
     func findBin(for value: Int) -> Int? {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         // XXX: We could certainly be clever here--for example, doing binary
         // search or computing the value directly if we initialised the
         // allocator using geometrically increasing bin sizes--but we assume
@@ -101,6 +111,9 @@ public struct CachingHostAllocator {
 
     // Return a suitable allocation for the given size
     public func alloc(_ bytes : Int) -> UnsafeMutableRawPointer {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         var ptr : UnsafeMutableRawPointer? = nil
 
         if let bin = findBin(for: bytes) {
@@ -168,6 +181,9 @@ public struct CachingHostAllocator {
     // allocation becomes available for reuse once the given `ready_event` is
     // complete.
     public func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: Event) {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         // Find corresponding block descriptor
         let block = BlockDescriptor(ptr: ptr, ready_event: ready_event)
 
@@ -191,6 +207,9 @@ public struct CachingHostAllocator {
 
     // Free all currently unused memory
     func cleanup() {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         var num_live_blocks = 0
         var live_bytes = 0
 
@@ -226,6 +245,9 @@ public struct CachingHostAllocator {
     }
 
     public func destroy() {
+        let __zone = #Zone
+        defer { __zone.end() }
+
         for bin in 0..<bin_size_bytes.count {
             assert(live_blocks.withLockedValue() { $0.count } == 0, "allocator is still holding onto live memory")
 
