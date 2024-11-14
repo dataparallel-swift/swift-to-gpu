@@ -1,3 +1,6 @@
+import Logging
+
+private let logger = Logger(label: "")
 
 // Running the corresponding llvm optimisation plugin on code that calls this
 // function will result in the 'body' closure being translated into a CUDA
@@ -14,6 +17,8 @@ public func parallel_for
     _ body:     (Int) -> ()
 ) -> Event
 {
+    logger.warning("*** WARNING *** parallel_for loop executing on the host: compile in release mode to enable PTX translation")
+
     dontLetTheCompilerOptimizeThisAway(context)
     dontLetTheCompilerOptimizeThisAway(allocator)
     dontLetTheCompilerOptimizeThisAway(stream)

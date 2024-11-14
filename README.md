@@ -54,6 +54,9 @@ swift-to-ptx compiler transformation, e.g. available from here:
 
 https://gitlab.com/PassiveLogic/experiments/swift
 
+Note that the transformation is only enabled when compiling with optimisations
+(release mode).
+
 ## Limitations
 
   * All code to be lifted to the device must be present in a single module
