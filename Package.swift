@@ -25,7 +25,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .systemLibrary(
             name: "CUDA",
-            pkgConfig: "cuda-11.4"
+            pkgConfig: "cuda-12.2"
         ),
         .target(
             name: "SwiftToPTX_cbits",
