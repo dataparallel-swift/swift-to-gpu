@@ -12,6 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(name: "CUDA", type: libraryType, targets: ["CUDA"]),
         .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"]),
+        .executable(name: "nvidia-device-query", targets: ["nvidia-device-query"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
@@ -44,6 +45,10 @@ let package = Package(
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
             path: "Sources/swift-to-ptx"
+        ),
+        .executableTarget(
+            name: "nvidia-device-query",
+            dependencies: ["CUDA"]
         ),
         .testTarget(
             name: "SwiftToPTXTests",
