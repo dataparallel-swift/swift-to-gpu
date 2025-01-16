@@ -8,6 +8,7 @@
 
 #define USE_CUDA 1
 #define USE_COLOUR 1
+#define SWIFT2PTX_DEBUG 0
 
 #if USE_COLOUR
 #define BLACK "\x1b[30m"
@@ -31,10 +32,11 @@
 #define RESET
 #endif
 
-extern "C" void* __libc_malloc(size_t);
-extern "C" void* __libc_calloc(size_t, size_t);
-extern "C" void* __libc_realloc(void*, size_t);
-extern "C" void  __libc_free(void*);
+#if SWIFT2PTX_DEBUG
+#define TRACE(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define TRACE(...)
+#endif
 
 
 // Note: [SwiftToPTX context]
@@ -108,11 +110,11 @@ void *swift_slowAlloc(size_t size, size_t alignMask)
   CUDA_SAFE_CALL(cuMemGetAddressRange(NULL, &s, (CUdeviceptr) p));
   CUDA_SAFE_CALL(cuCtxPopCurrent(NULL));
 #else
-  p = __libc_malloc(size);
+  p = malloc(size);
   s = malloc_usable_size(p);
 #endif
 
-  /* fprintf(stderr, BLUE  "swift_slowAlloc (%4ld):    %p-%p (%ld bytes)\n" RESET, size, p, (uint8_t*)p+s, s); */
+  TRACE(BLUE  "swift_slowAlloc (%4ld):    %p-%p (%ld bytes)\n" RESET, size, p, (uint8_t*)p+s, s);
 
   if (nullptr == p) {
     fprintf(stderr, "Could not allocate memory.");
@@ -132,14 +134,14 @@ void swift_slowDealloc(void* ptr, size_t size, size_t alignMask)
   if (!ptr)
     return;
 
-  /* fprintf(stderr, BLUE "swift_slowDealloc:         %p\n" RESET, ptr); */
+  TRACE(BLUE "swift_slowDealloc:         %p\n" RESET, ptr);
 
 #if USE_CUDA
   CUDA_SAFE_CALL(cuCtxPushCurrent(default_context));
   CUDA_SAFE_CALL(cuMemFreeHost(ptr));
   CUDA_SAFE_CALL(cuCtxPopCurrent(NULL));
 #else
-  __libc_free(ptr);
+  free(ptr);
 #endif
 }
 
@@ -156,7 +158,7 @@ size_t swift_usableSize(const void* ptr)
   s = malloc_usable_size(const_cast<void*>(ptr));
 #endif
 
-  /* fprintf(stderr, BLUE "swift_usableSize()         %p = %ld\n" RESET, ptr, s); */
+  TRACE(BLUE "swift_usableSize()         %p = %ld\n" RESET, ptr, s);
   return s;
 }
 
