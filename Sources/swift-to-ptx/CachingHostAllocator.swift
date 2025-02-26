@@ -278,28 +278,6 @@ fileprivate func pow(_ base: Int, _ exp: Int) -> Int
     return r
 }
 
-fileprivate extension Array {
-    init(count: Int, generator: @escaping (Int) -> Element) {
-        precondition(count >= 0, "arrays must have non-negative sizes")
-        self.init()
-        self.reserveCapacity(count)
-        for i in 0..<count {
-            self.append(generator(i))
-        }
-
-        // In principle this code should also work, but we are getting SIGSEGV in
-        // swift_release(), atomic.c:265 for counts > 5. No idea why this is.
-        // self.init(
-        //     unsafeUninitializedCapacity: count,
-        //     initializingWith: { buffer, initializedCount in
-        //         for i in 0..<count {
-        //             buffer[i] = generator(i)
-        //         }
-        //         initializedCount = count
-        //     })
-    }
-}
-
 // XXX: I have noticed @swift_retain and @swift_release calls in the generated
 // LLVM, but we don't want this to ever to be deallocated once initialised; need
 // to check this. ---TLM 2024-04-22
