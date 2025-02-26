@@ -1,5 +1,8 @@
 import CUDA
 import Tracy
+import Logging
+
+private let logger = Logger(label: "Stream")
 
 // As with Event, this should probably be an interface (protocol?), that we can
 // instantiate for either the CPU or GPU with appropriate (associated?) types.
@@ -19,6 +22,7 @@ public struct Stream {
         var tmp : CUstream? = nil
         cuda_safe_call{cuStreamCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
         self.rawStream = tmp!   // cuStreamCreate will error before this is nil
+        logger.trace(".init(withFlags: \(withFlags)) -> \(self.rawStream))")
     }
 
     public init(rawStream: CUstream) {
@@ -26,6 +30,7 @@ public struct Stream {
         defer { __zone.end() }
 
         self.rawStream = rawStream
+        logger.trace(".init(rawStream: \(self.rawStream))")
     }
 
     // Wait until the device has completed all operations in this stream.
@@ -33,6 +38,7 @@ public struct Stream {
         let __zone = #Zone
         defer { __zone.end() }
 
+        logger.trace(".sync() \(self.rawStream)")
         cuda_safe_call{cuStreamSynchronize(self.rawStream)}
     }
 
@@ -44,6 +50,7 @@ public struct Stream {
         defer { __zone.end() }
 
         let event = Event.init()
+        logger.trace(".record() in \(self.rawStream) -> \(event.rawEvent)")
         cuda_safe_call{cuEventRecord(event.rawEvent, self.rawStream)}
         return event
     }
@@ -55,6 +62,7 @@ public struct Stream {
         let __zone = #Zone
         defer { __zone.end() }
 
+        logger.trace(".waitOn(event: \(event.rawEvent))")
         cuda_safe_call{cuStreamWaitEvent(self.rawStream, event.rawEvent, 0)}
     }
 
@@ -66,6 +74,7 @@ public struct Stream {
         let __zone = #Zone
         defer { __zone.end() }
 
+        logger.trace("destroy() \(self.rawStream)")
         cuda_safe_call{cuStreamDestroy_v2(self.rawStream)}
     }
 }
