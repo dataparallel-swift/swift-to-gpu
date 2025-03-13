@@ -15,6 +15,7 @@ let package = Package(
         .executable(name: "nvidia-device-query", targets: ["nvidia-device-query"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
@@ -40,8 +41,9 @@ let package = Package(
             dependencies: [
                 "CUDA",
                 "SwiftToPTX_cbits",
-                .product(name: "Tracy", package: "swift-tracy"),
+                .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Logging", package: "swift-log"),
+                .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
             path: "Sources/swift-to-ptx"
