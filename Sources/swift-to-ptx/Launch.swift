@@ -26,11 +26,13 @@ public struct ParallelForKernel {
 @discardableResult
 public func launch_parallel_for
 (
-    iterations: Int,
-    kernel:     inout ParallelForKernel,
-    env:        UnsafeMutableRawPointer,
-    context:    Context,
-    stream:     Stream
+    iterations:     Int,
+    context:        Context,
+    stream:         Stream,
+    kernel:         inout ParallelForKernel,
+    env:            UnsafeMutableRawPointer,
+    swifterror:     UnsafeMutableRawPointer,
+    thrownerror:    UnsafeMutableRawPointer
 ) -> Event
 {
     let __zone = #Zone
@@ -78,7 +80,7 @@ public func launch_parallel_for
 
         // To marshal the environment we want the equivalent of this C:
         //
-        //   void* params[] = { &iterations, &env }
+        //   void* params[] = { &iterations, &env, &swifterror, &thrownerror }
         //
         // We use withUnsafeTemporaryAllocation here rather than using the built-in
         // array declaration syntax [...] because we want this to be allocated on
@@ -88,13 +90,19 @@ public func launch_parallel_for
         //
         var _iterations = iterations
         var _env = env
-        withUnsafeTemporaryAllocation(of: UnsafeMutableRawPointer?.self, capacity: 2, { buffer in
+        var _swifterror = swifterror
+        var _thrownerror = thrownerror
+        withUnsafeTemporaryAllocation(of: UnsafeMutableRawPointer?.self, capacity: 4, { buffer in
         withUnsafeMutablePointer(to: &_iterations, { p_iterations in
         withUnsafeMutablePointer(to: &_env, { p_env in
+        withUnsafeMutablePointer(to: &_swifterror, { p_swifterror in
+        withUnsafeMutablePointer(to: &_thrownerror, { p_thrownerror in
             buffer[0] = UnsafeMutableRawPointer(p_iterations)
             buffer[1] = UnsafeMutableRawPointer(p_env)
+            buffer[2] = UnsafeMutableRawPointer(p_swifterror)
+            buffer[3] = UnsafeMutableRawPointer(p_thrownerror)
             cuda_safe_call{cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(kernel.blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil)}
-        })})})
+        })})})})})
     }
 
     return stream.record()
