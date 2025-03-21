@@ -38,7 +38,7 @@ public func generate<A, E: Error>(count: Int, _ f: (Int) throws(E) -> A) throws(
     var xs = Array<A>.init(unsafeUninitializedCapacity: count)
     try parallel_for(iterations: count) { i throws(E) in
         xs[i] = try f(i)
-    }
+    }.sync()
     return xs
 }
 
@@ -50,7 +50,7 @@ public func generate<A, E: Error>(into: inout Array<A>, _ f: (Int) throws(E) -> 
 {
     try parallel_for(iterations: into.count) { i throws (E) in
         into[i] = try f(i)
-    }
+    }.sync()
 }
 
 /// Construct a new array where all elements have the same element
@@ -106,7 +106,7 @@ public func imap<A, E: Error>(_ /* into */ xs: inout Array<A>, _ f: (Int, A) thr
 {
     try parallel_for(iterations: xs.count) { i throws(E) in
         xs[i] = try f(i, xs[i])
-    }
+    }.sync()
 }
 
 // @inlinable
@@ -131,7 +131,7 @@ public func zipWith<A, B, E: Error>(_ /* into */ xs: inout Array<A>, _ ys: Array
 
     try parallel_for(iterations: n) { i throws(E) in
         xs[i] = try f(xs[i], ys[i])
-    }
+    }.sync()
 }
 
 // @inlinable
@@ -146,7 +146,7 @@ public func zipWith<A, B, E: Error>(_ xs: Array<A>, _ /* into */ ys: inout Array
 
     try parallel_for(iterations: n) { i throws(E) in
         ys[i] = try f(xs[i], ys[i])
-    }
+    }.sync()
 }
 
 // TODO: [i,]zipWith[3..9], [un,]zip[3..9]
@@ -219,7 +219,7 @@ public func permute<A, E: Error>(from: Array<A>, into: inout Array<A>, combining
             // integers, so use atomic exchange instead.
             let _ = Lock.atomicExchange(0, at: &locks[i], ordering: .releasing)
         }
-    }
+    }.sync()
 }
 
 /// A variant of permute that does not take a combination function, and simply
@@ -235,7 +235,7 @@ public func permute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int
         if let j = try p(i) {
             into[j] = from[i]
         }
-    }
+    }.sync()
 }
 
 /// ### Backward permutations (gather)
@@ -264,7 +264,7 @@ public func backpermute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: 
 {
     try parallel_for(iterations: into.count) { i throws(E) in
         into[i] = from[try p(i)]
-    }
+    }.sync()
 }
 
 /// Backwards permutation where the permutation function provides either the
@@ -291,7 +291,7 @@ public func backpermute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: 
             case .right(let v): v
         }
         into[i] = v
-    }
+    }.sync()
 }
 
 
