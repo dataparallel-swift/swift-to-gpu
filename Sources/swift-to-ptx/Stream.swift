@@ -1,6 +1,7 @@
 import CUDA
 import Tracy
 import Logging
+import SwiftToPTX_cbits
 
 private let logger = Logger(label: "Stream")
 
@@ -20,7 +21,11 @@ public struct Stream {
         // isomorphic to the usual CUstream and simplifying how it is used from
         // the LLVM plugin. We do the same thing with Event.
         var tmp : CUstream? = nil
+
+        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuStreamCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
+        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
+
         self.rawStream = tmp!   // cuStreamCreate will error before this is nil
         logger.trace(".init(withFlags: \(withFlags)) -> \(self.rawStream))")
     }
@@ -39,7 +44,10 @@ public struct Stream {
         defer { __zone.end() }
 
         logger.trace(".sync() \(self.rawStream)")
+
+        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuStreamSynchronize(self.rawStream)}
+        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
     }
 
     // Capture the contents of the stream at the time of the call. Subsequent
@@ -51,7 +59,11 @@ public struct Stream {
 
         let event = Event.init()
         logger.trace(".record() in \(self.rawStream) -> \(event.rawEvent)")
+
+        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuEventRecord(event.rawEvent, self.rawStream)}
+        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
+
         return event
     }
 
@@ -63,7 +75,10 @@ public struct Stream {
         defer { __zone.end() }
 
         logger.trace(".waitOn(event: \(event.rawEvent))")
+
+        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuStreamWaitEvent(self.rawStream, event.rawEvent, 0)}
+        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
     }
 
     // The work stream may be destroyed while the device is still doing work in
@@ -75,7 +90,10 @@ public struct Stream {
         defer { __zone.end() }
 
         logger.trace("destroy() \(self.rawStream)")
+
+        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuStreamDestroy_v2(self.rawStream)}
+        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
     }
 }
 

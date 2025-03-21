@@ -1,6 +1,7 @@
 import CUDA
 import Tracy
 import Logging
+import SwiftToPTX_cbits
 
 private let logger = Logger(label: "Launch")
 
@@ -37,6 +38,8 @@ public func launch_parallel_for
 {
     let __zone = #Zone
     defer { __zone.end() }
+
+    cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
 
     if kernel.module == nil {
         var minGridSize : Int32 = 0
@@ -104,6 +107,8 @@ public func launch_parallel_for
             cuda_safe_call{cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(kernel.blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil)}
         })})})})})
     }
+
+    cuda_safe_call{cuCtxPopCurrent_v2(nil)}
 
     return stream.record()
 }

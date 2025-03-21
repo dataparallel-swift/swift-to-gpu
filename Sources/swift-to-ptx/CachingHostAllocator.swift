@@ -1,6 +1,7 @@
 import CUDA
 import Tracy
 import Logging
+import SwiftToPTX_cbits
 import NIOConcurrencyHelpers
 
 private let logger = Logger(label: "CachingHostAllocator")
@@ -133,6 +134,7 @@ public struct CachingHostAllocator {
 
             // Otherwise, allocate a new block.
             if ptr == nil {
+                cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
                 let result = cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])
                 switch result {
                     case CUDA_SUCCESS: break
@@ -150,6 +152,7 @@ public struct CachingHostAllocator {
                         cuGetErrorString(result, &desc)
                         fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!))")
                 }
+                cuda_safe_call{cuCtxPopCurrent_v2(nil)}
                 logger.trace("Allocated new block at \(ptr!) (\(bin_size_bytes[bin]) bytes)")
             }
             else {
@@ -164,7 +167,9 @@ public struct CachingHostAllocator {
             // This is an allocation larger than the maximum bin size that we
             // are caching. Allocate the request exactly and don't cache it for
             // reuse.
+            cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
             cuda_safe_call{cuMemAllocHost_v2(&ptr, bytes)}
+            cuda_safe_call{cuCtxPopCurrent_v2(nil)}
             let old = live_blocks.withLockedValue() { $0.updateValue(nil, forKey: ptr!) }
             assert(old == nil, "unexpectedly, block already exists (ptr=\(ptr!))")
         }
@@ -229,7 +234,9 @@ public struct CachingHostAllocator {
                 for block in blocks {
                     if block.ready_event.complete() {
                         blocks.remove(block)
+                        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
                         cuda_safe_call{cuMemFreeHost(block.ptr)}
+                        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
 
                         num_cached_blocks_freed += 1
                         cached_bytes_freed += bin_size_bytes[bin]
@@ -255,7 +262,9 @@ public struct CachingHostAllocator {
                 for block in blocks {
                     block.ready_event.sync()
                     blocks.remove(block)
+                    cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
                     cuda_safe_call{cuMemFreeHost(block.ptr)}
+                    cuda_safe_call{cuCtxPopCurrent_v2(nil)}
                 }
             }
         }

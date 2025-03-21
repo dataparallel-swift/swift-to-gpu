@@ -74,6 +74,14 @@ public struct Context {
         self.maxThreadsPerMultiprocessor = maxThreadsPerMultiprocessor
     }
 
+    public func push() {
+        cuda_safe_call{cuCtxPushCurrent_v2(self.rawContext)}
+    }
+
+    public func pop() {
+        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
+    }
+
     public func destroy() {
         // cuda_safe_call{cuCtxDestroy_v2(self.rawContext)}
     }
