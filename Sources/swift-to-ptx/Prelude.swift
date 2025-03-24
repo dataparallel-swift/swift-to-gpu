@@ -328,7 +328,7 @@ public func parallel_for<E: Error>
     iterations: Int,
     context:    Context = defaultContext,
     allocator:  CachingHostAllocator = smallBlockAllocator,
-    stream:     Stream = streamDefault,
+    stream:     Stream = streamPerThread,
     _ body:     (Int) throws(E) -> ()
 ) throws(E) -> Event
 {
