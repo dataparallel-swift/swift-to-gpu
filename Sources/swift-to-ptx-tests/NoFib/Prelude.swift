@@ -1,6 +1,6 @@
 import Testing
 
-@Suite("Prelude") struct PreludeTests {
+struct PreludeTests {
     let mapTests : MapTests = .init()
 }
 

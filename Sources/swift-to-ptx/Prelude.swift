@@ -81,6 +81,8 @@ public func map<A, B, E: Error>(_ xs: Array<A>, _ f: (A) throws(E) -> B) throws(
     try imap(xs) { _, x throws(E) in try f(x) }
 }
 
+// TLM: I guess we also want a version where the closure has a mutating
+// function, rather than returning a new element?
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient

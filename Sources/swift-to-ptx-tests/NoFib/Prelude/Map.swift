@@ -3,7 +3,7 @@ import Numerics
 import SwiftCheck
 import SwiftToPTX
 
-@Suite("map") struct MapTests {
+@Suite("no-fib/Prelude/map") struct MapTests {
     @Suite("map/Int16") struct Int16Tests {
         @Test("Int16/negate") func test_negate() { prop_negate(Int16.self) }
         @Test("Int16/abs") func test_abs() { prop_abs(Int16.self) }

@@ -8,6 +8,7 @@ private let logger = Logger(label: "Stream")
 // As with Event, this should probably be an interface (protocol?), that we can
 // instantiate for either the CPU or GPU with appropriate (associated?) types.
 
+// TLM: This should probably be a final class, so that we can deinit it correctly.
 public struct Stream {
     internal var rawStream : CUstream
 
