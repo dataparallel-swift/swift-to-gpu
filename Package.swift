@@ -20,10 +20,10 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
-        .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "18c42c19cac3fafd61cab1156d4088664b7424ae"), // 6.0.3
+        .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "6.0.3"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.3.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "48e3dc3cd40df751347dbba3d7f10b6dc5a733dd"),
+        .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "main"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
