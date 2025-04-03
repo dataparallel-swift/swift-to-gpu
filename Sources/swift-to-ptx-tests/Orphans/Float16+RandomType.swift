@@ -17,7 +17,7 @@ extension Float16: @retroactive RandomType {
             return Float16.randomInRange((h , l), gen: gen)
         } else {
             let (coef, g_) = Float16.random(gen)
-                return (2.0 * (0.5 * l + coef * (0.5 * h - 0.5 * l)), g_)
+            return (2.0 * (0.5 * l + coef * (0.5 * h - 0.5 * l)), g_)
         }
     }
 }

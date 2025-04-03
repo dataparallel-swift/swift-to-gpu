@@ -14,7 +14,8 @@ extension Float16: @retroactive Arbitrary {
             let denominator = Gen<Int64>.choose((1, precision))
 
             return numerator.flatMap { a in
-                return denominator.flatMap { b in Gen<Float16>.pure(Float16(Float64(a) / Float64(b))) }
+                return denominator.flatMap { b in
+                    Gen<Float16>.pure(Float16(Float64(a) / Float64(b))) }
             }
         }
     }
