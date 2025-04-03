@@ -33,10 +33,10 @@ import Logging
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func generate<A, E: Error>(count: Int, _ f: (Int) throws(E) -> A) throws(E) -> Array<A>
+public func generate<A, Err: Error>(count: Int, _ f: (Int) throws(Err) -> A) throws(Err) -> Array<A>
 {
     var xs = Array<A>.init(unsafeUninitializedCapacity: count)
-    try parallel_for(iterations: count) { i throws(E) in
+    try parallel_for(iterations: count) { i throws(Err) in
         xs[i] = try f(i)
     }.sync()
     return xs
@@ -46,9 +46,9 @@ public func generate<A, E: Error>(count: Int, _ f: (Int) throws(E) -> A) throws(
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func generate<A, E: Error>(into: inout Array<A>, _ f: (Int) throws(E) -> A) throws(E)
+public func generate<A, Err: Error>(into: inout Array<A>, _ f: (Int) throws(Err) -> A) throws(Err)
 {
-    try parallel_for(iterations: into.count) { i throws (E) in
+    try parallel_for(iterations: into.count) { i throws (Err) in
         into[i] = try f(i)
     }.sync()
 }
@@ -76,9 +76,9 @@ public func fill<A>(with x: A, into: inout Array<A>)
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func map<A, B, E: Error>(_ xs: Array<A>, _ f: (A) throws(E) -> B) throws(E) -> Array<B>
+public func map<A, B, Err: Error>(_ xs: Array<A>, _ f: (A) throws(Err) -> B) throws(Err) -> Array<B>
 {
-    try imap(xs) { _, x throws(E) in try f(x) }
+    try imap(xs) { _, x throws(Err) in try f(x) }
 }
 
 // TLM: I guess we also want a version where the closure has a mutating
@@ -86,17 +86,17 @@ public func map<A, B, E: Error>(_ xs: Array<A>, _ f: (A) throws(E) -> B) throws(
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func map<A, E: Error>(_ /* into */ xs: inout Array<A>, _ f: (A) throws(E) -> A) throws(E)
+public func map<A, Err: Error>(_ /* into */ xs: inout Array<A>, _ f: (A) throws(Err) -> A) throws(Err)
 {
-    try imap(&xs) { _, x throws(E) in try f(x) }
+    try imap(&xs) { _, x throws(Err) in try f(x) }
 }
 
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func imap<A, B, E: Error>(_ xs: Array<A>, _ f: (Int, A) throws(E) -> B) throws(E) -> Array<B>
+public func imap<A, B, Err: Error>(_ xs: Array<A>, _ f: (Int, A) throws(Err) -> B) throws(Err) -> Array<B>
 {
-    try generate(count: xs.count) { i throws(E) in
+    try generate(count: xs.count) { i throws(Err) in
         try f(i, xs[i])
     }
 }
@@ -104,9 +104,9 @@ public func imap<A, B, E: Error>(_ xs: Array<A>, _ f: (Int, A) throws(E) -> B) t
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func imap<A, E: Error>(_ /* into */ xs: inout Array<A>, _ f: (Int, A) throws(E) -> A) throws(E)
+public func imap<A, Err: Error>(_ /* into */ xs: inout Array<A>, _ f: (Int, A) throws(Err) -> A) throws(Err)
 {
-    try parallel_for(iterations: xs.count) { i throws(E) in
+    try parallel_for(iterations: xs.count) { i throws(Err) in
         xs[i] = try f(i, xs[i])
     }.sync()
 }
@@ -114,9 +114,9 @@ public func imap<A, E: Error>(_ /* into */ xs: inout Array<A>, _ f: (Int, A) thr
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func zipWith<A, B, C, E: Error>(_ xs: Array<A>, _ ys: Array<B>, _ f: (A,B) throws(E) -> C) throws(E) -> Array<C>
+public func zipWith<A, B, C, Err: Error>(_ xs: Array<A>, _ ys: Array<B>, _ f: (A,B) throws(Err) -> C) throws(Err) -> Array<C>
 {
-    try generate(count: min(xs.count, ys.count)) { i throws(E) in
+    try generate(count: min(xs.count, ys.count)) { i throws(Err) in
         try f(xs[i], ys[i])
     }
 }
@@ -124,14 +124,14 @@ public func zipWith<A, B, C, E: Error>(_ xs: Array<A>, _ ys: Array<B>, _ f: (A,B
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func zipWith<A, B, E: Error>(_ /* into */ xs: inout Array<A>, _ ys: Array<B>, truncating: Bool = false, _ f: (A,B) throws(E) -> A) throws(E)
+public func zipWith<A, B, Err: Error>(_ /* into */ xs: inout Array<A>, _ ys: Array<B>, truncating: Bool = false, _ f: (A,B) throws(Err) -> A) throws(Err)
 {
     let n = min(xs.count, ys.count)
     if truncating && xs.count > n {
         xs = Array(xs.prefix(n))
     }
 
-    try parallel_for(iterations: n) { i throws(E) in
+    try parallel_for(iterations: n) { i throws(Err) in
         xs[i] = try f(xs[i], ys[i])
     }.sync()
 }
@@ -139,14 +139,14 @@ public func zipWith<A, B, E: Error>(_ /* into */ xs: inout Array<A>, _ ys: Array
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func zipWith<A, B, E: Error>(_ xs: Array<A>, _ /* into */ ys: inout Array<B>, truncating: Bool = false, _ f: (A,B) throws(E) -> B) throws(E)
+public func zipWith<A, B, Err: Error>(_ xs: Array<A>, _ /* into */ ys: inout Array<B>, truncating: Bool = false, _ f: (A,B) throws(Err) -> B) throws(Err)
 {
     let n = min(xs.count, ys.count)
     if truncating && ys.count > n {
         ys = Array(ys.prefix(n))
     }
 
-    try parallel_for(iterations: n) { i throws(E) in
+    try parallel_for(iterations: n) { i throws(Err) in
         ys[i] = try f(xs[i], ys[i])
     }.sync()
 }
@@ -190,12 +190,12 @@ public func zipWith<A, B, E: Error>(_ xs: Array<A>, _ /* into */ ys: inout Array
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func permute<A, E: Error>(from: Array<A>, into: inout Array<A>, combining f: (A, A) throws(E) -> A, _ p: (Int) throws(E) -> Int?) throws(E)
+public func permute<A, Err: Error>(from: Array<A>, into: inout Array<A>, combining f: (A, A) throws(Err) -> A, _ p: (Int) throws(Err) -> Int?) throws(Err)
 {
     typealias Lock = UInt32.AtomicRepresentation
     var locks : Array<Lock> = fill(with: .init(0), count: from.count)
 
-    try parallel_for(iterations: from.count) { i throws(E) in
+    try parallel_for(iterations: from.count) { i throws(Err) in
         if let j = try p(i) {
             // Mutex spin-lock with exponential backoff. This is only valid on
             // compute devices 7.0 or higher that have independent thread
@@ -231,9 +231,9 @@ public func permute<A, E: Error>(from: Array<A>, into: inout Array<A>, combining
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func permute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int) throws(E) -> Int?) throws(E)
+public func permute<A, Err: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int) throws(Err) -> Int?) throws(Err)
 {
-    try parallel_for(iterations: from.count) { i throws(E) in
+    try parallel_for(iterations: from.count) { i throws(Err) in
         if let j = try p(i) {
             into[j] = from[i]
         }
@@ -252,7 +252,7 @@ public func permute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func backpermute<A, E: Error>(from: Array<A>, count: Int, _ p: (Int) throws(E) -> Int) throws(E) -> Array<A>
+public func backpermute<A, Err: Error>(from: Array<A>, count: Int, _ p: (Int) throws(Err) -> Int) throws(Err) -> Array<A>
 {
     var into = Array<A>.init(unsafeUninitializedCapacity: count)
     try backpermute(from: from, into: &into, p)
@@ -262,9 +262,9 @@ public func backpermute<A, E: Error>(from: Array<A>, count: Int, _ p: (Int) thro
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func backpermute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int) throws(E) -> Int) throws(E)
+public func backpermute<A, Err: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int) throws(Err) -> Int) throws(Err)
 {
-    try parallel_for(iterations: into.count) { i throws(E) in
+    try parallel_for(iterations: into.count) { i throws(Err) in
         into[i] = from[try p(i)]
     }.sync()
 }
@@ -275,7 +275,7 @@ public func backpermute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: 
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func backpermute<A, E: Error>(from: Array<A>, count: Int, _ p: (Int) throws(E) -> Either<Int,A>) throws(E) -> Array<A>
+public func backpermute<A, Err: Error>(from: Array<A>, count: Int, _ p: (Int) throws(Err) -> Either<Int,A>) throws(Err) -> Array<A>
 {
     var into = Array<A>.init(unsafeUninitializedCapacity: count)
     try backpermute(from: from, into: &into, p)
@@ -285,9 +285,9 @@ public func backpermute<A, E: Error>(from: Array<A>, count: Int, _ p: (Int) thro
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func backpermute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int) throws(E) -> Either<Int,A>) throws(E)
+public func backpermute<A, Err: Error>(from: Array<A>, into: inout Array<A>, _ p: (Int) throws(Err) -> Either<Int,A>) throws(Err)
 {
-    try parallel_for(iterations: into.count) { i throws(E) in
+    try parallel_for(iterations: into.count) { i throws(Err) in
         let v = switch try p(i) {
             case .left(let j): from[j]
             case .right(let v): v
