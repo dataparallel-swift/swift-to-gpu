@@ -22,7 +22,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "6.0.3"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
-        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.3.0"),
         .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "main"),
     ],
     targets: [
@@ -62,7 +61,14 @@ let package = Package(
                 "SwiftToPTX",
                 .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "Testing", package: "swift-testing")
+            ],
+            swiftSettings: [
+                .unsafeFlags([
+                    // "-Ounchecked",
+                    // swift-frontend: .../swift-project/llvm-project/llvm/lib/IR/PassTimingInfo.cpp:255: void llvm::TimePassesHandler::startPassTimer(StringRef): Assertion `!ActivePassTimer && "should only have one pass timer at a time"' failed.
+                    // "-Xllvm", "-time-passes"
+                ])
             ]
-        )
+        ),
     ]
 )
