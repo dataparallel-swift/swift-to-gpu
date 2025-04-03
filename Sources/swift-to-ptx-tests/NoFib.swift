@@ -33,7 +33,7 @@ import Testing
             @Test("Int8.dividedReportingOverflow") func test_dividedReportingOverflow() { prop_dividedReportingOverflow(Int8.self) }
             @Test("Int8.remainderReportingOverflow") func test_remainderReportingOverflow() { prop_remainderReportingOverflow(Int8.self) }
             @Test("Int8.multipliedFullWidth") func test_multipliedFullWidth() { prop_multipliedFullWidth(Int8.self) }
-            // @Test("Int8.dividingFullWidth") func test_dividingFullWidth() { prop_dividingFullWidth(Int8.self) }
+            // @Test("Int8.dividingFullWidth", .bug(id: "86b4gqe8t")) func test_dividingFullWidth() { prop_dividingFullWidth(Int8.self) }
 
             // Bitwise
             @Test("Int8.complement") func test_complement() { prop_complement(Int8.self) }
@@ -83,7 +83,7 @@ import Testing
             @Test("Int16.dividedReportingOverflow") func test_dividedReportingOverflow() { prop_dividedReportingOverflow(Int16.self) }
             @Test("Int16.remainderReportingOverflow") func test_remainderReportingOverflow() { prop_remainderReportingOverflow(Int16.self) }
             @Test("Int16.multipliedFullWidth") func test_multipliedFullWidth() { prop_multipliedFullWidth(Int16.self) }
-            // @Test("Int16.dividingFullWidth") func test_dividingFullWidth() { prop_dividingFullWidth(Int16.self) }
+            // @Test("Int16.dividingFullWidth", .bug(id: "86b4gqe8t")) func test_dividingFullWidth() { prop_dividingFullWidth(Int16.self) }
 
             // Bitwise
             @Test("Int16.complement") func test_complement() { prop_complement(Int16.self) }
@@ -133,7 +133,7 @@ import Testing
             @Test("Int32.dividedReportingOverflow") func test_dividedReportingOverflow() { prop_dividedReportingOverflow(Int32.self) }
             @Test("Int32.remainderReportingOverflow") func test_remainderReportingOverflow() { prop_remainderReportingOverflow(Int32.self) }
             @Test("Int32.multipliedFullWidth") func test_multipliedFullWidth() { prop_multipliedFullWidth(Int32.self) }
-            // @Test("Int32.dividingFullWidth") func test_dividingFullWidth() { prop_dividingFullWidth(Int32.self) }
+            // @Test("Int32.dividingFullWidth", .bug(id: "86b4gqe8t")) func test_dividingFullWidth() { prop_dividingFullWidth(Int32.self) }
 
             // Bitwise
             @Test("Int32.complement") func test_complement() { prop_complement(Int32.self) }
@@ -183,7 +183,7 @@ import Testing
             @Test("Int64.dividedReportingOverflow") func test_dividedReportingOverflow() { prop_dividedReportingOverflow(Int64.self) }
             @Test("Int64.remainderReportingOverflow") func test_remainderReportingOverflow() { prop_remainderReportingOverflow(Int64.self) }
             @Test("Int64.multipliedFullWidth") func test_multipliedFullWidth() { prop_multipliedFullWidth(Int64.self) }
-            // @Test("Int64.dividingFullWidth") func test_dividingFullWidth() { prop_dividingFullWidth(Int64.self) }
+            // @Test("Int64.dividingFullWidth", .bug(id: "86b4gqe8t")) func test_dividingFullWidth() { prop_dividingFullWidth(Int64.self) }
 
             // Bitwise
             @Test("Int64.complement") func test_complement() { prop_complement(Int64.self) }
@@ -430,7 +430,7 @@ import Testing
             @Test("Float16.significand") func test_significand() { prop_significand(Float16.self) }
             @Test("Float16.ulp") func test_ulp() { prop_ulp(Float16.self) }
             @Test("Float16.rounded") func test_rounded() { prop_rounded(Float16.self) }
-            // @Test("Float16.roundedRule") func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float16.self) }
+            // @Test("Float16.roundedRule", .bug(id: "86b4gqdud")) func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float16.self) }
             @Test("Float16.floor") func test_floor() { prop_floor(Float16.self) }
             @Test("Float16.ceiling") func test_ceiling() { prop_ceiling(Float16.self) }
             @Test("Float16.truncate") func test_truncate() { prop_truncate(Float16.self) }
@@ -500,7 +500,7 @@ import Testing
             // @Test("Float32.significand", .bug(id: "86b4gq63t")) func test_significand() { prop_significand(Float32.self) }
             @Test("Float32.ulp") func test_ulp() { prop_ulp(Float32.self) }
             @Test("Float32.rounded") func test_rounded() { prop_rounded(Float32.self) }
-            // @Test("Float32.roundedRule") func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float32.self) }
+            // @Test("Float32.roundedRule", .bug(id: "86b4gqdud")) func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float32.self) }
             @Test("Float32.floor") func test_floor() { prop_floor(Float32.self) }
             @Test("Float32.ceiling") func test_ceiling() { prop_ceiling(Float32.self) }
             @Test("Float32.truncate") func test_truncate() { prop_truncate(Float32.self) }
@@ -570,7 +570,7 @@ import Testing
             @Test("Float64.significand") func test_significand() { prop_significand(Float64.self) }
             @Test("Float64.ulp") func test_ulp() { prop_ulp(Float64.self) }
             @Test("Float64.rounded") func test_rounded() { prop_rounded(Float64.self) }
-            // @Test("Float64.roundedRule") func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float64.self) }
+            // @Test("Float64.roundedRule", .bug(id: "86b4gqdud")) func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float64.self) }
             @Test("Float64.floor") func test_floor() { prop_floor(Float64.self) }
             @Test("Float64.ceiling") func test_ceiling() { prop_ceiling(Float64.self) }
             @Test("Float64.truncate") func test_truncate() { prop_truncate(Float64.self) }
