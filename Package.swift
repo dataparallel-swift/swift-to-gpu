@@ -13,7 +13,6 @@ let package = Package(
         .library(name: "CUDA", type: libraryType, targets: ["CUDA"]),
         .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"]),
         .executable(name: "nvidia-device-query", targets: ["nvidia-device-query"]),
-        .executable(name: "swift-to-ptx-tests", targets: ["swift-to-ptx-tests"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
@@ -55,18 +54,18 @@ let package = Package(
             dependencies: ["CUDA"]
         ),
         .executableTarget(
-            name: "swift-to-ptx-tests",
+            name: "swift-to-ptx-nofib",
             dependencies: [
                 "SwiftCheck",
                 "SwiftToPTX",
                 .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "Testing", package: "swift-testing")
             ],
+            path: "Tests/nofib",
             swiftSettings: [
                 .unsafeFlags([
-                    // "-Ounchecked",
-                    // swift-frontend: .../swift-project/llvm-project/llvm/lib/IR/PassTimingInfo.cpp:255: void llvm::TimePassesHandler::startPassTimer(StringRef): Assertion `!ActivePassTimer && "should only have one pass timer at a time"' failed.
-                    // "-Xllvm", "-time-passes"
+                    // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
+                    // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
                 ])
             ]
         ),
