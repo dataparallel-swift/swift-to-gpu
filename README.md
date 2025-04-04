@@ -57,6 +57,57 @@ https://gitlab.com/PassiveLogic/experiments/swift
 Note that the transformation is only enabled when compiling with optimisations
 (release mode).
 
+## Command line options
+
+There are several command line options that can be used to control the behaviour
+of the transformation.
+
+  * `--swift-to-ptx-verbose[=BOOL]`
+  Use verbose output (false).
+
+  * `--swift-to-ptx-keep-intermediate-files[=BOOL]`
+  Keep intermediate files (false). Use this to see what code was generated.
+
+  * `--swift-to-ptx-ptxas-path=PATH`
+  Path to the `ptxas` executable. Defaults to "/usr/local/cuda/bin/ptxas".
+
+  * `--swift-to-ptx-target-gpu=STRING`
+  Generate code for this specific GPU architecture. Defaults to "sm_87" (NVIDIA Jetson Orin)
+
+  * `--swift-to-ptx-target-attr=STRING`
+  Target specific attributes to add during compilation. Defaults to "+ptx81".
+
+  * `--swift-to-ptx-allow-fp-arcp[=BOOL]`
+  Allow floating-point division to be treated as multiplication by a
+  reciprocal (true).
+
+  * `--swift-to-ptx-allow-fp-contract[=BOOL]`
+  Allow floating-point contraction, e.g. fusing a multiply followed by an
+  addition into a fused multiply-add (true).
+
+  * `--swift-to-ptx-allow-fp-afn[=BOOL]`
+  Allow substitution of approximate calculation for functions, e.g. sin, log,
+  sqrt, etc. (true)
+
+  * `--swift-to-ptx-allow-fp-reassoc[=BOOL]`
+  Allow re-association transformations for floating-point operations (true)
+
+  * `--swift-to-ptx-strip-debug-info[=BOOL]`
+  Strip debug information from device code prior to compilation (false)
+
+Note that these options must be passed through to the LLVM phase of compilation.
+For example, you can add them to your `Package.swift` as:
+
+```swift
+    swiftSettings: [
+        .unsafeFlags([
+            "-Xllvm", "--swift-to-ptx-verbose"
+        ])
+    ]
+```
+
+## Benchmarks
+
 ## Limitations
 
   * All code to be lifted to the device must be present in a single module
