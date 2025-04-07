@@ -1,0 +1,5 @@
+module BenchmarkFunctions_cbits {
+  header "include/benchmark-functions-cbits.h"
+  requires cplusplus11
+  export *
+}

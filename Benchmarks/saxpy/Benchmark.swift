@@ -1,0 +1,77 @@
+import Benchmark
+import BenchmarkFunctions
+import Randy
+
+let benchmarks : @Sendable () -> Void = {
+    var gen = UniformRandomNumberGenerator()
+    let configs : [(Int, BenchmarkScalingFactor)] = [
+        (100, .kilo),
+        (1000, .kilo),
+        (10_000, .kilo),
+        (25_000, .kilo),
+        (50_000, .kilo),
+        (75_000, .kilo),
+        (100_000, .one),
+        (250_000, .one),
+        (500_000, .one),
+        (750_000, .one),
+        (1_000_000, .one),
+        (2_500_000, .one),
+        (5_000_000, .one),
+        (7_500_000, .one),
+        (10_000_000, .one)
+    ]
+
+    func config(_ scalingFactor: BenchmarkScalingFactor) -> Benchmark.Configuration
+    {
+        .init(
+            metrics: [.wallClock], // , .cpuTotal, .cpuSystem, .cpuUser],
+            warmupIterations: 3,
+            scalingFactor: scalingFactor,
+            maxDuration: .seconds(3)
+        )
+    }
+
+    func setup<A: Randomizable>(_ proxy: A.Type, _ n: Int) -> (A, [A], [A])
+    {
+        let alpha = A.random(using: &gen)
+        let xs    = Array<A>.random(count: n, using: &gen)
+        let ys    = Array<A>.random(count: n, using: &gen)
+        return (alpha, xs, ys)
+    }
+
+    func bench<Input, Output>(_ function: @escaping ((Input) -> Output)) -> (Benchmark, Input) -> Void {
+        return { benchmark, input in
+            for _ in benchmark.scaledIterations {
+                blackHole(function(input))
+            }
+        }
+    }
+
+    // We need to generate the benchmark data anew in the setup function,
+    // otherwise the benchmark framework will generate all data before any
+    // benchmarking starts (which consumes a lot of memory...)
+    for (size, scaling) in configs {
+        // Benchmark.init("saxpy_cuda_f16/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f16),         setup: { setup(Float16.self, size) })
+        Benchmark.init("saxpy_ptx_f16/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f16),          setup: { setup(Float16.self, size) })
+        Benchmark.init("saxpy_cpu_f16/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f16),          setup: { setup(Float16.self, size) })
+        // Benchmark.init("saxpy_cpu_f16_generic/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float16.self, size) })
+        Benchmark.init("saxpy_cpu_f16_generic_safe/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float16.self, size) })
+        // Benchmark.init("saxpy_cpu_f16_specialised/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float16.self, size) })
+
+        Benchmark.init("saxpy_cuda_f32/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f32),         setup: { setup(Float32.self, size) })
+        Benchmark.init("saxpy_ptx_f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f32),          setup: { setup(Float32.self, size) })
+        Benchmark.init("saxpy_cpu_f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f32),          setup: { setup(Float32.self, size) })
+        // Benchmark.init("saxpy_cpu_f32_generic/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float32.self, size) })
+        Benchmark.init("saxpy_cpu_f32_generic_safe/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float32.self, size) })
+        // Benchmark.init("saxpy_cpu_f32_specialised/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float32.self, size) })
+
+        Benchmark.init("saxpy_cuda_f64/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f64),         setup: { setup(Float64.self, size) })
+        Benchmark.init("saxpy_ptx_f64/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f64),          setup: { setup(Float64.self, size) })
+        Benchmark.init("saxpy_cpu_f64/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f64),          setup: { setup(Float64.self, size) })
+        // Benchmark.init("saxpy_cpu_f64_generic/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float64.self, size) })
+        Benchmark.init("saxpy_cpu_f64_generic_safe/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float64.self, size) })
+        // Benchmark.init("saxpy_cpu_f64_specialised/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float64.self, size) })
+    }
+}
+

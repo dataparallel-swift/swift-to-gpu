@@ -21,7 +21,9 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "6.0.3"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
+        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "main"),
+        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.4.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -53,6 +55,8 @@ let package = Package(
             name: "nvidia-device-query",
             dependencies: ["CUDA"]
         ),
+
+        // Tests
         .executableTarget(
             name: "swift-to-ptx-nofib",
             dependencies: [
@@ -69,5 +73,66 @@ let package = Package(
                 ])
             ]
         ),
+
+        // Benchmarks
+        .target(
+            name: "BenchmarkFunctions",
+            dependencies: [
+                "SwiftToPTX",
+                "BenchmarkFunctions_cbits",
+                .product(name: "Numerics", package: "swift-numerics")
+            ],
+            path: "Benchmarks/benchmark-functions",
+            swiftSettings: [
+                .unsafeFlags([
+                    "-O",
+                    "-num-threads", "1",
+                    "-Xllvm", "--swift-to-ptx-verbose",
+                    "-Xllvm", "-time-passes"
+                ])
+            ]
+        ),
+        .target(
+            name: "BenchmarkFunctions_cbits",
+            dependencies: [
+                "CUDA",
+                "SwiftToPTX_cbits"
+            ],
+            path: "Benchmarks/benchmark-functions-cbits"
+        ),
+        .executableTarget(
+            name: "bench-saxpy",
+            dependencies: [
+                "Randy",
+                "BenchmarkFunctions",
+                .product(name: "Benchmark", package: "package-benchmark")
+            ],
+            path: "Benchmarks/saxpy",
+            swiftSettings: [
+                .unsafeFlags([
+                    // "-Rpass-missed=specialize"
+                ])
+            ],
+            plugins: [
+                .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
+            ]
+        ),
+        .executableTarget(
+            name: "bench-blackscholes",
+            dependencies: [
+                "Randy",
+                "BenchmarkFunctions",
+                .product(name: "Benchmark", package: "package-benchmark")
+            ],
+            path: "Benchmarks/black-scholes",
+            swiftSettings: [
+                .unsafeFlags([
+                    // "-Rpass-missed=specialize"
+                ])
+            ],
+            plugins: [
+                .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
+            ]
+        )
     ]
 )
