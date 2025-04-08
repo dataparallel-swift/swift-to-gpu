@@ -117,10 +117,19 @@ For example, you can add them to your `Package.swift` as:
 
 ## Benchmarks
 
-### SAXPY
+The following benchmarks were conducted on a NVIDIA Jetson Orin (ARM A78AEv8.2
+CPU with 8-cores @ 2GHz, Ampere SM8.7 GPU with 1024 cores in 8 SMs @ 918 MHz).
+
+For each data-point in the following plots, the whiskers represent the minimum
+and maximum values sampled, the box represents the [interquartile
+range](https://en.wikipedia.org/wiki/Interquartile_range), and the line in the
+box represents the median value.
+
+
+### [SAXPY](./Benchmarks/benchmark-functions/SAXPY.swift)
 
 This benchmark implements the classic Level-1 BLAS routine
-[saxpy](https://netlib.org/lapack/explore-html-3.6.1/df/d28/group__single__blas__level1_gad2a52de0e32a6fc111931ece9b39726c.html#gad2a52de0e32a6fc111931ece9b39726c),
+[SAXPY](https://netlib.org/lapack/explore-html-3.6.1/df/d28/group__single__blas__level1_gad2a52de0e32a6fc111931ece9b39726c.html#gad2a52de0e32a6fc111931ece9b39726c),
 which multiplies a vector by a scalar constant and adds it to another vector;
 i.e. $z_i = \alpha \cdot x_i + y_i$.
 This represents a workload with a high bytes/flops ratio, that is overall
@@ -130,7 +139,7 @@ dominated by the cost of data transfer.
 ![](./images/saxpy-f32.svg)
 ![](./images/saxpy-f64.svg)
 
-### BlackScholes
+### [BlackScholes](./Benchmarks/benchmark-functions/BlackScholes.swift)
 
 This benchmark implements the
 [Black-Scholes](https://en.wikipedia.org/wiki/Black–Scholes_model) options
