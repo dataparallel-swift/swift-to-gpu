@@ -30,14 +30,14 @@ func nondeterministicIndex(of target: Float, in array: [Float]) -> Int?
         if array[i] == target {
             index = i
         }
-    }.sync()
+    }.sync()        // wait for the GPU to finish before proceeding
     return index
 }
 ```
 
 The `parallel_for` function takes a closure that is given an index in the range
-`0..<iterations`, with which the loop body can do something to compute a result
-(closing over captured variables). In principle all of the loop iterations are
+`0..<iterations`, with which the loop body can do something to compute a result,
+closing over captured variables. In principle all of the loop iterations are
 executed concurrently in data-parallel, and thus must all be independent of one
 another. The above example then is non-deterministic because if the target value
 exists in multiple positions in the array, the function may return a different
@@ -57,6 +57,13 @@ https://gitlab.com/PassiveLogic/experiments/swift
 Note that the transformation is only enabled when compiling with optimisations
 (release mode).
 
+## API
+
+A number of the usual data-parallel array operators are available from the
+[Prelude.swift](/Sources/swift-to-ptx/Prelude.swift) module. It is expected that
+this will grow (and change) rapidly as the project continues.
+
+
 ## Command line options
 
 There are several command line options that can be used to control the behaviour
@@ -72,10 +79,12 @@ of the transformation.
   Path to the `ptxas` executable. Defaults to "/usr/local/cuda/bin/ptxas".
 
   * `--swift-to-ptx-target-gpu=STRING`
-  Generate code for this specific GPU architecture. Defaults to "sm_87" (NVIDIA Jetson Orin)
+  Generate code for this specific GPU architecture. Defaults to "sm_87" (NVIDIA
+  Jetson Orin).
 
   * `--swift-to-ptx-target-attr=STRING`
-  Target specific attributes to add during compilation. Defaults to "+ptx81".
+  Target specific attributes to add during compilation. Defaults to "+ptx81"
+  (NVIDIA Jetson Orin).
 
   * `--swift-to-ptx-allow-fp-arcp[=BOOL]`
   Allow floating-point division to be treated as multiplication by a
@@ -87,13 +96,13 @@ of the transformation.
 
   * `--swift-to-ptx-allow-fp-afn[=BOOL]`
   Allow substitution of approximate calculation for functions, e.g. sin, log,
-  sqrt, etc. (true)
+  sqrt, etc. (true).
 
   * `--swift-to-ptx-allow-fp-reassoc[=BOOL]`
-  Allow re-association transformations for floating-point operations (true)
+  Allow re-association transformations for floating-point operations (true).
 
   * `--swift-to-ptx-strip-debug-info[=BOOL]`
-  Strip debug information from device code prior to compilation (false)
+  Strip debug information from device code prior to compilation (false).
 
 Note that these options must be passed through to the LLVM phase of compilation.
 For example, you can add them to your `Package.swift` as:
@@ -108,9 +117,35 @@ For example, you can add them to your `Package.swift` as:
 
 ## Benchmarks
 
+### SAXPY
+
+This benchmark implements the classic Level-1 BLAS routine
+[saxpy](https://netlib.org/lapack/explore-html-3.6.1/df/d28/group__single__blas__level1_gad2a52de0e32a6fc111931ece9b39726c.html#gad2a52de0e32a6fc111931ece9b39726c),
+which multiplies a vector by a scalar constant and adds it to another vector;
+i.e. $z_i = \alpha \cdot x_i + y_i$.
+This represents a workload with a high bytes/flops ratio, that is overall
+dominated by the cost of data transfer.
+
+![](./images/saxpy-f16.svg)
+![](./images/saxpy-f32.svg)
+![](./images/saxpy-f64.svg)
+
+### BlackScholes
+
+This benchmark implements the
+[Black-Scholes](https://en.wikipedia.org/wiki/Black–Scholes_model) options
+pricing model. This represents a workload that does a reasonable amount of
+computation for each byte transferred.
+
+![](./images/blackscholes-f16.svg)
+![](./images/blackscholes-f32.svg)
+![](./images/blackscholes-f64.svg)
+
 ## Limitations
 
-  * All code to be lifted to the device must be present in a single module
+  * All code to be lifted to the device must be present in a single compilation
+    unit passed to the LLVM compiler. Unfortunately, this does not exactly
+    correspond to a single .swift file...
 
 ## TODO
 
