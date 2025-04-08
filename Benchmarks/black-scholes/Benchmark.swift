@@ -5,12 +5,12 @@ import Randy
 let benchmarks : @Sendable () -> Void = {
     var gen = UniformRandomNumberGenerator()
     let configs : [(Int, BenchmarkScalingFactor)] = [
-        (100, .kilo),
-        (1000, .kilo),
-        (10_000, .kilo),
-        (25_000, .kilo),
-        (50_000, .kilo),
-        (75_000, .kilo),
+        (100, .one),
+        (1000, .one),
+        (10_000, .one),
+        (25_000, .one),
+        (50_000, .one),
+        (75_000, .one),
         (100_000, .one),
         (250_000, .one),
         (500_000, .one),
@@ -28,7 +28,7 @@ let benchmarks : @Sendable () -> Void = {
             metrics: [.wallClock], // , .cpuTotal, .cpuSystem, .cpuUser],
             warmupIterations: 3,
             scalingFactor: scalingFactor,
-            maxDuration: .seconds(3)
+            maxDuration: .seconds(10)
         )
     }
 
@@ -44,9 +44,9 @@ let benchmarks : @Sendable () -> Void = {
 
     func bench<Input, Output>(_ function: @escaping ((Input) -> Output)) -> (Benchmark, Input) -> Void {
         return { benchmark, input in
-            for _ in benchmark.scaledIterations {
+            // for _ in benchmark.scaledIterations {
                 blackHole(function(input))
-            }
+            // }
         }
     }
 
