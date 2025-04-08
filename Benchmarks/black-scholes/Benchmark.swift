@@ -53,16 +53,16 @@ let benchmarks : @Sendable () -> Void = {
     for (size, scaling) in configs {
         Benchmark.init("blackscholes_ptx_f16/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f16),          setup: { setup(Float16.self, size) })
         Benchmark.init("blackscholes_cpu_f16/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f16),          setup: { setup(Float16.self, size) })
-        Benchmark.init("blackscholes_cpu_f16_generic_safe/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float16.self, size) })
+        Benchmark.init("blackscholes_cpu_generic_safe_f16/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float16.self, size) })
 
         Benchmark.init("blackscholes_cuda_f32/\(size)",             configuration: config(scaling), closure: bench(blackscholes_cuda_f32),         setup: { setup(Float32.self, size) })
         Benchmark.init("blackscholes_ptx_f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f32),          setup: { setup(Float32.self, size) })
         Benchmark.init("blackscholes_cpu_f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f32),          setup: { setup(Float32.self, size) })
-        Benchmark.init("blackscholes_cpu_f32_generic_safe/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float32.self, size) })
+        Benchmark.init("blackscholes_cpu_generic_safe_f32/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float32.self, size) })
 
         Benchmark.init("blackscholes_ptx_f64/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f64),          setup: { setup(Float64.self, size) })
         Benchmark.init("blackscholes_cpu_f64/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f64),          setup: { setup(Float64.self, size) })
-        Benchmark.init("blackscholes_cpu_f64_generic_safe/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float64.self, size) })
+        Benchmark.init("blackscholes_cpu_generic_safe_f64/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float64.self, size) })
     }
 }
 
