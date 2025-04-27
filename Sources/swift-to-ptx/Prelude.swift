@@ -33,12 +33,10 @@ import Logging
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func generate<A, Err: Error>(count: Int, _ f: (Int) throws(Err) -> A) throws(Err) -> Array<A>
+public func generate<A, Err: Error>(count: Int, stream s: Stream = streamPerThread, _ f: (Int) throws(Err) -> A) throws(Err) -> Array<A>
 {
     var xs = Array<A>.init(unsafeUninitializedCapacity: count)
-    try parallel_for(iterations: count) { i throws(Err) in
-        xs[i] = try f(i)
-    }.sync()
+    try generate(into: &xs, stream: s, f)
     return xs
 }
 
@@ -46,10 +44,10 @@ public func generate<A, Err: Error>(count: Int, _ f: (Int) throws(Err) -> A) thr
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func generate<A, Err: Error>(into: inout Array<A>, _ f: (Int) throws(Err) -> A) throws(Err)
+public func generate<A, Err: Error>(into xs: inout Array<A>, stream s: Stream = streamPerThread, _ f: (Int) throws(Err) -> A) throws(Err)
 {
-    try parallel_for(iterations: into.count) { i throws (Err) in
-        into[i] = try f(i)
+    try parallel_for(iterations: xs.count, stream: s) { i throws (Err) in
+        xs[i] = try f(i)
     }.sync()
 }
 
@@ -57,18 +55,18 @@ public func generate<A, Err: Error>(into: inout Array<A>, _ f: (Int) throws(Err)
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func fill<A>(with x: A, count: Int) -> Array<A>
+public func fill<A>(count: Int, with x: A, stream s: Stream = streamPerThread) -> Array<A>
 {
-    generate(count: count) { _ in x }
+    generate(count: count, stream: s) { _ in x }
 }
 
 /// Set all elements of an array to the given value
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func fill<A>(with x: A, into: inout Array<A>)
+public func fill<A>(into xs: inout Array<A>, with x: A, stream s: Stream = streamPerThread)
 {
-    generate(into: &into) { _ in x }
+    generate(into: &xs, stream: s) { _ in x }
 }
 
 /// ## Element-wise operations
@@ -76,80 +74,80 @@ public func fill<A>(with x: A, into: inout Array<A>)
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func map<A, B, Err: Error>(_ xs: Array<A>, _ f: (A) throws(Err) -> B) throws(Err) -> Array<B>
+public func map<A, B, Err: Error>(_ xs: Array<A>, stream s: Stream = streamPerThread, _ f: (A) throws(Err) -> B) throws(Err) -> Array<B>
 {
-    try imap(xs) { _, x throws(Err) in try f(x) }
-}
-
-// TLM: I guess we also want a version where the closure has a mutating
-// function, rather than returning a new element?
-// @inlinable
-@inline(__always)
-@_alwaysEmitIntoClient
-public func map<A, Err: Error>(_ /* into */ xs: inout Array<A>, _ f: (A) throws(Err) -> A) throws(Err)
-{
-    try imap(&xs) { _, x throws(Err) in try f(x) }
+    try imap(xs, stream: s) { _, x throws(Err) in try f(x) }
 }
 
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func imap<A, B, Err: Error>(_ xs: Array<A>, _ f: (Int, A) throws(Err) -> B) throws(Err) -> Array<B>
+public func map<A, B, Err: Error>(_ xs: Array<A>, into ys: inout Array<B>, stream s: Stream = streamPerThread, _ f: (A) throws(Err) -> B) throws(Err)
 {
-    try generate(count: xs.count) { i throws(Err) in
-        try f(i, xs[i])
-    }
+    try imap(xs, into: &ys, stream: s) { _, x throws(Err) in try f(x) }
 }
 
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func imap<A, Err: Error>(_ /* into */ xs: inout Array<A>, _ f: (Int, A) throws(Err) -> A) throws(Err)
+public func imap<A, B, Err: Error>(_ xs: Array<A>, stream s: Stream = streamPerThread, _ f: (Int, A) throws(Err) -> B) throws(Err) -> Array<B>
 {
-    try parallel_for(iterations: xs.count) { i throws(Err) in
-        xs[i] = try f(i, xs[i])
-    }.sync()
+    var ys = Array<B>.init(unsafeUninitializedCapacity: xs.count)
+    try imap(xs, into: &ys, stream: s, f)
+    return ys
 }
 
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func zipWith<A, B, C, Err: Error>(_ xs: Array<A>, _ ys: Array<B>, _ f: (A,B) throws(Err) -> C) throws(Err) -> Array<C>
-{
-    try generate(count: min(xs.count, ys.count)) { i throws(Err) in
-        try f(xs[i], ys[i])
-    }
-}
-
-// @inlinable
-@inline(__always)
-@_alwaysEmitIntoClient
-public func zipWith<A, B, Err: Error>(_ /* into */ xs: inout Array<A>, _ ys: Array<B>, truncating: Bool = false, _ f: (A,B) throws(Err) -> A) throws(Err)
+public func imap<A, B, Err: Error>(_ xs: Array<A>, into ys: inout Array<B>, stream s: Stream = streamPerThread, _ f: (Int, A) throws(Err) -> B) throws(Err)
 {
     let n = min(xs.count, ys.count)
-    if truncating && xs.count > n {
-        xs = Array(xs.prefix(n))
-    }
 
-    try parallel_for(iterations: n) { i throws(Err) in
-        xs[i] = try f(xs[i], ys[i])
+    try parallel_for(iterations: n, stream: s) { i throws(Err) in
+        ys[i] = try f(i, xs[i])
     }.sync()
 }
 
 // @inlinable
 @inline(__always)
 @_alwaysEmitIntoClient
-public func zipWith<A, B, Err: Error>(_ xs: Array<A>, _ /* into */ ys: inout Array<B>, truncating: Bool = false, _ f: (A,B) throws(Err) -> B) throws(Err)
+public func zipWith<A, B, C, Err: Error>(_ xs: Array<A>, _ ys: Array<B>, stream s: Stream = streamPerThread, _ f: (A, B) throws(Err) -> C) throws(Err) -> Array<C>
 {
-    let n = min(xs.count, ys.count)
-    if truncating && ys.count > n {
-        ys = Array(ys.prefix(n))
-    }
+    try izipWith(xs, ys, stream: s) { _, x, y throws(Err) in try f(x, y) }
+}
 
-    try parallel_for(iterations: n) { i throws(Err) in
-        ys[i] = try f(xs[i], ys[i])
+// @inlinable
+@inline(__always)
+@_alwaysEmitIntoClient
+public func zipWith<A, B, C, Err: Error>(_ xs: Array<A>, _ ys: Array<B>, into zs: inout Array<C>, stream s: Stream = streamPerThread, _ f: (A, B) throws(Err) -> C) throws(Err)
+{
+    try izipWith(xs, ys, into: &zs, stream: s) { _, x, y throws(Err) in try f(x, y) }
+}
+
+// @inlinable
+@inline(__always)
+@_alwaysEmitIntoClient
+public func izipWith<A, B, C, Err: Error>(_ xs: Array<A>, _ ys: Array<B>, stream s: Stream = streamPerThread, _ f: (Int, A, B) throws(Err) -> C) throws(Err) -> Array<C>
+{
+    let n  = min(xs.count, ys.count)
+    var zs = Array<C>.init(unsafeUninitializedCapacity: n)
+    try izipWith(xs, ys, into: &zs, stream: s, f)
+    return zs
+}
+
+// @inlinable
+@inline(__always)
+@_alwaysEmitIntoClient
+public func izipWith<A, B, C, Err: Error>(_ xs: Array<A>, _ ys: Array<B>, into zs: inout Array<C>, stream s: Stream = streamPerThread, _ f: (Int, A, B) throws(Err) -> C) throws(Err)
+{
+    let n = min(xs.count, min(ys.count, zs.count))
+
+    return try parallel_for(iterations: n, stream: s) { i throws(Err) in
+        zs[i] = try f(i, xs[i], ys[i])
     }.sync()
 }
+
 
 // TODO: [i,]zipWith[3..9], [un,]zip[3..9]
 //  Unsure how many of these will be used in practice, esp. without a fusion
@@ -193,7 +191,7 @@ public func zipWith<A, B, Err: Error>(_ xs: Array<A>, _ /* into */ ys: inout Arr
 public func permute<A, Err: Error>(from: Array<A>, into: inout Array<A>, combining f: (A, A) throws(Err) -> A, _ p: (Int) throws(Err) -> Int?) throws(Err)
 {
     typealias Lock = UInt32.AtomicRepresentation
-    var locks : Array<Lock> = fill(with: .init(0), count: from.count)
+    var locks : Array<Lock> = fill(count: from.count, with: .init(0))
 
     try parallel_for(iterations: from.count) { i throws(Err) in
         if let j = try p(i) {
