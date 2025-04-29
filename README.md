@@ -49,6 +49,8 @@ sequential operations such as Array.append(). (You should (almost) never be
 using that anyway: figure out what the requirements of your program are
 instead!)
 
+## Building
+
 You will need to compile your project with a swift toolchain that includes the
 swift-to-ptx compiler transformation, e.g. available from here:
 
@@ -56,6 +58,56 @@ https://gitlab.com/PassiveLogic/experiments/swift
 
 Note that the transformation is only enabled when compiling with optimisations
 (release mode).
+
+There are two ways to set up the development environment:
+
+### Container
+
+This is a self-contained development environment that uses the same Docker image
+used by CI for local development. Beyond the benefits of [dev/prod
+parity](https://12factor.net/dev-prod-parity), this approach may be easier to
+set up. No additional toolchain or dependencies are necessary when using the
+container.
+
+1. Install Podman for your operating system:
+  * [Podman CLI](https://podman.io/docs/installation)
+  * [Podman Desktop](https://podman-desktop.io/docs/installation)
+
+> [!warning]
+> Make sure to follow the installation instructions carefully. If you do not have
+> a working *Podman Machine*, executing the commands below won't be possible.
+
+2. Verify that Podman is installed and running correctly
+   ```
+   podman --version
+   ```
+
+3. Once this is done, the container can be started with the `podman run`
+   command. For example, to launch an interactive container:
+   ```
+   podman run --rm -it \
+     -v $PWD:/workdir  \  # make the current directory available in the container
+     registry.gitlab.com/passivelogic/experiments/swift:latest \
+     /bin/bash
+   ```
+   but it can be simpler to just run the one command you want, for example:
+   ```
+   podman run -v $PWD:/workdir registry.gitlab.com/passivelogic/experiments/swift:latest \
+     swift build -c release
+   ```
+
+   Building executables with the `--static-swift-stdlib` option is useful when
+   copying the resulting executable to a remote executor.
+
+
+### Native
+
+Building the compiler is [as
+usual](https://github.com/swiftlang/swift/blob/main/docs/HowToGuides/GettingStarted.md),
+with the addition that LLVM must be built with the NVPTX backend, e.g.:
+```
+./utils/build-script --llvm-targets-to-build "AArch64;NVPTX" ...
+```
 
 ## API
 
