@@ -75,16 +75,20 @@ set grid xtics ytics
 set errorbars 2
 # set style fill empty
 
-plot $ptx      using 1:3:2:6:5          with candlesticks lt 1 lw 1 title 'Swift-to-PTX' whiskerbars 0.5, \
-     ''        using 1:4:4:4:4          with candlesticks lt 1 lw 1 notitle, \
-     ''        using 1:4                with lines   dt 3 lt 1 lw 1 notitle, \
-     $cpu_safe using ($1-$1/20):3:2:6:5 with candlesticks lt 2 lw 1 title 'Swift' whiskerbars 0.5, \
-     ''        using ($1-$1/20):4:4:4:4 with candlesticks lt 2 lw 1 notitle, \
-     ''        using ($1-$1/20):4       with lines   dt 3 lt 2 lw 1 notitle, \
-     $cpu      using ($1-$1/20):3:2:6:5 with candlesticks lt 3 lw 1 title 'Swift (unsafe)' whiskerbars 0.5, \
-     ''        using ($1-$1/20):4:4:4:4 with candlesticks lt 3 lw 1 notitle, \
-     ''        using ($1-$1/20):4       with lines   dt 3 lt 3 lw 1 notitle, \
-     $cuda     using ($1+$1/20):3:2:6:5 with candlesticks lt 4 lw 1 title 'CUDA' whiskerbars 0.5, \
-     ''        using ($1+$1/20):4:4:4:4 with candlesticks lt 4 lw 1 notitle, \
-     ''        using ($1+$1/20):4       with lines   dt 3 lt 4 lw 1 notitle
+plot $ptx      using 1:3:2:6:5          with candlesticks      lt 1 lw 1 title 'Swift-to-PTX' whiskerbars 0.5, \
+     ''        using 1:4:4:4:4          with candlesticks      lt 1 lw 1 notitle, \
+     ''        using 1:7:7:7:7          with candlesticks dt 3 lt 1 lw 1 notitle, \
+     ''        using 1:4                with lines        dt 3 lt 1 lw 1 notitle, \
+     $cpu_safe using ($1-$1/20):3:2:6:5 with candlesticks      lt 2 lw 1 title 'Swift' whiskerbars 0.5, \
+     ''        using ($1-$1/20):4:4:4:4 with candlesticks      lt 2 lw 1 notitle, \
+     ''        using ($1-$1/20):7:7:7:7 with candlesticks dt 3 lt 2 lw 1 notitle, \
+     ''        using ($1-$1/20):4       with lines        dt 3 lt 2 lw 1 notitle, \
+     $cpu      using ($1-$1/20):3:2:6:5 with candlesticks      lt 3 lw 1 title 'Swift (unsafe)' whiskerbars 0.5, \
+     ''        using ($1-$1/20):4:4:4:4 with candlesticks      lt 3 lw 1 notitle, \
+     ''        using ($1-$1/20):7:7:7:7 with candlesticks dt 3 lt 3 lw 1 notitle, \
+     ''        using ($1-$1/20):4       with lines        dt 3 lt 3 lw 1 notitle, \
+     $cuda     using ($1+$1/20):3:2:6:5 with candlesticks      lt 4 lw 1 title 'CUDA' whiskerbars 0.5, \
+     ''        using ($1+$1/20):4:4:4:4 with candlesticks      lt 4 lw 1 notitle, \
+     ''        using ($1+$1/20):7:7:7:7 with candlesticks dt 3 lt 4 lw 1 notitle, \
+     ''        using ($1+$1/20):4       with lines        dt 3 lt 4 lw 1 notitle
 
