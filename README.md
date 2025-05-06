@@ -86,13 +86,13 @@ container.
    command. For example, to launch an interactive container:
    ```
    podman run --rm -it \
-     -v $PWD:/workdir  \  # make the current directory available in the container
-     registry.gitlab.com/passivelogic/experiments/swift:latest \
+     -v $PWD:/root  \  # make the current directory available in the container
+     registry.gitlab.com/passivelogic/compiler/swift:latest \
      /bin/bash
    ```
    but it can be simpler to just run the one command you want, for example:
    ```
-   podman run -v $PWD:/workdir registry.gitlab.com/passivelogic/experiments/swift:latest \
+   podman run -v $PWD:/root registry.gitlab.com/passivelogic/compiler/swift:latest \
      swift build -c release
    ```
 
@@ -170,12 +170,35 @@ For example, you can add them to your `Package.swift` as:
 ## Benchmarks
 
 The following benchmarks were conducted on a NVIDIA Jetson Orin (ARM A78AEv8.2
-CPU with 8-cores @ 2GHz, Ampere SM8.7 GPU with 1024 cores in 8 SMs @ 918 MHz).
+CPU with 8-cores @ 2GHz, Ampere SM8.7 GPU with 1024 cores in 8 SMs @ 918 MHz)
+in MAXN power mode.
 
-For each data-point in the following plots, the whiskers represent the minimum
-and maximum values sampled, the box represents the [interquartile
-range](https://en.wikipedia.org/wiki/Interquartile_range), and the line in the
-box represents the median value.
+### How to interpret the results
+
+The following results are shown using a [box-and-whiskers plot](https://en.wikipedia.org/wiki/Box_plot)
+to concisely describe the statistical properties at each data point. The box
+represents the [interquartile range](https://en.wikipedia.org/wiki/Interquartile_range),
+the span in which 50% of the samples were collected, with the solid line in the
+box marking the median value and the dashed line the average. The whiskers
+extending from the box represent the minimum and maximum values observed. From
+this, we can visually estimate the degree of dispersion and skewness of the
+data.
+
+Along with a realisation in Swift-to-PTX, each benchmark contains a number of
+comparative implementations:
+
+  * Implementations on the CPU: a "regular" implementation and an
+    "optimised" implementation (labelled "unsafe" due to the use of a so-named
+    initialiser function). These bounding lines are not meant to be
+    authoritative: it may be possible to squeeze more out of the optimised
+    implementation, and an unoptimised implementation can be made infinitely
+    worse, but the purpose is to give an indication of at what data size is it
+    worthwhile to move a computation from the CPU to the GPU.
+
+  * An implementation in raw CUDA (called from Swift, but his should be close
+    enough to a raw CUDA/C++ implementation). This gives an indication of the
+    overheads incurred implementing GPU kernels in Swift compared to CUDA/C++.
+    As the project progresses, we aim to close this gap.
 
 
 ### [SAXPY](./Benchmarks/benchmark-functions/SAXPY.swift)
@@ -210,5 +233,7 @@ computation for each byte transferred.
 
 ## TODO
 
+  * Integration with Swift structured concurrency
+  * A mechanism for automatic kernel fusion
   * ...
 
