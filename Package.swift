@@ -10,9 +10,7 @@ let package = Package(
     name: "swift-to-ptx",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(name: "CUDA", type: libraryType, targets: ["CUDA"]),
-        .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"]),
-        .executable(name: "nvidia-device-query", targets: ["nvidia-device-query"]),
+        .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
@@ -23,37 +21,30 @@ let package = Package(
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "main"),
-        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.4.0")
+        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.4.0"),
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", branch: "main"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
-        .systemLibrary(
-            name: "CUDA",
-            pkgConfig: "cuda-12.2"
-        ),
         .target(
             name: "SwiftToPTX_cbits",
             dependencies: [
-                "CUDA"
+                .product(name: "CUDA", package: "swift-cuda")
             ],
             path: "Sources/swift-to-ptx-cbits"
         ),
         .target(
             name: "SwiftToPTX",
             dependencies: [
-                "CUDA",
                 "SwiftToPTX_cbits",
+                .product(name: "CUDA", package: "swift-cuda"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
             path: "Sources/swift-to-ptx"
-        ),
-        .executableTarget(
-            name: "nvidia-device-query",
-            dependencies: ["CUDA"]
         ),
 
         // Tests
@@ -95,8 +86,8 @@ let package = Package(
         .target(
             name: "BenchmarkFunctions_cbits",
             dependencies: [
-                "CUDA",
-                "SwiftToPTX_cbits"
+                "SwiftToPTX_cbits",
+                .product(name: "CUDA", package: "swift-cuda")
             ],
             path: "Benchmarks/benchmark-functions-cbits"
         ),
