@@ -8,7 +8,7 @@ Add to your `Package.swift`:
 
 ```swift
     dependencies: [
-        .package(url: "git@gitlab.com/PassiveLogic/Experiments/swift-to-ptx")
+        .package(url: "git@gitlab.com/PassiveLogic/compiler/swift-to-ptx")
     ]
 ```
 
@@ -54,7 +54,7 @@ instead!)
 You will need to compile your project with a swift toolchain that includes the
 swift-to-ptx compiler transformation, e.g. available from here:
 
-https://gitlab.com/PassiveLogic/experiments/swift
+https://gitlab.com/PassiveLogic/compiler/swift
 
 Note that the transformation is only enabled when compiling with optimisations
 (release mode).
