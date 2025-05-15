@@ -1,0 +1,21 @@
+include:
+  - component: gitlab.com/PassiveLogic/ci/commitlint@4
+  # - component: gitlab.com/PassiveLogic/ci/swiftlint@4
+  # - component: gitlab.com/PassiveLogic/ci/swiftformat@4
+  # - component: gitlab.com/PassiveLogic/ci/swift-import-analyzer@4
+  - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
+    inputs:
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift
+      runner-tags:
+        - passivelogic-linux-small-arm64
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+    inputs:
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift
+      runner-tags:
+        - benchmarks.ubuntu.orin4
+      job-rules:
+        - if: $CI_MERGE_REQUEST_IID
+        - if: $CI_COMMIT_TAG
+        - if: $CI_COMMIT_BRANCH
+        - if: $CI_PIPELINE_SOURCE == "schedule"
+
