@@ -12,10 +12,7 @@ include:
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift
       runner-tags:
-        - benchmarks.ubuntu.orin4
+        - passivelogic-compiler-orin
       job-rules:
-        - if: $CI_MERGE_REQUEST_IID
-        - if: $CI_COMMIT_TAG
-        - if: $CI_COMMIT_BRANCH
-        - if: $CI_PIPELINE_SOURCE == "schedule"
+        - when: always
 
