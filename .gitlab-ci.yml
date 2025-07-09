@@ -11,6 +11,8 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift
+      additional-setup:
+        - apt install -y libcapstone-dev
       runner-tags:
         - passivelogic-compiler-orin
       job-rules:
