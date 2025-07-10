@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "main"),
-        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.4.0"),
+        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", branch: "main"),
     ],
     targets: [
