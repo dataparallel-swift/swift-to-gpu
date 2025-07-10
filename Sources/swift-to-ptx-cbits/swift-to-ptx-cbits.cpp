@@ -117,7 +117,7 @@ void *swift_slowAlloc(size_t size, size_t alignMask)
   TRACE(BLUE  "swift_slowAlloc (%4ld):    %p-%p (%ld bytes)\n" RESET, size, p, (uint8_t*)p+s, s);
 
   if (nullptr == p) {
-    fprintf(stderr, "Could not allocate memory.");
+    fprintf(stderr, "Could not allocate %ld bytes memory.", size);
     exit(EXIT_FAILURE);
   }
 
