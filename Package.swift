@@ -48,7 +48,7 @@ let package = Package(
         ),
 
         // Tests
-        .executableTarget(
+        .testTarget(
             name: "swift-to-ptx-nofib",
             dependencies: [
                 "SwiftCheck",
@@ -59,8 +59,11 @@ let package = Package(
             path: "Tests/nofib",
             swiftSettings: [
                 .unsafeFlags([
+                    "-O",
+                    "-num-threads", "1",
+                    "-Xllvm", "--swift-to-ptx-verbose",
+                    "-Xllvm", "-time-passes"
                     // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
-                    // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
                 ])
             ]
         ),
