@@ -87,6 +87,9 @@ void *swift_slowAlloc(size_t size, size_t alignMask)
   void *p;
   size_t s;
 
+  if (0 == size)
+    return nullptr;
+
   // Make sure CUDA is initialised. This is safe for multithreaded environments.
   pthread_once(&cuda_is_initialised, initialise_cuda);
 
