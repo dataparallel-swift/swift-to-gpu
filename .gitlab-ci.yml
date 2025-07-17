@@ -5,12 +5,12 @@ include:
   # - component: gitlab.com/PassiveLogic/ci/swift-import-analyzer@4
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.0
       runner-tags:
         - passivelogic-linux-small-arm64
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.0
       parallel-workers: 1
       enable-code-coverage: false
       additional-setup:
