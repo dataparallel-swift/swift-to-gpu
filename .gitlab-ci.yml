@@ -19,4 +19,25 @@ include:
         - passivelogic-compiler-orin
       job-rules:
         - when: always
+  - component: gitlab.com/PassiveLogic/ci/swift-benchmarks@4
+    inputs:
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.0
+      additional-setup:
+        - apt install -y libcapstone-dev
+      job-rules:
+        - when: always
+
+benchmark-orin:
+  extends: .run_benchmarks
+  tags:
+    - passivelogic-compiler-orin
+
+# disable cloud benchmarks
+benchmark-cloud:
+  rules:
+    - when: never
+
+benchmark-upload-cloud:
+  rules:
+    - when: never
 
