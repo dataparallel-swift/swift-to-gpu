@@ -60,9 +60,9 @@ let package = Package(
             swiftSettings: [
                 .unsafeFlags([
                     "-O",
-                    "-num-threads", "1",
                     "-Xllvm", "--swift-to-ptx-verbose",
-                    "-Xllvm", "-time-passes"
+                    // "-num-threads", "1",
+                    // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
                     // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
                 ])
             ]
