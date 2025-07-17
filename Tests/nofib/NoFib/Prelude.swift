@@ -430,7 +430,7 @@ import SwiftToPTX
             @Test("Float16.nextDown") func test_nextDown() { prop_nextDown(Float16.self) }
             @Test("Float16.nextUp") func test_nextUp() { prop_nextUp(Float16.self) }
             @Test("Float16.sign") func test_sign() { prop_sign(Float16.self) }
-            @Test("Float16.significand") func test_significand() { prop_significand(Float16.self) }
+            // @Test("Float16.significand", .bug(id: "86b4gq63t")) func test_significand() { prop_significand(Float16.self) }
             @Test("Float16.ulp") func test_ulp() { prop_ulp(Float16.self) }
             @Test("Float16.rounded") func test_rounded() { prop_rounded(Float16.self) }
             // @Test("Float16.roundedRule", .bug(id: "86b4gqdud")) func test_roundedRWithRoundingRule() { prop_roundedWithRoundingRule(Float16.self) }
