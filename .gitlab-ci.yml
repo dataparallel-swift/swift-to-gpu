@@ -11,6 +11,7 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift
+      parallel-workers: 1
       additional-setup:
         - apt install -y libcapstone-dev
       runner-tags:
