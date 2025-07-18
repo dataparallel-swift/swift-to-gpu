@@ -87,6 +87,9 @@ void *swift_slowAlloc(size_t size, size_t alignMask)
   void *p;
   size_t s;
 
+  if (0 == size)
+    return nullptr;
+
   // Make sure CUDA is initialised. This is safe for multithreaded environments.
   pthread_once(&cuda_is_initialised, initialise_cuda);
 
@@ -117,7 +120,7 @@ void *swift_slowAlloc(size_t size, size_t alignMask)
   TRACE(BLUE  "swift_slowAlloc (%4ld):    %p-%p (%ld bytes)\n" RESET, size, p, (uint8_t*)p+s, s);
 
   if (nullptr == p) {
-    fprintf(stderr, "Could not allocate memory.");
+    fprintf(stderr, "Could not allocate %ld bytes memory.", size);
     exit(EXIT_FAILURE);
   }
 

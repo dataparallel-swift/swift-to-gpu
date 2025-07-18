@@ -21,8 +21,8 @@ let package = Package(
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Experiments/swift-tracy.git", revision: "main"),
-        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.4.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", branch: "main"),
+        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", revision: "0.1"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -48,7 +48,7 @@ let package = Package(
         ),
 
         // Tests
-        .executableTarget(
+        .testTarget(
             name: "swift-to-ptx-nofib",
             dependencies: [
                 "SwiftCheck",
@@ -59,8 +59,11 @@ let package = Package(
             path: "Tests/nofib",
             swiftSettings: [
                 .unsafeFlags([
-                    // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
+                    "-O",
+                    "-Xllvm", "--swift-to-ptx-verbose",
+                    // "-num-threads", "1",
                     // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
+                    // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
                 ])
             ]
         ),
