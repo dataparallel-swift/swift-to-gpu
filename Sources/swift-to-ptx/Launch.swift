@@ -17,6 +17,7 @@ private let logger = Logger(label: "Launch")
 //
 public struct ParallelForKernel {
     let image : UnsafePointer<UInt8>
+    let name : UnsafePointer<CChar>
     var module : CUmodule?
     var function : CUfunction
     var blockSize : Int32
@@ -48,7 +49,7 @@ public func launch_parallel_for
         var function : CUfunction?
 
         cuda_safe_call{cuModuleLoadData(&kernel.module, kernel.image)}
-        cuda_safe_call{cuModuleGetFunction(&function, kernel.module, "parallel_for")}
+        cuda_safe_call{cuModuleGetFunction(&function, kernel.module, kernel.name)}
         cuda_safe_call{cuOccupancyMaxPotentialBlockSize(&minGridSize, &kernel.blockSize, function, nil, dynamicSharedMem, 0)}
         cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, kernel.blockSize, dynamicSharedMem)}
 
@@ -70,7 +71,7 @@ public func launch_parallel_for
 
         logger.trace(
             """
-            Kernel function \"parallel_for\" used \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, \(constantMem) bytes constant memory
+            Kernel function \"\(kernel.name)\" used \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, \(constantMem) bytes constant memory
             Multiprocessor occupancy \(occupancy) % : \(activeThreads) threads over \(activeWarps) warps in \(activeBlocks) blocks
             """
         )
