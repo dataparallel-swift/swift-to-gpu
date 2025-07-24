@@ -8,7 +8,7 @@ Add to your `Package.swift`:
 
 ```swift
     dependencies: [
-        .package(url: "git@gitlab.com/PassiveLogic/compiler/swift-to-ptx")
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-to-ptx.git", revision: "0.2")
     ]
 ```
 
@@ -228,12 +228,20 @@ computation for each byte transferred.
 ## Limitations
 
   * All code to be lifted to the device must be present in a single compilation
-    unit passed to the LLVM compiler. Unfortunately, this does not exactly
-    correspond to a single .swift file...
+    unit passed to the LLVM compiler. Unfortunately, due to the way
+    optimisations work, this does not always/necessarily correspond to a single
+    .swift file.
+
+    In particular, note that the `--enable-testing` flag, which is added
+    automatically by `swift test`, will change how optimisations are performed.
+
+  * `--enable-code-coverage` is currently not supported
+
 
 ## TODO
 
   * Integration with Swift structured concurrency
+  * Integration with debugging / profiling tools
   * A mechanism for automatic kernel fusion
   * ...
 
