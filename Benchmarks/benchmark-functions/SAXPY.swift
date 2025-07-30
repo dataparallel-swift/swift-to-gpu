@@ -4,6 +4,7 @@ import BenchmarkFunctions_cbits
 // MARK: CPU
 // --------------------------------------------------------------------------------
 
+#if arch(arm64)
 public func saxpy_cpu_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) -> [Float16]
 {
     assert(xs.count == ys.count)
@@ -18,6 +19,7 @@ public func saxpy_cpu_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) ->
         }
     )
 }
+#endif
 
 public func saxpy_cpu_f32(_ alpha: Float32, _ xs: [Float32], _ ys: [Float32]) -> [Float32]
 {
@@ -79,7 +81,9 @@ public func saxpy_cpu_generic_safe<A: Numeric>(_ alpha: A, _ xs: [A], _ ys: [A])
     return result
 }
 
+#if arch(arm64)
 @_specialize(exported: true, where A == Float16)
+#endif
 @_specialize(exported: true, where A == Float32)
 @_specialize(exported: true, where A == Float64)
 public func saxpy_cpu_specialised<A: Numeric> (_ alpha: A, _ xs: [A], _ ys: [A]) -> [A]
@@ -101,11 +105,13 @@ public func saxpy_cpu_specialised<A: Numeric> (_ alpha: A, _ xs: [A], _ ys: [A])
 // MARK: PTX
 // --------------------------------------------------------------------------------
 
+#if arch(arm64)
 public func saxpy_ptx_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) -> [Float16]
 {
     assert(xs.count == ys.count)
     return zipWith(xs, ys) { x, y in alpha * x + y }
 }
+#endif
 
 public func saxpy_ptx_f32(_ alpha: Float32, _ xs: [Float32], _ ys: [Float32]) -> [Float32]
 {
@@ -127,6 +133,7 @@ public func saxpy_ptx_f64(_ alpha: Float64, _ xs: [Float64], _ ys: [Float64]) ->
 // MARK: CUDA
 // --------------------------------------------------------------------------------
 
+#if arch(arm64)
 public func saxpy_cuda_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) -> [Float16]
 {
     assert(xs.count == ys.count)
@@ -138,6 +145,7 @@ public func saxpy_cuda_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) -
             initializedCount = n
         })
 }
+#endif
 
 public func saxpy_cuda_f32(_ alpha: Float32, _ xs: [Float32], _ ys: [Float32]) -> [Float32]
 {

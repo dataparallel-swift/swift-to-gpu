@@ -397,6 +397,7 @@ import SwiftToPTX
             @Test("UInt64.&>>") func test_uncheckedShiftR() { prop_uncheckedShiftR(UInt64.self) }
         }
 
+#if arch(arm64)
         @Suite("Float16") struct Float16Tests {
             // Ordering
             @Test("Float16.==") func test_eq() { prop_eq(Float16.self) }
@@ -466,6 +467,7 @@ import SwiftToPTX
             @Test("Float16.gamma") func test_gamma() { prop_gamma(Float16.self) }
             @Test("Float16.logGamma") func test_logGamma() { prop_logGamma(Float16.self) }
         }
+#endif
 
         @Suite("Float32") struct Float32Tests {
             // Ordering

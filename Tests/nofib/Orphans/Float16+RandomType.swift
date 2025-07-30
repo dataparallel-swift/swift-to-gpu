@@ -1,5 +1,6 @@
 import SwiftCheck
 
+#if arch(arm64)
 extension Float16: @retroactive RandomType {
     /// Produces a random `Float16` value in the range `[Float16.min, Float16.max]`.
     public static func random<G : RandomGeneneratorType>(_ rng : G) -> (Float16, G) {
@@ -21,4 +22,5 @@ extension Float16: @retroactive RandomType {
         }
     }
 }
+#endif
 

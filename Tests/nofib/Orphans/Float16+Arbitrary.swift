@@ -1,5 +1,6 @@
 import SwiftCheck
 
+#if arch(arm64)
 extension Float16: @retroactive Arbitrary {
     /// Returns a generator of `Float16` values.
     public static var arbitrary : Gen<Float16> {
@@ -29,4 +30,5 @@ extension Float16: @retroactive Arbitrary {
         return tail
     }
 }
+#endif
 

@@ -50,6 +50,7 @@ func blackscholes<A: BinaryFloatingPoint & ElementaryFunctions>(riskfree r: A, v
 // MARK: CPU
 // --------------------------------------------------------------------------------
 
+#if arch(arm64)
 public func blackscholes_cpu_f16(_ r: Float16, _ v: Float16, _ ps: [Float16], _ xs: [Float16], _ ts: [Float16]) -> [(call: Float16, put: Float16)]
 {
     assert(ps.count == xs.count)
@@ -65,6 +66,7 @@ public func blackscholes_cpu_f16(_ r: Float16, _ v: Float16, _ ps: [Float16], _ 
         }
     )
 }
+#endif
 
 public func blackscholes_cpu_f32(_ r: Float32, _ v: Float32, _ ps: [Float32], _ xs: [Float32], _ ts: [Float32]) -> [(call: Float32, put: Float32)]
 {
@@ -135,6 +137,7 @@ public func blackscholes_cpu_generic_safe<A: BinaryFloatingPoint & ElementaryFun
 // MARK: GPU
 // --------------------------------------------------------------------------------
 
+#if arch(arm64)
 public func blackscholes_ptx_f16(_ r: Float16, _ v: Float16, _ ps: [Float16], _ xs: [Float16], _ ts: [Float16]) -> [(call: Float16, put: Float16)]
 {
     assert(ps.count == xs.count)
@@ -144,7 +147,7 @@ public func blackscholes_ptx_f16(_ r: Float16, _ v: Float16, _ ps: [Float16], _ 
         blackscholes(riskfree: r, volatility: v, price: ps[i], strike: xs[i], years: ts[i])
     }
 }
-
+#endif
 
 public func blackscholes_ptx_f32(_ r: Float32, _ v: Float32, _ ps: [Float32], _ xs: [Float32], _ ts: [Float32]) -> [(call: Float32, put: Float32)]
 {

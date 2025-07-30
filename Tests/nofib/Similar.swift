@@ -77,6 +77,7 @@ extension UInt128 : Similar {
     }
 }
 
+#if arch(arm64)
 extension Float16 : Similar {
     @inlinable
     static func ~~~ (lhs: Self, rhs: Self) -> Bool {
@@ -88,6 +89,7 @@ extension Float16 : Similar {
         // absRelTol(epsilonAbs: 0.0001, epsilonRel: 0.01, lhs, rhs)
     }
 }
+#endif
 
 extension Float32 : Similar {
     @inlinable

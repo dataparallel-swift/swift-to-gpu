@@ -52,12 +52,14 @@ let benchmarks : @Sendable () -> Void = {
     // otherwise the benchmark framework will generate all data before any
     // benchmarking starts (which consumes a lot of memory...)
     for (size, scaling) in configs {
+#if arch(arm64)
         // Benchmark.init("saxpy_cuda_f16/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f16),         setup: { setup(Float16.self, size) })
         Benchmark.init("saxpy_ptx_f16/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f16),          setup: { setup(Float16.self, size) })
         Benchmark.init("saxpy_cpu_f16/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f16),          setup: { setup(Float16.self, size) })
         // Benchmark.init("saxpy_cpu_generic_f16/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float16.self, size) })
         Benchmark.init("saxpy_cpu_generic_safe_f16/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float16.self, size) })
         // Benchmark.init("saxpy_cpu_specialised_f16/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float16.self, size) })
+#endif
 
         Benchmark.init("saxpy_cuda_f32/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f32),         setup: { setup(Float32.self, size) })
         Benchmark.init("saxpy_ptx_f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f32),          setup: { setup(Float32.self, size) })
