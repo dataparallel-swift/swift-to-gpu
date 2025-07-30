@@ -41,6 +41,7 @@ let package = Package(
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "60ac56c594ee"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "0.1"),
+        .package(url: "https://github.com/swiftlang/swift-testing", revision: "swift-6.1.2-RELEASE"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -74,7 +75,9 @@ let package = Package(
             dependencies: [
                 "SwiftCheck",
                 "SwiftToPTX",
+                "Randy",
                 .product(name: "Numerics", package: "swift-numerics"),
+                .product(name: "Testing", package: "swift-testing"),
             ],
             path: "Tests/nofib",
             exclude: [
