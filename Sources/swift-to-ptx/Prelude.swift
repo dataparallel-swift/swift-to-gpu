@@ -338,7 +338,7 @@ public func parallel_for<E: Error>
     let logger = Logger.init(label: "")
     logger.warning("""
         *** WARNING *** parallel_for loop executing on the host!
-        Compile in release mode to enable PTX translation. Failing that, please submit a bug to: https://gitlab.com/PassiveLogic/experiments/swift-to-ptx/-/issues
+        Compile in release mode to enable PTX translation. Failing that, please submit a bug to: https://gitlab.com/PassiveLogic/compiler/swift-to-ptx/-/issues
         """)
 
     dontLetTheCompilerOptimizeThisAway(context)
