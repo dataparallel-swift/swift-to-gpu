@@ -1,3 +1,6 @@
+variables:
+  BENCHMARK_DISABLE_JEMALLOC: true
+
 include:
   - component: gitlab.com/PassiveLogic/ci/commitlint@4
   # - component: gitlab.com/PassiveLogic/ci/swiftlint@4

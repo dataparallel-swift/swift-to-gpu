@@ -10,14 +10,21 @@
 
 #include "swift-to-ptx-cbits.h"
 
-CUmodule saxpy_module = nullptr;
-CUfunction saxpy_f16 = nullptr;
-CUfunction saxpy_f32 = nullptr;
-CUfunction saxpy_f64 = nullptr;
+static CUmodule saxpy_module = nullptr;
+static CUfunction saxpy_f16 = nullptr;
+static CUfunction saxpy_f32 = nullptr;
+static CUfunction saxpy_f64 = nullptr;
+
+static CUdevice default_device = 0;
+static CUcontext default_context = nullptr;
 
 template <typename T>
 void saxpy_cuda(CUfunction& saxpy_function, const char* name, const T alpha, const T* __restrict__ xs, const T* __restrict__ ys, T* __restrict__ zs, size_t n)
 {
+  if (!default_context) {
+    CUDA_SAFE_CALL(cuDeviceGet(&default_device, 0));
+    CUDA_SAFE_CALL(cuDevicePrimaryCtxRetain(&default_context, default_device));
+  }
   CUDA_SAFE_CALL(cuCtxPushCurrent(default_context));
   if (!saxpy_module) {
     CUDA_SAFE_CALL(cuModuleLoadData(&saxpy_module, saxpy_image_data));

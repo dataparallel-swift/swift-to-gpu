@@ -9,8 +9,11 @@
 
 #include "swift-to-ptx-cbits.h"
 
-CUmodule blackscholes_module = nullptr;
-CUfunction blackscholes_f32 = nullptr;
+static CUmodule blackscholes_module = nullptr;
+static CUfunction blackscholes_f32 = nullptr;
+
+static CUdevice default_device = 0;
+static CUcontext default_context = nullptr;
 
 template <typename T>
 void blackscholes_cuda
@@ -27,6 +30,10 @@ void blackscholes_cuda
     size_t n
 )
 {
+  if (!default_context) {
+    CUDA_SAFE_CALL(cuDeviceGet(&default_device, 0));
+    CUDA_SAFE_CALL(cuDevicePrimaryCtxRetain(&default_context, default_device));
+  }
   CUDA_SAFE_CALL(cuCtxPushCurrent(default_context));
   if (!blackscholes_module) {
     CUDA_SAFE_CALL(cuModuleLoadData(&blackscholes_module, blackscholes_image_data));
