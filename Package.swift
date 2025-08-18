@@ -57,6 +57,14 @@ let package = Package(
                 .product(name: "Testing", package: "swift-testing")
             ],
             path: "Tests/nofib",
+            exclude: [
+                "NoFib/Imaginary/README.md",
+                "NoFib/Issues/README.md",
+                "NoFib/Language/README.md",
+                "NoFib/Prelude/README.md",
+                "NoFib/Real/README.md",
+                "NoFib/Spectral/README.md",
+            ],
             swiftSettings: [
                 .unsafeFlags([
                     "-O",
