@@ -69,6 +69,12 @@ let package = Package(
                 .unsafeFlags([
                     "-O",
                     "-Xllvm", "--swift-to-ptx-verbose",
+                    // Disable unsafe floating point optimisations which may
+                    // give different numerical results in tests
+                    "-Xllvm", "--swift-to-ptx-allow-fp-arcp=false",
+                    "-Xllvm", "--swift-to-ptx-allow-fp-contract=false",
+                    "-Xllvm", "--swift-to-ptx-allow-fp-afn=false",
+                    "-Xllvm", "--swift-to-ptx-allow-fp-reassoc=false",
                     // "-num-threads", "1",
                     // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
                     // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
