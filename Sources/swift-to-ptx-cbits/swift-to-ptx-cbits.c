@@ -1,6 +1,10 @@
 
+#include <errno.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "mimalloc-cbits.h"
 #include "swift-to-ptx-cbits.h"
@@ -53,17 +57,74 @@
 //
 // We should continue to work towards one of these two.
 
-// TODO handle alignment properly, c.f. stdlib/public/runtime/Heap.cpp
+// Minimum alignment for memory returned by mi_malloc. On most platforms 16
+// bytes are needed due to SSE registers for example. This must be at least
+// `sizeof(void*)`. This is also the alignment required by the swift runtime.
+#ifndef MI_MALLOC_ALIGN_SIZE
+#define MI_MALLOC_ALIGN_SIZE  16    // sizeof(max_align_t)
+#endif
 
-void* swift_slowAlloc(size_t size, size_t alignMask) {
-  return mi_malloc(size);
+#ifndef MALLOC_ALIGN_MASK
+#define MALLOC_ALIGN_MASK  15
+#endif
+
+#ifndef UNUSED
+#define UNUSED(x)  (void)(x)
+#endif
+
+static size_t compute_alignment(size_t align_mask) {
+  return (align_mask == ~((size_t)0)) ? MI_MALLOC_ALIGN_SIZE : align_mask + 1;
 }
 
-void* swift_slowAllocTyped(size_t size, size_t alignMask, uint64_t typeId) {
-   return mi_malloc(size);
+static void crash(int err, const char* fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vfprintf(stderr, fmt, args);
+  va_end(args);
+  exit(err);
 }
 
-void swift_slowDealloc(void* ptr, size_t size, size_t alignMask) {
+void* swift_slowAlloc(size_t size, size_t align_mask) {
+  void* p = NULL;
+
+  if (align_mask <= MALLOC_ALIGN_MASK) {
+    p = mi_malloc(size);
+  } else {
+    p = mi_malloc_aligned(size, compute_alignment(align_mask));
+  }
+
+  if (!p) crash(ENOMEM, "Could not allocate %zu bytes memory.\n", size);
+  return p;
+}
+
+void* swift_slowAllocTyped(size_t size, size_t align_mask, uint64_t typeId) {
+  UNUSED(typeId);
+  return swift_slowAlloc(size, align_mask);
+}
+
+void* swift_slowRealloc(void* ptr, size_t size, size_t align_mask) {
+  void* p;
+
+  if (align_mask <= MALLOC_ALIGN_MASK) {
+    p = mi_realloc(ptr, size);
+  } else {
+    p = mi_realloc_aligned(ptr, size, compute_alignment(align_mask));
+  }
+
+  if (!p) crash(ENOMEM, "Could not reallocate 0x%zx to %zu bytes memory.\n", ptr, size);
+  return p;
+}
+
+/* mi_malloc makes no distinction between mi_free() and mi_free_aligned(), other
+ * than that the latter has an assert in debug mode to check the pointer is
+ * aligned as expected. Unfortunately, it turns out the swift runtime is not
+ * consistently de/allocating with the same alignment mask, so we do hit that
+ * assert. Perhaps we should track down that bug within the swift compiler
+ * itself and fix it...
+ */
+void swift_slowDealloc(void* ptr, size_t size, size_t align_mask) {
+  UNUSED(size);
+  UNUSED(align_mask);
   mi_free(ptr);
 }
 
