@@ -17,9 +17,8 @@ public final class Event {
         // See note in Stream.init()
         var tmp : CUevent? = nil
 
-        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
+        // Assumes we have an active context
         cuda_safe_call{cuEventCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
-        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
 
         self.rawEvent = tmp!    // cuEventCreate will error before this is nil
         logger.trace(".init(withFlags: \(withFlags)) -> \(self.rawEvent)")
@@ -38,9 +37,7 @@ public final class Event {
         let __zone = #Zone
         defer { __zone.end() }
 
-        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuEventSynchronize(self.rawEvent)}
-        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
     }
 
     // Returns 'true' if this event is complete
@@ -48,7 +45,6 @@ public final class Event {
         let __zone = #Zone
         defer { __zone.end() }
 
-        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         let status = cuEventQuery(self.rawEvent)
         let result = switch status {
             case CUDA_SUCCESS: true
@@ -61,7 +57,6 @@ public final class Event {
                 fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(status.rawValue)): \(String.init(cString: desc!))")
             }()
         }
-        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
         return result
     }
 
@@ -70,9 +65,7 @@ public final class Event {
     // will automatically be released asynchronously upon completion.
     deinit {
         logger.trace("Destroy event \(self.rawEvent)")
-        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
         cuda_safe_call{cuEventDestroy_v2(self.rawEvent)}
-        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
     }
 }
 

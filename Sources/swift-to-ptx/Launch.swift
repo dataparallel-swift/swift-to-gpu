@@ -40,7 +40,7 @@ public func launch_parallel_for
     let __zone = #Zone
     defer { __zone.end() }
 
-    cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
+    context.push()
 
     if kernel.module == nil {
         var minGridSize : Int32 = 0
@@ -109,8 +109,9 @@ public func launch_parallel_for
         })})})})})
     }
 
-    cuda_safe_call{cuCtxPopCurrent_v2(nil)}
+    let event = stream.record()
+    context.pop()
 
-    return stream.record()
+    return event
 }
 

@@ -1,3 +1,6 @@
+variables:
+  BENCHMARK_DISABLE_JEMALLOC: true
+
 include:
   - component: gitlab.com/PassiveLogic/ci/commitlint@4
   # - component: gitlab.com/PassiveLogic/ci/swiftlint@4
@@ -11,7 +14,6 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
-      parallel-workers: 1
       enable-code-coverage: false
       additional-setup:
         - apt install -y libcapstone-dev

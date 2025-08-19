@@ -1,7 +1,6 @@
-import CUDA
 import Tracy
 import Logging
-import SwiftToPTX_cbits
+import mimalloc
 import NIOConcurrencyHelpers
 
 private let logger = Logger(label: "CachingHostAllocator")
@@ -134,25 +133,13 @@ public struct CachingHostAllocator {
 
             // Otherwise, allocate a new block.
             if ptr == nil {
-                cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
-                let result = cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])
-                switch result {
-                    case CUDA_SUCCESS: break
-                    case CUDA_ERROR_OUT_OF_MEMORY:
-                        // If the allocation fails, free the cached blocks and
-                        // try to allocate again
-                        logger.trace("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freeing cached allocations")
-                        self.cleanup()
-                        cuda_safe_call{cuMemAllocHost_v2(&ptr, bin_size_bytes[bin])}
-
-                    default:
-                        var name : UnsafePointer<CChar>? = nil
-                        var desc : UnsafePointer<CChar>? = nil
-                        cuGetErrorName(result, &name)
-                        cuGetErrorString(result, &desc)
-                        fatalError("CUDA call failed with error \(String.init(cString: name!)) (\(result.rawValue)): \(String.init(cString: desc!))")
+                ptr = mi_malloc(bin_size_bytes[bin])
+                if ptr == nil {
+                    logger.trace("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freeing cached allocations")
+                    if self.cleanup() {
+                        return alloc(bytes)
+                    }
                 }
-                cuda_safe_call{cuCtxPopCurrent_v2(nil)}
                 logger.trace("Allocated new block at \(ptr!) (\(bin_size_bytes[bin]) bytes)")
             }
             else {
@@ -167,17 +154,14 @@ public struct CachingHostAllocator {
             // This is an allocation larger than the maximum bin size that we
             // are caching. Allocate the request exactly and don't cache it for
             // reuse.
-            cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
-            cuda_safe_call{cuMemAllocHost_v2(&ptr, bytes)}
-            cuda_safe_call{cuCtxPopCurrent_v2(nil)}
+            ptr = mi_malloc(bytes)
             let old = live_blocks.withLockedValue() { $0.updateValue(nil, forKey: ptr!) }
             assert(old == nil, "unexpectedly, block already exists (ptr=\(ptr!))")
         }
 
-        // TODO: Check if there any large blocks to remove. This should probably
-        // happen in a low-priority background thread (we can force purge if we
-        // run out of memory, but we probably don't want to add the overhead of
-        // checking on every allocation)
+        // TODO: Check if there any large blocks to remove. This could happen in
+        // a low-priority background thread, or just check every N (say, 1000)
+        // generic allocations. Right now these blocks just leak...
 
         return ptr!
     }
@@ -211,7 +195,7 @@ public struct CachingHostAllocator {
     }
 
     // Free all currently unused memory
-    func cleanup() {
+    func cleanup() -> Bool {
         let __zone = #Zone
         defer { __zone.end() }
 
@@ -230,25 +214,25 @@ public struct CachingHostAllocator {
         }
 
         for bin in 0..<bin_size_bytes.count {
+            let size = bin_size_bytes[bin]
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     if block.ready_event.complete() {
                         blocks.remove(block)
-                        cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
-                        cuda_safe_call{cuMemFreeHost(block.ptr)}
-                        cuda_safe_call{cuCtxPopCurrent_v2(nil)}
-
+                        mi_free(block.ptr)
                         num_cached_blocks_freed += 1
-                        cached_bytes_freed += bin_size_bytes[bin]
+                        cached_bytes_freed += size
                     } else {
                         num_cached_blocks_outstanding += 1
-                        cached_bytes_outstanding += bin_size_bytes[bin]
+                        cached_bytes_outstanding += size
                     }
                 }
             }
         }
 
         logger.info("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
+
+        return cached_bytes_freed > 0
     }
 
     public func destroy() {
@@ -262,9 +246,7 @@ public struct CachingHostAllocator {
                 for block in blocks {
                     block.ready_event.sync()
                     blocks.remove(block)
-                    cuda_safe_call{cuCtxPushCurrent_v2(default_context)}
-                    cuda_safe_call{cuMemFreeHost(block.ptr)}
-                    cuda_safe_call{cuCtxPopCurrent_v2(nil)}
+                    mi_free(block.ptr)
                 }
             }
         }

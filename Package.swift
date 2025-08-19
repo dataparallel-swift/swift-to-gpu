@@ -4,7 +4,12 @@
 import Foundation
 import PackageDescription
 
-let libraryType: Product.Library.LibraryType? = (ProcessInfo.processInfo.environment["BUILD_STATIC_LIBRARIES"] == "true") ? .static : nil
+let libraryType     = ProcessInfo.processInfo.environment["BUILD_STATIC_LIBRARIES"].isSet ? Product.Library.LibraryType.static : nil
+let disableJemalloc = ProcessInfo.processInfo.environment["BENCHMARK_DISABLE_JEMALLOC"].isSet
+
+if !disableJemalloc {
+    print("Set BENCHMARK_DISABLE_JEMALLOC=true to get accurate data from package-benchmark!")
+}
 
 let package = Package(
     name: "swift-to-ptx",
@@ -23,6 +28,7 @@ let package = Package(
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "main"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", revision: "0.2"),
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "feat/cuda"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -30,9 +36,10 @@ let package = Package(
         .target(
             name: "SwiftToPTX_cbits",
             dependencies: [
-                .product(name: "CUDA", package: "swift-cuda")
+                .product(name: "swift-mimalloc", package: "swift-mimalloc"),
             ],
-            path: "Sources/swift-to-ptx-cbits"
+            path: "Sources/swift-to-ptx-cbits",
+            publicHeadersPath: ".",
         ),
         .target(
             name: "SwiftToPTX",
@@ -43,6 +50,7 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
+                .product(name: "swift-mimalloc", package: "swift-mimalloc"),
             ],
             path: "Sources/swift-to-ptx"
         ),
@@ -144,3 +152,13 @@ let package = Package(
         )
     ]
 )
+
+fileprivate extension String? {
+  var isSet: Bool {
+    if let v = self {
+      return v.isEmpty || v == "1" || v.lowercased() == "true"
+    }
+    return false
+  }
+}
+
