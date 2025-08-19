@@ -57,10 +57,24 @@ let package = Package(
                 .product(name: "Testing", package: "swift-testing")
             ],
             path: "Tests/nofib",
+            exclude: [
+                "NoFib/Imaginary/README.md",
+                "NoFib/Issues/README.md",
+                "NoFib/Language/README.md",
+                "NoFib/Prelude/README.md",
+                "NoFib/Real/README.md",
+                "NoFib/Spectral/README.md",
+            ],
             swiftSettings: [
                 .unsafeFlags([
                     "-O",
                     "-Xllvm", "--swift-to-ptx-verbose",
+                    // Disable unsafe floating point optimisations which may
+                    // give different numerical results in tests
+                    "-Xllvm", "--swift-to-ptx-allow-fp-arcp=false",
+                    "-Xllvm", "--swift-to-ptx-allow-fp-contract=false",
+                    "-Xllvm", "--swift-to-ptx-allow-fp-afn=false",
+                    "-Xllvm", "--swift-to-ptx-allow-fp-reassoc=false",
                     // "-num-threads", "1",
                     // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
                     // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
