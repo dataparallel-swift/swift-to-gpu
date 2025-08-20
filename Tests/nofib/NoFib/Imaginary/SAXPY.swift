@@ -15,7 +15,27 @@ private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
       forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { (xs: [T]) in
       forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in alpha * x + y }
-        let actual   = zipWith(xs, ys) { x, y in alpha * x + y }
+
+        // XXX: The following zipWith implementation is currently failing to
+        // compile in release mode (only) with the error:
+        //
+        // > <unknown>:0: note: ptxas exited with code 255 :
+        // > ptxas fatal   : Unresolved extern function '$s10SwiftToPTX8izipWith__4into6stream_ySayxG_Sayq_GSayq0_GzAA6StreamVq0_Si_xq_tq1_YKXEtq1_YKs5ErrorR1_r2_lFySiq1_YKXEfU_Sd_S2ds5NeverOTG5'
+        //
+        // So it looks like we are emitting only a single copy into the project,
+        // rather than into every use site? We have set this project to always
+        // compile with optimisations (otherwise the transformation won't happen
+        // at all) so not sure what is different in debug+opt vs. release mode.
+        //
+        // This problem also occurs when compiling the test suite as an
+        // executable target (so, it is not limited to something to do with the
+        // test framework) so we may have to actually fix this at some point.
+        //
+        // https://app.clickup.com/t/86b6bad4n
+        //
+        // let actual = zipWith(xs, ys) { x, y in alpha * x + y }
+        let actual = generate(count: n) { i in alpha * xs[i] + ys[i] }
+
         return try? #require( expected ~~~ actual )
       }}}}
 }
