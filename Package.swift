@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
-        .package(url: "https://github.com/apple/swift-log.git", "1.4.0" ..< "2.0.0"),
+        .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "6.0.3"),
