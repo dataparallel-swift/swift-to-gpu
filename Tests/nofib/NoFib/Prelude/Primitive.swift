@@ -912,10 +912,11 @@ private func prop_minus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
 
 // @inline(never)
 // Workaround for https://app.clickup.com/t/86b4gq1tv
-private func prop_minus_safe<T : Arbitrary & AdditiveArithmetic & Comparable>(_ proxy: T.Type) {
+private func prop_minus_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+    let gen = T.arbitrary.suchThat { (T.min/2) <= $0 && $0 <= (T.max/2) }
     property(String(describing: T.self)+".avoiding_underflow.-") <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink(gen.proliferate) { (xs: [T]) in
+      forAllNoShrink(gen.proliferate) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in if x > y { x - y } else { y - x } }
         let actual   = zipWith(xs, ys) { x, y in if x > y { x - y } else { y - x } }
         return try? #require( actual == expected )
@@ -939,8 +940,8 @@ private func prop_mul<T : Arbitrary & Numeric>(_ proxy: T.Type) {
 // @inline(never)
 // Workaround for https://app.clickup.com/t/86b4gq1tv
 private func prop_mul_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
-    let lim = T(Double(T.max).squareRoot())
-    let gen = T.arbitrary.suchThat { $0 <= lim }
+    let lim = Double(T.max).squareRoot()
+    let gen = T.arbitrary.suchThat { abs(Double($0)) <= lim }
     property(String(describing: T.self)+".avoiding_overflow.*") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
       forAllNoShrink(gen.proliferate) { (ys: [T]) in
@@ -1824,5 +1825,4 @@ private func prop_hypot<T : Arbitrary & Similar & RealFunctions>(_ proxy: T.Type
         return try? #require( actual ~~~ expected )
       }}
 }
-
 
