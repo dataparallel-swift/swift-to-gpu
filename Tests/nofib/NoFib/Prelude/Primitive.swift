@@ -20,8 +20,11 @@ import SwiftToPTX
         @Test("Int8.abs") func test_abs() { prop_abs(Int8.self) }
         @Test("Int8.signum") func test_signum() { prop_signum(Int8.self) }
         // @Test("Int8.+", .bug(id: "86b4gq1tv")) func test_plus() { prop_plus(Int8.self) }
+        @Test("Int8.avoiding_overflow.+") func test_plus_safe() { prop_plus_safe(Int8.self) }
         // @Test("Int8.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(Int8.self) }
+        @Test("Int8.avoiding_underflow.-") func test_minus_safe() { prop_minus_safe(Int8.self) }
         // @Test("Int8.*", .bug(id: "86b4gq1tv")) func test_mul() { prop_mul(Int8.self) }
+        @Test("Int8.avoiding_overflow.*") func test_mul_safe() { prop_mul_safe(Int8.self) }
         @Test("Int8./") func test_quot() { prop_quot(Int8.self) }
         @Test("Int8.%") func test_rem() { prop_rem(Int8.self) }
         @Test("Int8.&+") func test_uncheckedPlus() { prop_uncheckedPlus(Int8.self) }
@@ -269,7 +272,9 @@ import SwiftToPTX
         @Test("UInt8.signum") func test_signum() { prop_signum(UInt8.self) }
         @Test("UInt8.+") func test_plus() { prop_plus(UInt8.self) }
         // @Test("UInt8.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(UInt8.self) }
+        @Test("UInt8.avoiding_underflow.-") func test_minus_safe() { prop_minus_safe(UInt8.self) }
         // @Test("UInt8.*", .bug(id: "86b4gq1tv")) func test_mul() { prop_mul(UInt8.self) }
+        @Test("UInt8.avoiding_overflow.*") func test_mul_safe() { prop_mul_safe(UInt8.self) }
         @Test("UInt8./") func test_quot() { prop_quot(UInt8.self) }
         @Test("UInt8.%") func test_rem() { prop_rem(UInt8.self) }
         @Test("UInt8.&+") func test_uncheckedPlus() { prop_uncheckedPlus(UInt8.self) }
@@ -317,6 +322,7 @@ import SwiftToPTX
         @Test("UInt16.signum") func test_signum() { prop_signum(UInt16.self) }
         @Test("UInt16.+") func test_plus() { prop_plus(UInt16.self) }
         // @Test("UInt16.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(UInt16.self) }
+        @Test("UInt16.avoiding_underflow.-") func test_minus_safe() { prop_minus_safe(UInt16.self) }
         @Test("UInt16.*") func test_mul() { prop_mul(UInt16.self) }
         @Test("UInt16./") func test_quot() { prop_quot(UInt16.self) }
         @Test("UInt16.%") func test_rem() { prop_rem(UInt16.self) }
@@ -365,6 +371,7 @@ import SwiftToPTX
         @Test("UInt32.signum") func test_signum() { prop_signum(UInt32.self) }
         @Test("UInt32.+") func test_plus() { prop_plus(UInt32.self) }
         // @Test("UInt32.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(UInt32.self) }
+        @Test("UInt32.avoiding_underflow.-") func test_minus_safe() { prop_minus_safe(UInt32.self) }
         @Test("UInt32.*") func test_mul() { prop_mul(UInt32.self) }
         @Test("UInt32./") func test_quot() { prop_quot(UInt32.self) }
         @Test("UInt32.%") func test_rem() { prop_rem(UInt32.self) }
@@ -413,6 +420,7 @@ import SwiftToPTX
         @Test("UInt64.signum") func test_signum() { prop_signum(UInt64.self) }
         @Test("UInt64.+") func test_plus() { prop_plus(UInt64.self) }
         // @Test("UInt64.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(UInt64.self) }
+        @Test("UInt64.avoiding_underflow.-") func test_minus_safe() { prop_minus_safe(UInt64.self) }
         @Test("UInt64.*") func test_mul() { prop_mul(UInt64.self) }
         @Test("UInt64./") func test_quot() { prop_quot(UInt64.self) }
         @Test("UInt64.%") func test_rem() { prop_rem(UInt64.self) }
@@ -461,6 +469,7 @@ import SwiftToPTX
         @Test("UInt.signum") func test_signum() { prop_signum(UInt.self) }
         @Test("UInt.+") func test_plus() { prop_plus(UInt.self) }
         // @Test("UInt.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(UInt.self) }
+        @Test("UInt.avoiding_underflow.-") func test_minus_safe() { prop_minus_safe(UInt.self) }
         @Test("UInt.*") func test_mul() { prop_mul(UInt.self) }
         @Test("UInt./") func test_quot() { prop_quot(UInt.self) }
         @Test("UInt.%") func test_rem() { prop_rem(UInt.self) }
@@ -878,12 +887,37 @@ private func prop_plus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
 }
 
 // @inline(never)
+// Workaround for https://app.clickup.com/t/86b4gq1tv
+private func prop_plus_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+    let gen = T.arbitrary.suchThat { (T.min/2) <= $0 && $0 <= (T.max/2) }
+    property(String(describing: T.self)+".avoiding_overflow.+") <-
+      forAllNoShrink(gen.proliferate) { (xs: [T]) in
+      forAllNoShrink(gen.proliferate) { (ys: [T]) in
+        let expected = zip(xs, ys).map{ (x, y) in x + y }
+        let actual   = zipWith(xs, ys, +)
+        return try? #require( actual == expected )
+      }}
+}
+
+// @inline(never)
 private func prop_minus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
     property(String(describing: T.self)+".-") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x - y }
         let actual   = zipWith(xs, ys, -)
+        return try? #require( actual == expected )
+      }}
+}
+
+// @inline(never)
+// Workaround for https://app.clickup.com/t/86b4gq1tv
+private func prop_minus_safe<T : Arbitrary & AdditiveArithmetic & Comparable>(_ proxy: T.Type) {
+    property(String(describing: T.self)+".avoiding_underflow.-") <-
+      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+        let expected = zip(xs, ys).map{ (x, y) in if x > y { x - y } else { y - x } }
+        let actual   = zipWith(xs, ys) { x, y in if x > y { x - y } else { y - x } }
         return try? #require( actual == expected )
       }}
 }
@@ -902,6 +936,19 @@ private func prop_mul<T : Arbitrary & Numeric>(_ proxy: T.Type) {
       }}
 }
 
+// @inline(never)
+// Workaround for https://app.clickup.com/t/86b4gq1tv
+private func prop_mul_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+    let lim = T(Double(T.max).squareRoot())
+    let gen = T.arbitrary.suchThat { $0 <= lim }
+    property(String(describing: T.self)+".avoiding_overflow.*") <-
+      forAllNoShrink(gen.proliferate) { (xs: [T]) in
+      forAllNoShrink(gen.proliferate) { (ys: [T]) in
+        let expected = zip(xs, ys).map{ (x, y) in x * y }
+        let actual   = zipWith(xs, ys, *)
+        return try? #require( actual == expected )
+      }}
+}
 
 // MARK: BinaryInteger
 
