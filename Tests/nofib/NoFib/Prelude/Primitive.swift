@@ -204,6 +204,56 @@ import SwiftToPTX
         @Test("Int64.&>>") func test_uncheckedShiftR() { prop_uncheckedShiftR(Int64.self) }
     }
 
+    @Suite("Int") struct IntTests {
+        // Ordering
+        @Test("Int.==") func test_eq() { prop_eq(Int.self) }
+        @Test("Int.!=") func test_neq() { prop_neq(Int.self) }
+        @Test("Int.<") func test_lt() { prop_lt(Int.self) }
+        @Test("Int.>") func test_gt() { prop_gt(Int.self) }
+        @Test("Int.<=") func test_lte() { prop_lte(Int.self) }
+        @Test("Int.>=") func test_gte() { prop_gte(Int.self) }
+        @Test("Int.min") func test_min() { prop_min(Int.self) }
+        @Test("Int.max") func test_max() { prop_max(Int.self) }
+
+        // Numeric
+        @Test("Int.negate") func test_negate() { prop_negate(Int.self) }
+        @Test("Int.abs") func test_abs() { prop_abs(Int.self) }
+        @Test("Int.signum") func test_signum() { prop_signum(Int.self) }
+        @Test("Int.+") func test_plus() { prop_plus(Int.self) }
+        @Test("Int.-") func test_minus() { prop_minus(Int.self) }
+        @Test("Int.*") func test_mul() { prop_mul(Int.self) }
+        @Test("Int./") func test_quot() { prop_quot(Int.self) }
+        @Test("Int.%") func test_rem() { prop_rem(Int.self) }
+        @Test("Int.&+") func test_uncheckedPlus() { prop_uncheckedPlus(Int.self) }
+        @Test("Int.&-") func test_uncheckedMinus() { prop_uncheckedMinus(Int.self) }
+        @Test("Int.&*") func test_uncheckedMul() { prop_uncheckedMul(Int.self) }
+        @Test("Int.quotientAndRemainder") func test_quotientAndRemainder() { prop_quotientAndRemainder(Int.self) }
+        @Test("Int.isMultiple") func test_isMultiple() { prop_isMultiple(Int.self) }
+        @Test("Int.addingReportingOverflow") func test_addingReportingOverflow() { prop_addingReportingOverflow(Int.self) }
+        @Test("Int.subtractingReportingOverflow") func test_subtractingReportingOverflow() { prop_subtractingReportingOverflow(Int.self) }
+        @Test("Int.multipliedReportingOverflow") func test_multipliedReportingOverflow() { prop_multipliedReportingOverflow(Int.self) }
+        @Test("Int.dividedReportingOverflow") func test_dividedReportingOverflow() { prop_dividedReportingOverflow(Int.self) }
+        @Test("Int.remainderReportingOverflow") func test_remainderReportingOverflow() { prop_remainderReportingOverflow(Int.self) }
+        @Test("Int.multipliedFullWidth") func test_multipliedFullWidth() { prop_multipliedFullWidth(Int.self) }
+        // @Test("Int.dividingFullWidth", .bug(id: "86b4gqe8t")) func test_dividingFullWidth() { prop_dividingFullWidth(Int.self) }
+
+        // Bitwise
+        @Test("Int.complement") func test_complement() { prop_complement(Int.self) }
+        @Test("Int.zeroBitCount") func test_nonzeroBitCount() { prop_nonzeroBitCount(Int.self) }
+        @Test("Int.leadingZeroBitCount") func test_leadingZeroBitCount() { prop_leadingZeroBitCount(Int.self) }
+        @Test("Int.trailingZeroBitCount") func test_trailingZeroBitCount() { prop_trailingZeroBitCount(Int.self) }
+        @Test("Int.byteSwapped") func test_byteSwapped() { prop_byteSwapped(Int.self) }
+        @Test("Int.littleEndian") func test_littleEndian() { prop_littleEndian(Int.self) }
+        @Test("Int.bigEndian") func test_bigEndian() { prop_bigEndian(Int.self) }
+        @Test("Int.&") func test_and() { prop_and(Int.self) }
+        @Test("Int.|") func test_or() { prop_or(Int.self) }
+        @Test("Int.^") func test_xor() { prop_xor(Int.self) }
+        @Test("Int.<<") func test_shiftL() { prop_shiftL(Int.self) }
+        @Test("Int.>>") func test_shiftR() { prop_shiftR(Int.self) }
+        @Test("Int.&<<") func test_uncheckedShiftL() { prop_uncheckedShiftL(Int.self) }
+        @Test("Int.&>>") func test_uncheckedShiftR() { prop_uncheckedShiftR(Int.self) }
+    }
+
     @Suite("UInt8") struct UInt8Tests {
         // Ordering
         @Test("UInt8.==") func test_eq() { prop_eq(UInt8.self) }
@@ -394,6 +444,54 @@ import SwiftToPTX
         @Test("UInt64.>>") func test_shiftR() { prop_shiftR(UInt64.self) }
         @Test("UInt64.&<<") func test_uncheckedShiftL() { prop_uncheckedShiftL(UInt64.self) }
         @Test("UInt64.&>>") func test_uncheckedShiftR() { prop_uncheckedShiftR(UInt64.self) }
+    }
+
+    @Suite("UInt") struct UIntTests {
+        // Ordering
+        @Test("UInt.==") func test_eq() { prop_eq(UInt.self) }
+        @Test("UInt.!=") func test_neq() { prop_neq(UInt.self) }
+        @Test("UInt.<") func test_lt() { prop_lt(UInt.self) }
+        @Test("UInt.>") func test_gt() { prop_gt(UInt.self) }
+        @Test("UInt.<=") func test_lte() { prop_lte(UInt.self) }
+        @Test("UInt.>=") func test_gte() { prop_gte(UInt.self) }
+        @Test("UInt.min") func test_min() { prop_min(UInt.self) }
+        @Test("UInt.max") func test_max() { prop_max(UInt.self) }
+
+        // Numeric
+        @Test("UInt.signum") func test_signum() { prop_signum(UInt.self) }
+        @Test("UInt.+") func test_plus() { prop_plus(UInt.self) }
+        // @Test("UInt.-", .bug(id: "86b4gq1tv")) func test_minus() { prop_minus(UInt.self) }
+        @Test("UInt.*") func test_mul() { prop_mul(UInt.self) }
+        @Test("UInt./") func test_quot() { prop_quot(UInt.self) }
+        @Test("UInt.%") func test_rem() { prop_rem(UInt.self) }
+        @Test("UInt.&+") func test_uncheckedPlus() { prop_uncheckedPlus(UInt.self) }
+        @Test("UInt.&-") func test_uncheckedMinus() { prop_uncheckedMinus(UInt.self) }
+        @Test("UInt.&*") func test_uncheckedMul() { prop_uncheckedMul(UInt.self) }
+        @Test("UInt.quotientAndRemainder") func test_quotientAndRemainder() { prop_quotientAndRemainder(UInt.self) }
+        @Test("UInt.isMultiple") func test_isMultiple() { prop_isMultiple(UInt.self) }
+        @Test("UInt.addingReportingOverflow") func test_addingReportingOverflow() { prop_addingReportingOverflow(UInt.self) }
+        @Test("UInt.subtractingReportingOverflow") func test_subtractingReportingOverflow() { prop_subtractingReportingOverflow(UInt.self) }
+        @Test("UInt.multipliedReportingOverflow") func test_multipliedReportingOverflow() { prop_multipliedReportingOverflow(UInt.self) }
+        @Test("UInt.dividedReportingOverflow") func test_dividedReportingOverflow() { prop_dividedReportingOverflow(UInt.self) }
+        @Test("UInt.remainderReportingOverflow") func test_remainderReportingOverflow() { prop_remainderReportingOverflow(UInt.self) }
+        @Test("UInt.multipliedFullWidth") func test_multipliedFullWidth() { prop_multipliedFullWidth(UInt.self) }
+        // @Test("UInt.dividingFullWidth", .bug(id: "86b4gq3w3")) func test_dividingFullWidth() { prop_dividingFullWidth(UInt.self) }
+
+        // Bitwise
+        @Test("UInt.complement") func test_complement() { prop_complement(UInt.self) }
+        @Test("UInt.zeroBitCount") func test_nonzeroBitCount() { prop_nonzeroBitCount(UInt.self) }
+        @Test("UInt.leadingZeroBitCount") func test_leadingZeroBitCount() { prop_leadingZeroBitCount(UInt.self) }
+        @Test("UInt.trailingZeroBitCount") func test_trailingZeroBitCount() { prop_trailingZeroBitCount(UInt.self) }
+        @Test("UInt.byteSwapped") func test_byteSwapped() { prop_byteSwapped(UInt.self) }
+        @Test("UInt.littleEndian") func test_littleEndian() { prop_littleEndian(UInt.self) }
+        @Test("UInt.bigEndian") func test_bigEndian() { prop_bigEndian(UInt.self) }
+        @Test("UInt.&") func test_and() { prop_and(UInt.self) }
+        @Test("UInt.|") func test_or() { prop_or(UInt.self) }
+        @Test("UInt.^") func test_xor() { prop_xor(UInt.self) }
+        @Test("UInt.<<") func test_shiftL() { prop_shiftL(UInt.self) }
+        @Test("UInt.>>") func test_shiftR() { prop_shiftR(UInt.self) }
+        @Test("UInt.&<<") func test_uncheckedShiftL() { prop_uncheckedShiftL(UInt.self) }
+        @Test("UInt.&>>") func test_uncheckedShiftR() { prop_uncheckedShiftR(UInt.self) }
     }
 
 #if arch(arm64)

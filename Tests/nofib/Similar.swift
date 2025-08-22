@@ -42,6 +42,13 @@ extension Int128 : Similar {
     }
 }
 
+extension Int : Similar {
+    @inlinable
+    static func ~~~ (lhs: Self, rhs: Self) -> Bool {
+        lhs == rhs
+    }
+}
+
 extension UInt8 : Similar {
     @inlinable
     static func ~~~ (lhs: Self, rhs: Self) -> Bool {
@@ -71,6 +78,13 @@ extension UInt64 : Similar {
 }
 
 extension UInt128 : Similar {
+    @inlinable
+    static func ~~~ (lhs: Self, rhs: Self) -> Bool {
+        lhs == rhs
+    }
+}
+
+extension UInt : Similar {
     @inlinable
     static func ~~~ (lhs: Self, rhs: Self) -> Bool {
         lhs == rhs
