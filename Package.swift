@@ -6,6 +6,7 @@ import PackageDescription
 
 let libraryType     = ProcessInfo.processInfo.environment["BUILD_STATIC_LIBRARIES"].isSet ? Product.Library.LibraryType.static : nil
 let disableJemalloc = ProcessInfo.processInfo.environment["BENCHMARK_DISABLE_JEMALLOC"].isSet
+let enableTracy     = ProcessInfo.processInfo.environment["SWIFT_TRACY_ENABLE"].isSet
 
 if !disableJemalloc {
     print("Set BENCHMARK_DISABLE_JEMALLOC=true to get accurate data from package-benchmark!")
@@ -22,12 +23,11 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
-        .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "6.0.3"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "main"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", revision: "0.2"),
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "feat/cuda"),
     ],
     targets: [
@@ -36,10 +36,16 @@ let package = Package(
         .target(
             name: "SwiftToPTX_cbits",
             dependencies: [
+                .product(name: "TracyC", package: "swift-tracy"),
                 .product(name: "swift-mimalloc", package: "swift-mimalloc"),
             ],
             path: "Sources/swift-to-ptx-cbits",
             publicHeadersPath: ".",
+            cSettings: !enableTracy ? [] : [
+                .define("TRACY_ENABLE"),
+                .define("TRACY_DELAYED_INIT"),
+                .define("TRACY_MANUAL_LIFETIME"),
+            ],
         ),
         .target(
             name: "SwiftToPTX",
@@ -50,7 +56,6 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
-                .product(name: "swift-mimalloc", package: "swift-mimalloc"),
             ],
             path: "Sources/swift-to-ptx"
         ),
@@ -62,7 +67,6 @@ let package = Package(
                 "SwiftCheck",
                 "SwiftToPTX",
                 .product(name: "Numerics", package: "swift-numerics"),
-                .product(name: "Testing", package: "swift-testing")
             ],
             path: "Tests/nofib",
             exclude: [

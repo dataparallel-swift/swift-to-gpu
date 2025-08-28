@@ -1,6 +1,6 @@
 import Tracy
 import Logging
-import mimalloc
+import SwiftToPTX_cbits
 import NIOConcurrencyHelpers
 
 private let logger = Logger(label: "CachingHostAllocator")
@@ -133,7 +133,7 @@ public struct CachingHostAllocator {
 
             // Otherwise, allocate a new block.
             if ptr == nil {
-                ptr = mi_malloc(bin_size_bytes[bin])
+                ptr = swift_slowAlloc(bin_size_bytes[bin], 0)
                 if ptr == nil {
                     logger.trace("Failed to allocate \(bin_size_bytes[bin]) bytes, retrying after freeing cached allocations")
                     if self.cleanup() {
@@ -154,7 +154,7 @@ public struct CachingHostAllocator {
             // This is an allocation larger than the maximum bin size that we
             // are caching. Allocate the request exactly and don't cache it for
             // reuse.
-            ptr = mi_malloc(bytes)
+            ptr = swift_slowAlloc(bytes, 0);
             let old = live_blocks.withLockedValue() { $0.updateValue(nil, forKey: ptr!) }
             assert(old == nil, "unexpectedly, block already exists (ptr=\(ptr!))")
         }
@@ -219,7 +219,7 @@ public struct CachingHostAllocator {
                 for block in blocks {
                     if block.ready_event.complete() {
                         blocks.remove(block)
-                        mi_free(block.ptr)
+                        swift_slowDealloc(block.ptr, size, 0)
                         num_cached_blocks_freed += 1
                         cached_bytes_freed += size
                     } else {
@@ -242,11 +242,12 @@ public struct CachingHostAllocator {
         for bin in 0..<bin_size_bytes.count {
             assert(live_blocks.withLockedValue() { $0.count } == 0, "allocator is still holding onto live memory")
 
+            let size = bin_size_bytes[bin]
             cached_blocks[bin].withLockedValue() { blocks in
                 for block in blocks {
                     block.ready_event.sync()
                     blocks.remove(block)
-                    mi_free(block.ptr)
+                    swift_slowDealloc(block.ptr, size, 0)
                 }
             }
         }

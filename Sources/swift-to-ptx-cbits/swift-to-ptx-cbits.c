@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "tracy-cbits.h"
 #include "mimalloc-cbits.h"
 #include "swift-to-ptx-cbits.h"
 
@@ -68,8 +69,28 @@
 #define MALLOC_ALIGN_MASK  15
 #endif
 
+#ifndef TRACY_CALLSTACK
+#define TRACY_CALLSTACK 0
+#endif
+
 #ifndef UNUSED
 #define UNUSED(x)  (void)(x)
+#endif
+
+#ifndef TRACY_ENABLE
+#define TRACY_UNLIKELY(x)     (false)
+#define TRACY_LIKELY(x)       (false)
+#else
+#if defined(__GNUC__) || defined(__clang__)
+#define TRACY_UNLIKELY(x)     (__builtin_expect(!!(x),false))
+#define TRACY_LIKELY(x)       (__builtin_expect(!!(x),true))
+#elif (defined(__cplusplus) && (__cplusplus >= 202002L)) || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
+#define TRACY_UNLIKELY(x)     (x) [[unlikely]]
+#define TRACY_LIKELY(x)       (x) [[likely]]
+#else
+#define TRACY_UNLIKELY(x)     (x)
+#define TRACY_LIKELY(x)       (x)
+#endif
 #endif
 
 static size_t compute_alignment(size_t align_mask) {
@@ -84,17 +105,24 @@ static void crash(int err, const char* fmt, ...) {
   exit(err);
 }
 
+static const char* swift = "Swift memory usage";
+
 void* swift_slowAlloc(size_t size, size_t align_mask) {
-  void* p = NULL;
+  void* ptr = NULL;
 
   if (align_mask <= MALLOC_ALIGN_MASK) {
-    p = mi_malloc(size);
+    ptr = mi_malloc(size);
   } else {
-    p = mi_malloc_aligned(size, compute_alignment(align_mask));
+    ptr = mi_malloc_aligned(size, compute_alignment(align_mask));
   }
 
-  if (!p) crash(ENOMEM, "Could not allocate %zu bytes memory.\n", size);
-  return p;
+  if (!ptr) crash(ENOMEM, "Could not allocate %zu bytes memory.\n", size);
+
+  if TRACY_LIKELY(TracyCIsStarted) {
+    TracyCAllocN(ptr, size, swift);
+  }
+
+  return ptr;
 }
 
 void* swift_slowAllocTyped(size_t size, size_t align_mask, uint64_t typeId) {
@@ -102,17 +130,26 @@ void* swift_slowAllocTyped(size_t size, size_t align_mask, uint64_t typeId) {
   return swift_slowAlloc(size, align_mask);
 }
 
-void* swift_slowRealloc(void* ptr, size_t size, size_t align_mask) {
-  void* p;
+void* swift_slowRealloc(void* old_ptr, size_t new_size, size_t align_mask) {
+  void* new_ptr;
 
-  if (align_mask <= MALLOC_ALIGN_MASK) {
-    p = mi_realloc(ptr, size);
-  } else {
-    p = mi_realloc_aligned(ptr, size, compute_alignment(align_mask));
+  if TRACY_LIKELY(TracyCIsStarted) {
+    TracyCFreeN(old_ptr, swift);
   }
 
-  if (!p) crash(ENOMEM, "Could not reallocate 0x%zx to %zu bytes memory.\n", ptr, size);
-  return p;
+  if (align_mask <= MALLOC_ALIGN_MASK) {
+    new_ptr = mi_realloc(old_ptr, new_size);
+  } else {
+    new_ptr = mi_realloc_aligned(old_ptr, new_size, compute_alignment(align_mask));
+  }
+
+  if (!new_ptr) crash(ENOMEM, "Could not reallocate 0x%zx to %zu bytes memory.\n", old_ptr, new_size);
+
+  if TRACY_LIKELY(TracyCIsStarted) {
+    TracyCAllocN(new_ptr, new_size, swift);
+  }
+
+  return new_ptr;
 }
 
 /* mi_malloc makes no distinction between mi_free() and mi_free_aligned(), other
@@ -125,6 +162,11 @@ void* swift_slowRealloc(void* ptr, size_t size, size_t align_mask) {
 void swift_slowDealloc(void* ptr, size_t size, size_t align_mask) {
   UNUSED(size);
   UNUSED(align_mask);
+
+  if TRACY_LIKELY(TracyCIsStarted) {
+    TracyCFreeN(ptr, swift);
+  }
+
   mi_free(ptr);
 }
 
