@@ -5,7 +5,7 @@ include:
   - component: gitlab.com/PassiveLogic/ci/commitlint@4
   # - component: gitlab.com/PassiveLogic/ci/swiftlint@4
   # - component: gitlab.com/PassiveLogic/ci/swiftformat@4
-  # - component: gitlab.com/PassiveLogic/ci/swift-import-analyzer@4
+  - component: gitlab.com/PassiveLogic/ci/swift-import-analyzer@4
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
