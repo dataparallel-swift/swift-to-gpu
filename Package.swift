@@ -23,7 +23,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
-        .package(url: "https://github.com/swiftlang/swift-testing.git", revision: "6.0.3"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
@@ -68,7 +67,6 @@ let package = Package(
                 "SwiftCheck",
                 "SwiftToPTX",
                 .product(name: "Numerics", package: "swift-numerics"),
-                .product(name: "Testing", package: "swift-testing")
             ],
             path: "Tests/nofib",
             exclude: [
