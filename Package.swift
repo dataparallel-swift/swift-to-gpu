@@ -12,6 +12,16 @@ if !disableJemalloc {
     print("Set BENCHMARK_DISABLE_JEMALLOC=true to get accurate data from package-benchmark!")
 }
 
+var _cSettings: [CSetting] = []
+
+if enableTracy {
+    _cSettings += [
+        .define("TRACY_ENABLE"),
+        .define("TRACY_DELAYED_INIT"),
+        .define("TRACY_MANUAL_LIFETIME"),
+    ]
+}
+
 let package = Package(
     name: "swift-to-ptx",
     products: [
@@ -26,9 +36,9 @@ let package = Package(
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "main"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "feat/cuda"),
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "0.1"),
+        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "0.1"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -41,11 +51,7 @@ let package = Package(
             ],
             path: "Sources/swift-to-ptx-cbits",
             publicHeadersPath: ".",
-            cSettings: !enableTracy ? [] : [
-                .define("TRACY_ENABLE"),
-                .define("TRACY_DELAYED_INIT"),
-                .define("TRACY_MANUAL_LIFETIME"),
-            ],
+            cSettings: _cSettings,
         ),
         .target(
             name: "SwiftToPTX",
