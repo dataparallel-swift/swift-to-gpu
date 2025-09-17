@@ -153,8 +153,9 @@ of the transformation.
   * `--swift-to-ptx-allow-fp-reassoc[=BOOL]`
   Allow re-association transformations for floating-point operations (true).
 
-  * `--swift-to-ptx-strip-debug-info[=BOOL]`
-  Strip debug information from device code prior to compilation (false).
+  * `--swift-to-ptx-device-debug[=BOOL]`
+  Include debug information in device code (false). Requires compiling the Swift
+  module with debug information as well.
 
 Note that these options must be passed through to the LLVM phase of compilation.
 For example, you can add them to your `Package.swift` as:
