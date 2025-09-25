@@ -20,8 +20,8 @@ public struct ParallelForKernel {
     let name : UnsafePointer<CChar>
     var module : CUmodule?
     var function : CUfunction
-    var blockSize : Int32
-    var maxGridSize : Int32
+    var smallBlockSize : Int32
+    var largeBlockSize : Int32
 }
 
 @inline(never)  // we need to access this from the llvm-plugin
@@ -43,25 +43,49 @@ public func launch_parallel_for
     context.push()
 
     if kernel.module == nil {
-        var minGridSize : Int32 = 0
-        var activeBlocks : Int32 = 0
+        // Technically this configuration is per-context, since we could have
+        // different contexts referring to devices of differing compute
+        // capability. ---TLM 2025-09-23
+        var staticSharedMem : Int32 = 0
         let dynamicSharedMem : Int = 0
         var function : CUfunction?
 
         cuda_safe_call{cuModuleLoadData(&kernel.module, kernel.image)}
         cuda_safe_call{cuModuleGetFunction(&function, kernel.module, kernel.name)}
-        cuda_safe_call{cuOccupancyMaxPotentialBlockSize(&minGridSize, &kernel.blockSize, function, nil, dynamicSharedMem, 0)}
-        cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, kernel.blockSize, dynamicSharedMem)}
-
         kernel.function = function!
-        kernel.maxGridSize = context.multiProcessorCount * activeBlocks
 
-        let activeThreads = kernel.blockSize * activeBlocks
+        // active threads per multiprocessor
+        var smallBlockActiveThreads: Int32 = 0
+        var largeBlockActiveThreads: Int32 = 0
+
+        for blockSize in stride(from: context.warpSize, through: context.maxThreadsPerMultiprocessor, by: Int(context.warpSize)) {
+            var activeBlocks : Int32 = 0
+            cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, blockSize, dynamicSharedMem)}
+
+            // No coming back from here
+            if activeBlocks == 0 {
+                break;
+            }
+
+            // Record thread block sizes for local maximums in occupancy
+            let activeThreads = blockSize * activeBlocks
+            if activeThreads > smallBlockActiveThreads {
+                kernel.smallBlockSize = blockSize
+                smallBlockActiveThreads = activeThreads
+            }
+
+            if activeThreads >= largeBlockActiveThreads {
+                kernel.largeBlockSize = blockSize
+                largeBlockActiveThreads = activeThreads
+            }
+        }
+
+        let activeThreads = smallBlockActiveThreads
+        let activeBlocks = smallBlockActiveThreads / kernel.smallBlockSize
         let activeWarps = activeThreads / context.warpSize
         let occupancy : Float = Float(activeThreads) / Float(context.maxThreadsPerMultiprocessor) * 100.0
 
         var registersPerThread : Int32 = 0
-        var staticSharedMem : Int32 = 0
         var constantMem : Int32 = 0
         var localMem : Int32 = 0
         cuda_safe_call{cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, kernel.function)}
@@ -69,18 +93,26 @@ public func launch_parallel_for
         cuda_safe_call{cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function)}
         cuda_safe_call{cuFuncGetAttribute(&localMem, CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, kernel.function)}
 
-        logger.trace(
-            """
-            Kernel function \"\(kernel.name)\" used \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, \(constantMem) bytes constant memory
-            Multiprocessor occupancy \(occupancy) % : \(activeThreads) threads over \(activeWarps) warps in \(activeBlocks) blocks
-            """
-        )
+        logger.trace("Kernel function \"\(String(cString: kernel.name))\"")
+        logger.trace(" ├ Uses \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, and \(constantMem) bytes constant memory")
+        logger.trace(" └ Multiprocessor occupancy \(occupancy) % : \(activeThreads) threads over \(activeWarps) warps in \(activeBlocks) blocks")
     }
 
-    let gridSize = min(kernel.maxGridSize, Int32((iterations + Int(kernel.blockSize) - 1) / Int(kernel.blockSize)))
+    if iterations > 0 {
+        // Try to automatically choose a good thread block size. Currently we only
+        // support kernels that do not require inter-block thread communication, so
+        // we prefer smaller block sizes so that we can fill the available
+        // multiprocessors and improve load balancing. However, once the problem
+        // size is large enough, switch over to the large block size in order to
+        // reduce overheads of launching a large grid. A good point might be when we
+        // have more thread blocks per multiprocessor than can be supported by the
+        // hardware.
+        let blockSize = iterations <= context.maxBlocksPerMultiprocessor * context.multiProcessorCount * kernel.smallBlockSize
+                      ? kernel.smallBlockSize
+                      : kernel.largeBlockSize
+        let gridSize = Int32((iterations + Int(blockSize - 1)) / Int(blockSize))
 
-    if gridSize > 0 {
-        logger.trace("launching parallel_for<<<\(gridSize), \(kernel.blockSize)>>>(\(iterations), \(env))")
+        logger.trace("launching parallel_for<<<\(gridSize), \(blockSize)>>>(\(iterations), \(env))")
 
         // To marshal the environment we want the equivalent of this C:
         //
@@ -105,7 +137,7 @@ public func launch_parallel_for
             buffer[1] = UnsafeMutableRawPointer(p_env)
             buffer[2] = UnsafeMutableRawPointer(p_swifterror)
             buffer[3] = UnsafeMutableRawPointer(p_thrownerror)
-            cuda_safe_call{cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(kernel.blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil)}
+            cuda_safe_call{cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil)}
         })})})})})
     }
 

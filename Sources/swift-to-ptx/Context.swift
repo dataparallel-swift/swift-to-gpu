@@ -11,7 +11,12 @@ public struct Context {
                                             // -> context first for better alignment & packing
     internal let multiProcessorCount : Int32
     internal let maxThreadsPerMultiprocessor : Int32
-    internal let warpSize : Int32 = 32
+    internal let maxBlocksPerMultiprocessor : Int32
+
+    @inline(__always)
+    internal var warpSize : Int32 {
+        return 32
+    }
 
     public init(deviceID: Int = 0) {
         let __zone = #Zone
@@ -57,6 +62,9 @@ public struct Context {
         var maxThreadsPerMultiprocessor : Int32 = 0
         cuda_safe_call{cuDeviceGetAttribute(&maxThreadsPerMultiprocessor, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, rawDevice)}
 
+        var maxBlocksPerMultiprocessor : Int32 = 0
+        cuda_safe_call{cuDeviceGetAttribute(&maxBlocksPerMultiprocessor, CU_DEVICE_ATTRIBUTE_MAX_BLOCKS_PER_MULTIPROCESSOR, rawDevice)}
+
         var totalGlobalMem : Int = 0
         cuda_safe_call{cuDeviceTotalMem_v2(&totalGlobalMem, rawDevice)}
 
@@ -71,6 +79,7 @@ public struct Context {
         self.rawContext = rawContext!
         self.multiProcessorCount = multiProcessorCount
         self.maxThreadsPerMultiprocessor = maxThreadsPerMultiprocessor
+        self.maxBlocksPerMultiprocessor = maxBlocksPerMultiprocessor
     }
 
     public func push() {
