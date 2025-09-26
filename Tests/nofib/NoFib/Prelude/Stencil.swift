@@ -5,11 +5,11 @@ import SwiftToPTX
 import Testing
 
 @Suite("Stencil") struct Stencil {
-    // @Suite("Float16") struct Float16Tests {
+    @Suite("Float16") struct Float16Tests {
         // @Test("finite_difference<Float16>", .bug(id: "86b6vgvy0")) func test_finite_difference() { prop_finite_difference(Float16.self) }
         // @Test("adjacent_difference<Float16>", .bug(id: "86b6vhbg7")) func test_adjacent_difference() { prop_adjacent_difference(Float16.self) }
         // @Test("laplace1D<Float16>", .bug(id: "86b6vhbg7")) func test_laplace1D() { prop_laplace1D(Float16.self) }
-    // }
+    }
 
     @Suite("Float32") struct Float32Tests {
         // @Test("finite_difference<Float32>", .bug(id: "86b6vgvy0")) func test_finite_difference() { prop_finite_difference(Float32.self) }
@@ -17,11 +17,11 @@ import Testing
         // @Test("laplace1D<Float32>", .bug(id: "86b6vhbg7")) func test_laplace1D() { prop_laplace1D(Float32.self) }
     }
 
-    // @Suite("Float64") struct Float64Tests {
+    @Suite("Float64") struct Float64Tests {
         // @Test("finite_difference<Float64>", .bug(id: "86b6vgvy0")) func test_finite_difference() { prop_finite_difference(Float64.self) }
         // @Test("adjacent_difference<Float64>", .bug(id: "86b6vhbg7")) func test_adjacent_difference() { prop_adjacent_difference(Float64.self) }
         // @Test("laplace1D<Float64>", .bug(id: "86b6vhbg7")) func test_laplace1D() { prop_laplace1D(Float64.self) }
-    // }
+    }
 }
 
 extension Array where Element: AdditiveArithmetic {
@@ -42,9 +42,8 @@ private func prop_finite_difference<T: Arbitrary & AdditiveArithmetic & Similar>
         guard xs.count > 1 else {
             return []
         }
-        var output = Array<T>(unsafeUninitializedCapacity: xs.count - 1)
-        parallel_for(iterations: output.count) { i in
-            output[i] = xs[i+1] - xs[i]
+        let output = generate(count: xs.count - 1) { i in
+            xs[i+1] - xs[i]
         }
         return output
     }

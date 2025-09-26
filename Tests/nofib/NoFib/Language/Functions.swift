@@ -160,23 +160,29 @@ private func prop_unary<T: Arbitrary & Similar>(_ proxy: T.Type) {
       }
 }
 
-private func prop_binary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
-    func binary(_ x1: T, _ x2: T) -> T { return max(x1, x2) }
+private func prop_binary<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
+    // function that does not boil down to a primitive
+    func binary(_ x1: T, _ x2: T) -> T {
+        return (x1 + x2) * (x1 - x2)
+    }
     property("binary(\(String(describing: T.self)))") <-
-    forAllNoShrink([T].arbitrary) { (xs: [T]) in
-    forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in binary(x,y) }
         let actual   = zipWith(xs, ys, binary)
         return try? #require( actual ~~~ expected )
-      }}
+    }}
 }
+
+// TODO: tests for multi-arity functions with heterogeneous types, i.e.
+// (T1, T2) -> T3, where T1 != T2 != T3 != T1 in general
 
 private func prop_ternary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
     func ternary(_ x1: T, _ x2: T, _ x3: T) -> T { return min(max(x1, x2), x3) }
     property("ternary(\(String(describing: T.self)))") <-
-    forAllNoShrink([T].arbitrary) { (xs: [T]) in
-    forAllNoShrink([T].arbitrary) { (ys: [T]) in
-    forAllNoShrink([T].arbitrary) { (zs: [T]) in
+      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary) { (zs: [T]) in
         let size = min(min(xs.count, ys.count), zs.count)
         let expected = (0..<size).map { i in ternary(xs[i], ys[i], zs[i]) }
         let actual   = generate(count: size) { i in ternary(xs[i], ys[i], zs[i]) }
@@ -184,7 +190,7 @@ private func prop_ternary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) 
       }}}
 }
 
-private func prop_unary_noinline<T: Arbitrary & Similar>(_ proxy: T.Type) {
+private func prop_unary_noinline<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
     @inline(never)
     func unary(_ x: T) -> T { x }
     property("unary_noinline(\(T.self))") <-
@@ -195,9 +201,11 @@ private func prop_unary_noinline<T: Arbitrary & Similar>(_ proxy: T.Type) {
       }
 }
 
-private func prop_binary_noinline<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
+private func prop_binary_noinline<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
     @inline(never)
-    func binary(_ x1: T, _ x2: T) -> T { return max(x1, x2) }
+    func binary(_ x1: T, _ x2: T) -> T {
+        return (x1 + x2) * (x1 - x2)
+    }
     property("binary_noinline(\(String(describing: T.self))") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -284,68 +292,68 @@ private func prop_factorial_tailcall_noinline<T: RandomType & Similar & BinaryIn
 
 
 private func prop_mutually_recursive<T: RandomType & Similar & BinaryInteger>(_ proxy: T.Type) {
-    func fnOdd(_ n: T) -> T {
+    func odd(_ n: T) -> T {
         guard n != 1 else {
             return n
         }
-        return n + fnEven(n-1)
+        return n + even(n-1)
     }
-    func fnEven(_ n: T) -> T {
+    func even(_ n: T) -> T {
         guard n != 0 else {
             return n
         }
-        return n * fnOdd(n-1)
+        return n * odd(n-1)
     }
-    func fn(_ n: T) -> T {
+    func mutually_recursive(_ n: T) -> T {
         guard n > 1 else {
             return n
         }
         return if n%2 == 0 {
-            n * fnOdd(n-1)
+            n * odd(n-1)
         } else {
-            n + fnEven(n-1)
+            n + even(n-1)
         }
     }
     let gen = Gen<T>.choose((T.zero, 5))
     property("mutually_recursive(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
-        let expected = xs.map { n in fn(n) }
-        let actual = map(xs) { n in fn(n) }
+        let expected = xs.map { n in mutually_recursive(n) }
+        let actual = map(xs) { n in mutually_recursive(n) }
         return try? #require( actual ~~~ expected )
       }
 }
 
 private func prop_mutually_recursive_noinline<T: RandomType & Similar & BinaryInteger>(_ proxy: T.Type) {
     @inline(never)
-    func fnOdd(_ n: T) -> T {
+    func odd(_ n: T) -> T {
         guard n != 1 else {
             return n
         }
-        return n + fnEven(n-1)
+        return n + even(n-1)
     }
     @inline(never)
-    func fnEven(_ n: T) -> T {
+    func even(_ n: T) -> T {
         guard n != 0 else {
             return n
         }
-        return n * fnOdd(n-1)
+        return n * odd(n-1)
     }
     @inline(never)
-    func fn(_ n: T) -> T {
+    func mutually_recursive_noinline(_ n: T) -> T {
         guard n > 1 else {
             return n
         }
         return if n%2 == 0 {
-            n * fnOdd(n-1)
+            n * odd(n-1)
         } else {
-            n + fnEven(n-1)
+            n + even(n-1)
         }
     }
     let gen = Gen<T>.choose((T.zero, 5))
     property("mutually_recursive_noinline(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
-        let expected = xs.map { n in fn(n) }
-        let actual = map(xs) { n in fn(n) }
+        let expected = xs.map { n in mutually_recursive_noinline(n) }
+        let actual = map(xs) { n in mutually_recursive_noinline(n) }
         return try? #require( actual ~~~ expected )
       }
 }

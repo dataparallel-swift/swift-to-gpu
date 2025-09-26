@@ -3,19 +3,23 @@ import SwiftCheck
 import SwiftToPTX
 import Testing
 
-@Suite("Enums") struct EnumsSuite {
-    @Suite struct PlainEnumTests {
-        @Test func test_switch1() { prop_switch1() }
-        @Test func test_switch2() { prop_switch2() }
-        @Test func test_switch3() { prop_switch3() }
-        @Test func test_switch4() { prop_switch4() }
+@Suite("Enums") struct Enums {
+    @Suite("Plain Enum Tests") struct PlainEnumTests {
+        @Test func test_enum_switch1() { prop_enum_switch1() }
+        @Test func test_enum_switch2() { prop_enum_switch2() }
+        @Test func test_enum_switch3() { prop_enum_switch3() }
+        @Test func test_enum_switch4() { prop_enum_switch4() }
     }
 
-    @Suite struct PayloadEnumTests {
-        @Test func test_switch_payload1() { prop_switch_payload1(Int32.self) }
-        @Test func test_switch_payload2() { prop_switch_payload2(Int32.self, Float64.self) }
-        @Test func test_switch_payload3() { prop_switch_payload3(Int32.self, Float64.self) }
-        @Test func test_switch_payload4() { prop_switch_payload4(Int32.self, Float64.self) }
+    @Suite("Payload Enum Tests") struct PayloadEnumTests {
+        @Suite("Int32") struct Int32Tests {
+            @Test func test_enum_switch_payload1() { prop_enum_switch_payload1(Int32.self) }
+        }
+        @Suite("Int32,Float64") struct Int32Float64Tests {
+            @Test func test_enum_switch_payload2() { prop_enum_switch_payload2(Int32.self, Float64.self) }
+            @Test func test_enum_switch_payload3() { prop_enum_switch_payload3(Int32.self, Float64.self) }
+            @Test func test_enum_switch_payload4() { prop_enum_switch_payload4(Int32.self, Float64.self) }
+        }
     }
 }
 
@@ -27,16 +31,16 @@ enum E1: Arbitrary {
         return Bool.arbitrary.map { _ in Self.a }
     }
 }
-private func prop_switch1() {
-    func fn(_ e: E1) -> Int32 {
+private func prop_enum_switch1() {
+    func enum_switch1(_ e: E1) -> Int32 {
         return switch e {
         case .a: 0
         }
     }
-    property(String(describing: E1.self)+"+switch") <-
+    property(String(describing: E1.self)+".enum_switch1") <-
       forAllNoShrink([E1].arbitrary) { (xs: [E1]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch1)
+        let actual = map(xs, enum_switch1)
         return try? #require(expected == actual)
       }
 }
@@ -49,17 +53,17 @@ enum E2: Arbitrary {
         return Bool.arbitrary.map { $0 ? Self.a : Self.b }
     }
 }
-private func prop_switch2() {
-    func fn(_ e: E2) -> Int32 {
+private func prop_enum_switch2() {
+    func enum_switch2(_ e: E2) -> Int32 {
         return switch e {
         case .a: 0
         case .b: 1
         }
     }
-    property(String(describing: E2.self)+"+switch") <-
+    property(String(describing: E2.self)+".enum_switch2") <-
       forAllNoShrink([E2].arbitrary) { (xs: [E2]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch2)
+        let actual = map(xs, enum_switch2)
         return try? #require(expected == actual)
       }
 }
@@ -79,18 +83,18 @@ enum E3: Arbitrary, Equatable {
         }
     }
 }
-private func prop_switch3() {
-    func fn(_ e: E3) -> Int32 {
+private func prop_enum_switch3() {
+    func enum_switch3(_ e: E3) -> Int32 {
         return switch e {
         case .a: 0
         case .b: 1
         case .c: 2
         }
     }
-    property(String(describing: E3.self)+"+switch") <-
+    property(String(describing: E3.self)+".enum_switch3") <-
       forAllNoShrink([E3].arbitrary) { (xs: [E3]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch3)
+        let actual = map(xs, enum_switch3)
         return try? #require(expected == actual)
       }
 }
@@ -112,8 +116,8 @@ enum E4: Arbitrary {
         }
     }
 }
-private func prop_switch4() {
-    func fn(_ e: E4) -> Int32 {
+private func prop_enum_switch4() {
+    func enum_switch4(_ e: E4) -> Int32 {
         return switch e {
         case .a: 0
         case .b: 1
@@ -121,10 +125,10 @@ private func prop_switch4() {
         case .d: 3
         }
     }
-    property(String(describing: E4.self)+"+switch") <-
+    property(String(describing: E4.self)+".enum_switch4") <-
       forAllNoShrink([E4].arbitrary) { (xs: [E4]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch4)
+        let actual = map(xs, enum_switch4)
         return try? #require(expected == actual)
       }
 }
@@ -137,16 +141,16 @@ enum E1P<T: Arbitrary>: Arbitrary {
         T.arbitrary.map { Self.a($0) }
     }
 }
-private func prop_switch_payload1<T: Arbitrary & Equatable>(_ proxy: T.Type) {
-    func fn(_ e: E1P<T>) -> T {
+private func prop_enum_switch_payload1<T: Arbitrary & Equatable>(_ proxy: T.Type) {
+    func enum_switch_payload1(_ e: E1P<T>) -> T {
         return switch e {
         case .a(let payload): payload
         }
     }
-    property(String(describing: E1P<T>.self)+"+switch") <-
+    property(String(describing: E1P<T>.self)+".enum_switch_payload1") <-
       forAllNoShrink([E1P<T>].arbitrary) { (xs: [E1P<T>]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch_payload1)
+        let actual = map(xs, enum_switch_payload1)
         return try? #require(expected == actual)
       }
 }
@@ -162,19 +166,19 @@ enum E2P<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint>: Arbitrary 
         }
     }
 }
-private func prop_switch_payload2<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint>(
+private func prop_enum_switch_payload2<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint>(
     _ iProxy: I.Type, _ fProxy: F.Type
 ) {
-    func fn(_ e: E2P<I, F>) -> F {
+    func enum_switch_payload2(_ e: E2P<I, F>) -> F {
         return switch e {
         case .a(let i): F(i)
         case .b(let f): f
         }
     }
-    property(String(describing: E2P<I,F>.self)+"+switch") <-
+    property(String(describing: E2P<I,F>.self)+".enum_switch_payload2") <-
       forAllNoShrink([E2P<I, F>].arbitrary) { (xs: [E2P<I, F>]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch_payload2)
+        let actual = map(xs, enum_switch_payload2)
         return try? #require(expected == actual)
       }
 }
@@ -196,20 +200,20 @@ enum E3P<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint>: Arbitrary 
     }
 }
 
-private func prop_switch_payload3<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint & AdditiveArithmetic>(
+private func prop_enum_switch_payload3<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint & AdditiveArithmetic>(
     _ iProxy: I.Type, _ fProxy: F.Type
 ) {
-    func fn(_ e: E3P<I, F>) -> F {
+    func enum_switch_payload3(_ e: E3P<I, F>) -> F {
         return switch e {
         case .a(let i): F(i)
         case .b(let f): f
         case .c(let i, let f): F(i) + f
         }
     }
-    property(String(describing: E3P<I,F>.self)+"+switch") <-
+    property(String(describing: E3P<I,F>.self)+".enum_switch_payload3") <-
       forAllNoShrink([E3P<I,F>].arbitrary) { (xs: [E3P<I,F>]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch_payload3)
+        let actual = map(xs, enum_switch_payload3)
         return try? #require( expected == actual )
       }
 }
@@ -233,10 +237,10 @@ enum E4P<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint>: Arbitrary 
     }
 }
 
-private func prop_switch_payload4<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint & AdditiveArithmetic>(
+private func prop_enum_switch_payload4<I: Arbitrary & BinaryInteger, F: Arbitrary & FloatingPoint & AdditiveArithmetic>(
     _ iProxy: I.Type, _ fProxy: F.Type
 ) {
-    func fn(_ e: E4P<I, F>) -> F {
+    func enum_switch_payload4(_ e: E4P<I, F>) -> F {
         return switch e {
         case .a(let i): F(i)
         case .b(let f): f
@@ -244,10 +248,10 @@ private func prop_switch_payload4<I: Arbitrary & BinaryInteger, F: Arbitrary & F
         case .d: F(0)
         }
     }
-    property(String(describing: E4P<I, F>.self)+"+switch") <-
+    property(String(describing: E4P<I, F>.self)+".enum_switch_payload4") <-
       forAllNoShrink([E4P<I,F>].arbitrary) { (xs: [E4P<I,F>]) in
-        let expected = xs.map(fn)
-        let actual = map(xs, fn)
+        let expected = xs.map(enum_switch_payload4)
+        let actual = map(xs, enum_switch_payload4)
         return try? #require( expected == actual )
       }
 }
