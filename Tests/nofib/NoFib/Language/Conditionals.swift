@@ -1,11 +1,7 @@
 import Foundation
-import Randy
 import SwiftToPTX
 import Testing
 import SwiftCheck
-
-// TODO: remove once refactoring is complete
-var generator = UniformRandomNumberGenerator(seed: 42)
 
 @Suite("Conditionals") struct Conditionals {
     @Suite("if-else") struct IfElseTests {
@@ -103,7 +99,7 @@ private func prop_if_else<T: Arbitrary & Comparable>(_ proxy: T.Type) {
             return 1
         }
     }
-    property(String(describing: T.self)+"if-else") <-
+    property(String(describing: T.self)+"+if-else") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in if_else(x, y) }
@@ -122,7 +118,7 @@ private func prop_if_elseif_else<T: Arbitrary & Comparable>(_ proxy: T.Type) {
             return 2
         }
     }
-    property(String(describing: T.self)+"if-elseif-else") <-
+    property(String(describing: T.self)+"+if-elseif-else") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in if_elseif_else(x, y) }
@@ -143,7 +139,7 @@ private func prop_if_2xelseif_else<T: Arbitrary & Comparable & AdditiveArithmeti
             return 3
         }
     }
-    property(String(describing: T.self)+"if-2xelseif-else") <-
+    property(String(describing: T.self)+"+if-2xelseif-else") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in if_2xelseif_else(x,y) }
@@ -162,7 +158,7 @@ private func prop_nested_if<T: Arbitrary & Comparable & AdditiveArithmetic>(_ pr
         }
         return 2
     }
-    property(String(describing: T.self)+"nested-if") <-
+    property(String(describing: T.self)+".nested-if") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in nested_if(x,y) }
@@ -179,7 +175,7 @@ private func prop_guard_true() {
         return 1
     }
     let count = 100_000
-    property("guard true") <- forAll(Gen<Int>.choose((0,count-1))) { (expected: Int) in
+    property("guard-true") <- forAll(Gen<Int>.choose((0,count-1))) { (expected: Int) in
         let expected = (0..<count).map(guard_true)
         let actual = generate(count: count, guard_true)
         return try? #require( actual ~~~ expected )
@@ -192,7 +188,7 @@ private func prop_guard_false() {
         return 1
     }
     let count = 100_000
-    property("guard true") <- forAll(Gen<Int>.choose((0,count-1))) { (expected: Int) in
+    property("guard-false") <- forAll(Gen<Int>.choose((0,count-1))) { (expected: Int) in
         let expected = (0..<count).map(guard_true)
         let actual = generate(count: count, guard_true)
         return try? #require( actual ~~~ expected )
@@ -204,7 +200,7 @@ private func prop_guard1<T: Arbitrary & Comparable>(_ proxy: T.Type) {
         guard x > y else { return 0 }
         return 1
     }
-    property(String(describing: T.self)+"guard1") <-
+    property(String(describing: T.self)+"+guard") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in guard1(x,y) }
@@ -224,7 +220,7 @@ private func prop_guard2<T: Arbitrary & Comparable & AdditiveArithmetic & Numeri
         }
         return 2
     }
-    property(String(describing: T.self)+"guard2") <-
+    property(String(describing: T.self)+"+guard") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in guard2(x,y) }
@@ -241,7 +237,7 @@ private func prop_switch1<T: Arbitrary & Similar & FixedWidthInteger & Expressib
         default: x
         }
     }
-    property(String(describing: T.self)+"switch1") <-
+    property(String(describing: T.self)+"+switch") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map { x in fn(x) }
         let actual = map(xs, fn)
@@ -257,7 +253,7 @@ private func prop_switch2<T: Arbitrary & Similar & FixedWidthInteger & Expressib
             default: x
         }
     }
-    property(String(describing: T.self)+"switch2") <-
+    property(String(describing: T.self)+"+switch") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map { x in fn(x) }
         let actual = map(xs, fn)
@@ -274,7 +270,7 @@ private func prop_switch3<T: Arbitrary & Similar & FixedWidthInteger & Expressib
             default: y
         }
     }
-    property(String(describing: T.self)+"switch3") <-
+    property(String(describing: T.self)+"+switch") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map { x in fn(x) }
         let actual = map(xs, fn)
@@ -291,7 +287,7 @@ private func prop_switch4<T: Arbitrary & Similar & FixedWidthInteger & Expressib
         }
         return y
     }
-    property(String(describing: T.self)+"switch4") <-
+    property(String(describing: T.self)+"+switch") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(fn) 
         let actual = map(xs, fn)
@@ -308,22 +304,10 @@ private func prop_switch5<T: Arbitrary & Similar & FixedWidthInteger & Expressib
         }
         return y
     }
-    property(String(describing: T.self)+"switch5") <-
+    property(String(describing: T.self)+"+switch") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(fn) 
         let actual = map(xs, fn)
         return try? #require( actual ~~~ expected )
       }
-}
-
-extension Array {
-    @inlinable
-    init(unsafeUninitializedCapacity count: Int) {
-        precondition(count >= 0, "arrays must have non-negative sizes")
-        self.init(
-            unsafeUninitializedCapacity: count,
-            initializingWith: { _, initializedCount in
-                initializedCount = count
-            })
-    }
 }

@@ -75,7 +75,6 @@ let package = Package(
             dependencies: [
                 "SwiftCheck",
                 "SwiftToPTX",
-                "Randy",
                 .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "Testing", package: "swift-testing"),
             ],

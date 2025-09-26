@@ -109,7 +109,7 @@ private func prop_if_let<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>
         }
         return 1
     }
-    property(String(describing: T.self)+"if_let") <-
+    property(String(describing: T.self)+"+if_let") <-
       forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -121,7 +121,7 @@ private func prop_optional_return_type1<T: Arbitrary & Equatable>(_ proxy: T.Typ
     func fn (_ x: T) -> T? {
         return .none
     }
-    property(String(describing: T.self)+"optional_return_type1") <-
+    property(String(describing: T.self)+"+optional_return_type1") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -133,7 +133,7 @@ private func prop_optional_return_type2<T: Arbitrary & Equatable>(_ proxy: T.Typ
     func fn (_ x: T) -> T? {
         return .some(x)
     }
-    property(String(describing: T.self)+"optional_return_type2") <-
+    property(String(describing: T.self)+"+optional_return_type2") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -145,7 +145,7 @@ private func prop_force_unwrap<T: Arbitrary & Equatable>(_ proxy: T.Type) {
     func fn(_ x: T?) -> T {
         return x!
     }
-    property(String(describing: T.self)+"force_unwrap") <-
+    property(String(describing: T.self)+"+force_unwrap") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let ws = xs.map { Optional($0) }
         let expected = ws.map(fn)

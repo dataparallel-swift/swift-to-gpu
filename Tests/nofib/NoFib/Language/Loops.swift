@@ -24,7 +24,7 @@ private func prop_simple_for_loop<T: Arbitrary & FixedWidthInteger>(_ proxy: T.T
         }
         return result
     }
-    property(String(describing: T.self)+"simple_for_loop") <-
+    property(String(describing: T.self)+"+simple_for_loop") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -46,7 +46,7 @@ private func prop_for_loop_break<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Ty
         return result
     }
     let gen = T.arbitrary.suchThat { !($0 == 0) }
-    property(String(describing: T.self)+"for_loop_break") <-
+    property(String(describing: T.self)+"+for_loop_break") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (m: T) in
         let expected = xs.map { x in fn(x, m) }
@@ -70,7 +70,7 @@ private func prop_for_loop_continue<T: Arbitrary & FixedWidthInteger>(_ proxy: T
         return result
     }
     let gen = T.arbitrary.suchThat { !($0 == 0) }
-    property(String(describing: T.self)+"for_loop_continue") <-
+    property(String(describing: T.self)+"+for_loop_continue") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (m: T) in
         let expected = xs.map { x in fn(x, m) }
@@ -93,7 +93,7 @@ private func prop_nested_for_loops<T: Arbitrary & FixedWidthInteger>(_ proxy: T.
         }
         return result
     }
-    property(String(describing: T.self)+"nested_for_loops") <-
+    property(String(describing: T.self)+"+nested_for_loops") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in fn(x, y) }
@@ -120,7 +120,7 @@ private func prop_nested_for_loops_break_inner<T: Arbitrary & FixedWidthInteger>
         }
         return result
     }
-    property(String(describing: T.self)+"nested_for_loops_break_inner") <-
+    property(String(describing: T.self)+"+nested_for_loops_break_inner") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in fn(x, y) }
@@ -146,7 +146,7 @@ private func prop_nested_for_loops_break_outer<T: Arbitrary & FixedWidthInteger>
         }
         return result
     }
-    property(String(describing: T.self)+"nested_for_loops_break_outer") <-
+    property(String(describing: T.self)+"+nested_for_loops_break_outer") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { (x, y) in fn(x, y) }
@@ -167,7 +167,7 @@ private func prop_simple_while_loop<T: Arbitrary & FixedWidthInteger>(_ proxy: T
         }
         return result
     }
-    property(String(describing: T.self)+"simple_while_loop") <-
+    property(String(describing: T.self)+"+simple_while_loop") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -191,7 +191,7 @@ private func prop_while_loop_break<T: Arbitrary & FixedWidthInteger>(_ proxy: T.
         return result
     }
     let gen = T.arbitrary.suchThat { !($0 == 0) }
-    property(String(describing: T.self)+"while_loop_break") <-
+    property(String(describing: T.self)+"+while_loop_break") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (m: T) in
         let expected = xs.map { x in fn(x, m) }
@@ -218,7 +218,7 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_ proxy:
         return result
     }
     let gen = T.arbitrary.suchThat { !($0 == 0) }
-    property(String(describing: T.self)+"while_loop_continue") <-
+    property(String(describing: T.self)+"+while_loop_continue") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (m: T) in
         let expected = xs.map { x in fn(x, m) }
@@ -231,66 +231,3 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_ proxy:
 // TODO: nested loops
 // TODO: nested loops break inner
 // TODO: nested loops break outer
-
-private func f4(_ iterations: Int, _ x: Double) -> Double {
-    var result = x
-    outer: for i in 0..<iterations {
-        for j in i+1..<iterations {
-            result += Double(i) * Double(j)
-            if (result > 10.0) {
-                break outer
-            }
-        }
-    }
-    return result
-}
-
-// MARK: functions with bounded while loops
-private func w1(_ iterations: Int, _ x: Double) -> Double {
-    var x = x
-    var i = 0
-    while i < iterations {
-        x += 2.0 * x
-        i += 1
-    }
-    return x
-}
-private func w2(_ iterations: Int, _ x: Double) -> Double {
-    var result = x
-    var i = 0
-    while i < iterations {
-        result += Double(i)
-        result *= 0.2
-        i += 1
-    }
-    return result
-}
-private func w3(_ iterations: Int, _ x: Double) -> Double {
-    var result = x
-    var i = 0
-    while i < iterations {
-        result += Double(i)
-        result *= 2.0
-        guard abs(result) < 5.0 else {
-            break
-        }
-        i += 1
-    }
-    return result
-}
-private func w4(_ iterations: Int, _ x: Double) -> Double {
-    var result = x
-    var i = 0
-    outer: while i < iterations {
-        var j = i+1
-        while j < iterations {
-            result += Double(i) * Double(j)
-            if result > 10.0 {
-                break outer
-            }
-            j += 1
-        }
-        i += 1
-    }
-    return result
-}

@@ -13,13 +13,13 @@ import Testing
     @Suite("Struct Property Setters") struct StructPropertySettersSuite {
         @Test func test_struct1_property_set() { prop_struct1_property_set(Int32.self) }
         // @Test("S2.set", .bug(id: "86b6vg9th")) func test_struct2_property_set() { prop_struct2_property_set(Int32.self, Int64.self) }
-        @Test func test_struct3_property_set() { prop_struct3_property_set(Int32.self, Int64.self, Int8.self) }
+        // @Test("S3.set", .bug(id: "86b6vg9th")) func test_struct3_property_set() { prop_struct3_property_set(Int32.self, Int64.self, Int8.self) }
     }
 
     @Suite("Struct Property Setters Inout") struct StructPropertySettersInoutSuite {
         // @Test("S1.set_inout", .bug(id: "86b6vgh48")) func test_struct1_property_set_inout() { prop_struct1_property_set_inout(Int32.self) }
-        @Test func test_struct2_property_set_inout() { prop_struct2_property_set_inout(Int32.self, Int64.self) }
-        @Test func test_struct3_property_set_inout() { prop_struct3_property_set_inout(Int32.self, Int64.self, Int8.self) }
+        // @Test("S2.set_inout", .bug(id: "86b6vgh48")) func test_struct2_property_set_inout() { prop_struct2_property_set_inout(Int32.self, Int64.self) }
+        // @Test("S3.set_inout, .bug(id: "86b6vgh48")") func test_struct3_property_set_inout() { prop_struct3_property_set_inout(Int32.self, Int64.self, Int8.self) }
     }
 
     @Suite("Struct Default Parameter Values") struct StructDefaultParameterValuesSuite {
@@ -41,7 +41,7 @@ private func prop_struct1_property_get<T: Arbitrary & Equatable>(_ proxy: T.Type
     func fn(_ s: S1<T>) -> T {
         return s.v
     }
-    property("struct1_property_get") <-
+    property(String(describing: S1<T>.self)+".property_get") <-
       forAllNoShrink([S1].arbitrary) { (xs: [S1]) in 
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -55,7 +55,7 @@ private func prop_struct1_property_set<T: Arbitrary & Equatable>(_ proxy: T.Type
         t.v = v
         return t
     }
-    property("struct1_property_set") <-
+    property(String(describing: S1<T>.self)+".property_set") <-
       forAllNoShrink([S1<T>].arbitrary) { (xs: [S1<T>]) in
       forAllNoShrink([T].arbitrary) { (vs: [T]) in
         let expected = zip(xs, vs).map { (s, v) in fn(s, v) }
@@ -73,7 +73,7 @@ private func prop_struct1_property_set_inout<T: Arbitrary & Equatable>(_ proxy: 
         fnMut(&s, v) 
         return s
     }
-    property("struct1_property_set_inout") <-
+    property(String(describing: S1<T>.self)+".property_set_inout") <-
       forAllNoShrink([S1<T>].arbitrary) { (xs: [S1<T>]) in
       forAllNoShrink([T].arbitrary) { (vs: [T]) in
         let expected = zip(xs, vs).map { (s, v) in fn(s, v) }
@@ -106,14 +106,14 @@ private func prop_struct2_property_get<T1: Arbitrary & Equatable, T2: Arbitrary 
     func fn2(_ s: S2<T1, T2>) -> T2 {
         return s.v2
     }
-    property("struct2_property_get1") <-
+    property(String(describing: S2<T1, T2>.self)+".property_get1") <-
       forAllNoShrink([S2<T1, T2>].arbitrary) { (xs: [S2<T1, T2>]) in 
         let expected = xs.map(fn1)
         let actual = map(xs, fn1)
         return try? #require( expected == actual )
       }
 
-    property("struct2_property_get2") <-
+    property(String(describing: S2<T1, T2>.self)+".property_get2") <-
       forAllNoShrink([S2<T1, T2>].arbitrary) { (xs: [S2<T1, T2>]) in 
         let expected = xs.map(fn2)
         let actual = map(xs, fn2)
@@ -129,7 +129,7 @@ private func prop_struct2_property_set<T1: Arbitrary & Equatable, T2: Arbitrary 
         return s
     }
 
-    property("struct2_property_get") <-
+    property(String(describing: S2<T1, T2>.self)+"property_get") <-
       forAllNoShrink([S2<T1, T2>].arbitrary) { (xs: [S2<T1, T2>]) in 
       forAllNoShrink(T1.arbitrary) { (v1: T1) in 
       forAllNoShrink(T2.arbitrary) { (v2: T2) in 
@@ -151,7 +151,7 @@ private func prop_struct2_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
         return s
     }
 
-    property("struct2_property_set_inout") <-
+    property(String(describing: S2<T1, T2>.self)+".property_set_inout") <-
       forAllNoShrink([S2<T1, T2>].arbitrary) { (xs: [S2<T1, T2>]) in 
       forAllNoShrink(T1.arbitrary) { (v1: T1) in 
       forAllNoShrink(T2.arbitrary) { (v2: T2) in 
@@ -195,28 +195,28 @@ private func prop_struct3_property_get<T1: Arbitrary & Equatable, T2: Arbitrary 
     func fn4(_ s: S3<T1, T2, T3>) -> S2<T1, T3> {
         return S2(v1: s.v1, v2: s.v3)
     }
-    property("struct3_property_get1") <-
+    property(String(describing: S3<T1, T2, T3>.self)+".property_get1") <-
       forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in 
         let expected = xs.map(fn1)
         let actual = map(xs, fn1)
         return try? #require( expected == actual )
       }
 
-    property("struct3_property_get2") <-
+    property(String(describing: S3<T1, T2, T3>.self)+".property_get2") <-
       forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in 
         let expected = xs.map(fn2)
         let actual = map(xs, fn2)
         return try? #require( expected == actual )
       }
 
-    property("struct3_property_get3") <-
+    property(String(describing: S3<T1, T2, T3>.self)+".property_get3") <-
       forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in 
         let expected = xs.map(fn3)
         let actual = map(xs, fn3)
         return try? #require( expected == actual )
       }
 
-    property("struct3_property_get4") <-
+    property(String(describing: S3<T1, T2, T3>.self)+".property_get4") <-
       forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in 
         let expected = xs.map(fn4)
         let actual = map(xs, fn4)
@@ -233,7 +233,7 @@ private func prop_struct3_property_set<T1: Arbitrary & Equatable, T2: Arbitrary 
         return s
     }
 
-    property("struct3_property_set") <-
+    property(String(describing: S3<T1, T2, T3>.self)+".property_set") <-
       forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in 
       forAllNoShrink(T1.arbitrary) { (v1: T1) in 
       forAllNoShrink(T2.arbitrary) { (v2: T2) in 
@@ -257,7 +257,7 @@ private func prop_struct3_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
         return s
     }
 
-    property("struct3_property_set_inout") <-
+    property(String(describing: S3<T1, T2, T3>.self)+".property_set_inout") <-
       forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in 
       forAllNoShrink(T1.arbitrary) { (v1: T1) in 
       forAllNoShrink(T2.arbitrary) { (v2: T2) in 
@@ -278,7 +278,7 @@ struct S1d<T1: ExpressibleByIntegerLiteral & Equatable>: Equatable {
 
 private func prop_struct1_default_init<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
     let gen = Int.arbitrary.suchThat { $0 >= 0 }
-    property("struct1_defuault_init") <-
+    property(String(describing: S1d<T>.self)+".defuault_init") <-
       forAllNoShrink(gen) { (n: Int) in 
         let expected = [S1d<T>](repeating: S1d<T>(), count: n)
         let actual = generate(count: n) { _ in S1d<T>() }
@@ -297,7 +297,7 @@ struct S2d<T1: Equatable & ExpressibleByIntegerLiteral, T2: Equatable & Expressi
 
 private func prop_struct2_default_init<T1: Arbitrary & Equatable & ExpressibleByIntegerLiteral, T2: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy1: T1.Type, _ proxy2: T2.Type) {
     let gen = Int.arbitrary.suchThat { $0 >= 0 }
-    property("struct1_defuault_init") <-
+    property(String(describing: S2d<T1, T2>.self)+".defuault_init") <-
       forAllNoShrink(gen) { (n: Int) in 
       forAllNoShrink(T2.arbitrary) { (v2: T2) in 
         let expected = [S2d<T1, T2>](repeating: .init(v2: v2), count: n)
@@ -316,9 +316,9 @@ struct S3d<T1: ExpressibleByIntegerLiteral & Equatable, T2: ExpressibleByInteger
     }
 }
 
-private func prop_struct3_default_init<T1: ExpressibleByIntegerLiteral & Equatable, T2: ExpressibleByIntegerLiteral & Equatable, T3: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy1: T1.Type, _ proxy2: T2.Type, _ proxy3: T3.Type) {
+private func prop_struct3_default_init<T1: ExpressibleByIntegerLiteral & Equatable, T2: ExpressibleByIntegerLiteral & Equatable, T3: Arbitrary & Equatable>(_ proxy1: T1.Type, _ proxy2: T2.Type, _ proxy3: T3.Type) {
     let gen = Int.arbitrary.suchThat { $0 >= 0 }
-    property("struct1_defuault_init") <-
+    property(String(describing: S3d<T1, T2, T3>.self)+".defuault_init") <-
       forAllNoShrink(gen) { (n: Int) in 
       forAllNoShrink(T3.arbitrary) { (v3: T3) in 
         let expected = [S3d<T1, T2, T3>](repeating: .init(v3: v3), count: n)

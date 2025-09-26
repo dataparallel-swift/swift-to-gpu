@@ -1,6 +1,5 @@
 import SwiftToPTX
 import Testing
-import Randy
 import SwiftCheck
 
 @Suite("function calls") struct FunctionCallsSuite {
@@ -153,7 +152,7 @@ import SwiftCheck
 // MARK: simple function calls
 private func prop_unary<T: Arbitrary & Similar>(_ proxy: T.Type) {
     func unary(_ x: T) -> T { x }
-    property(String(describing: T.self)+"unary") <-
+    property("unary(\(String(describing: T.self)))") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(unary)
         let actual = map(xs, unary)
@@ -163,7 +162,7 @@ private func prop_unary<T: Arbitrary & Similar>(_ proxy: T.Type) {
 
 private func prop_binary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
     func binary(_ x1: T, _ x2: T) -> T { return max(x1, x2) }
-    property(String(describing: T.self)+"binary") <-
+    property("binary(\(String(describing: T.self)))") <-
     forAllNoShrink([T].arbitrary) { (xs: [T]) in
     forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in binary(x,y) }
@@ -174,7 +173,7 @@ private func prop_binary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
 
 private func prop_ternary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
     func ternary(_ x1: T, _ x2: T, _ x3: T) -> T { return min(max(x1, x2), x3) }
-    property(String(describing: T.self)+"ternary") <-
+    property("ternary(\(String(describing: T.self)))") <-
     forAllNoShrink([T].arbitrary) { (xs: [T]) in
     forAllNoShrink([T].arbitrary) { (ys: [T]) in
     forAllNoShrink([T].arbitrary) { (zs: [T]) in
@@ -188,7 +187,7 @@ private func prop_ternary<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) 
 private func prop_unary_noinline<T: Arbitrary & Similar>(_ proxy: T.Type) {
     @inline(never)
     func unary(_ x: T) -> T { x }
-    property(String(describing: T.self)+"unary") <-
+    property("unary_noinline(\(T.self))") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(unary)
         let actual = map(xs, unary)
@@ -199,7 +198,7 @@ private func prop_unary_noinline<T: Arbitrary & Similar>(_ proxy: T.Type) {
 private func prop_binary_noinline<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
     @inline(never)
     func binary(_ x1: T, _ x2: T) -> T { return max(x1, x2) }
-    property(String(describing: T.self)+"binary") <-
+    property("binary_noinline(\(String(describing: T.self))") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in binary(x,y) }
@@ -211,7 +210,7 @@ private func prop_binary_noinline<T: Arbitrary & Similar & Comparable>(_ proxy: 
 private func prop_ternary_noinline<T: Arbitrary & Similar & Comparable>(_ proxy: T.Type) {
     @inline(never)
     func ternary(_ x1: T, _ x2: T, _ x3: T) -> T { return min(max(x1, x2), x3) }
-    property(String(describing: T.self)+"ternary") <-
+    property("ternary_noinline(\(String(describing: T.self)))") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
       forAllNoShrink([T].arbitrary) { (zs: [T]) in
@@ -230,7 +229,7 @@ private func prop_factorial_recursive<T: RandomType & Similar & BinaryInteger>(_
         return n * factorial(n - 1)
     }
     let gen = Gen<T>.choose((T.zero, 5))  // 5! fits in Int8, 6! does not
-    property(String(describing: T.self)+"factorial_recursive") <-
+    property("factorial_recursive(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map(factorial)
         let actual = map(xs, factorial)
@@ -244,7 +243,7 @@ private func prop_factorial_tailcall<T: RandomType & Similar & BinaryInteger>(_ 
         return factorial(n - 1, n * acc)
     }
     let gen = Gen<T>.choose((T.zero, 5))  // 5! fits in Int8, 6! does not
-    property(String(describing: T.self)+"factorial_tailcall") <-
+    property("factorial_tailcall(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map { n in factorial(n) }
         let actual = map(xs) { n in factorial(n) }
@@ -259,7 +258,7 @@ private func prop_factorial_recursive_noinline<T: RandomType & Similar & BinaryI
         return n * factorial(n - 1)
     }
     let gen = Gen<T>.choose((T.zero, 5))  // 5! fits in Int8, 6! does not
-    property(String(describing: T.self)+"factorial_recursive_noinline") <-
+    property("factorial_recursive_noinline(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map(factorial)
         let actual = map(xs, factorial)
@@ -274,7 +273,7 @@ private func prop_factorial_tailcall_noinline<T: RandomType & Similar & BinaryIn
         return factorial(n - 1, n * acc)
     }
     let gen = Gen<T>.choose((T.zero, 5))  // 5! fits in Int8, 6! does not
-    property(String(describing: T.self)+"factorial_tailcall_noinline") <-
+    property("factorial_tailcall_noinline(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map { n in factorial(n) }
         let actual = map(xs) { n in factorial(n) }
@@ -308,7 +307,7 @@ private func prop_mutually_recursive<T: RandomType & Similar & BinaryInteger>(_ 
         }
     }
     let gen = Gen<T>.choose((T.zero, 5))
-    property(String(describing: T.self)+"mutually_recursive") <-
+    property("mutually_recursive(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map { n in fn(n) }
         let actual = map(xs) { n in fn(n) }
@@ -343,7 +342,7 @@ private func prop_mutually_recursive_noinline<T: RandomType & Similar & BinaryIn
         }
     }
     let gen = Gen<T>.choose((T.zero, 5))
-    property(String(describing: T.self)+"mutually_recursive") <-
+    property("mutually_recursive_noinline(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map { n in fn(n) }
         let actual = map(xs) { n in fn(n) }
@@ -357,7 +356,7 @@ private func prop_fibonacci_recursive<T: RandomType & Similar & BinaryInteger>(_
         return fibonacci(n-1) + fibonacci(n-2)
     }
     let gen = Gen<T>.choose((T.zero, 11)) // fibonacci(11) fits in Int8
-    property(String(describing: T.self)+"fibonacci_recursive") <-
+    property("fibonacci_recursive(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map(fibonacci)
         let actual = map(xs, fibonacci)
@@ -372,7 +371,7 @@ private func prop_fibonacci_recursive_noinline<T: RandomType & Similar & BinaryI
         return fibonacci(n-1) + fibonacci(n-2)
     }
     let gen = Gen<T>.choose((T.zero, 11)) // fibonacci(11) fits in Int8
-    property(String(describing: T.self)+"fibonacci_recursive_noinline") <-
+    property("fibonacci_recursive_noinline(\(String(describing: T.self)))") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
         let expected = xs.map(fibonacci)
         let actual = map(xs, fibonacci)

@@ -33,7 +33,7 @@ private func prop_switch1() {
         case .a: 0
         }
     }
-    property("switch1") <-
+    property(String(describing: E1.self)+"+switch") <-
       forAllNoShrink([E1].arbitrary) { (xs: [E1]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -56,7 +56,7 @@ private func prop_switch2() {
         case .b: 1
         }
     }
-    property("switch2") <-
+    property(String(describing: E2.self)+"+switch") <-
       forAllNoShrink([E2].arbitrary) { (xs: [E2]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -87,7 +87,7 @@ private func prop_switch3() {
         case .c: 2
         }
     }
-    property("switch3") <-
+    property(String(describing: E3.self)+"+switch") <-
       forAllNoShrink([E3].arbitrary) { (xs: [E3]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -121,7 +121,7 @@ private func prop_switch4() {
         case .d: 3
         }
     }
-    property("switch4") <-
+    property(String(describing: E4.self)+"+switch") <-
       forAllNoShrink([E4].arbitrary) { (xs: [E4]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -143,7 +143,7 @@ private func prop_switch_payload1<T: Arbitrary & Equatable>(_ proxy: T.Type) {
         case .a(let payload): payload
         }
     }
-    property("switch_payload1") <-
+    property(String(describing: E1P<T>.self)+"+switch") <-
       forAllNoShrink([E1P<T>].arbitrary) { (xs: [E1P<T>]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -171,7 +171,7 @@ private func prop_switch_payload2<I: Arbitrary & BinaryInteger, F: Arbitrary & F
         case .b(let f): f
         }
     }
-    property("switch_payload2") <-
+    property(String(describing: E2P<I,F>.self)+"+switch") <-
       forAllNoShrink([E2P<I, F>].arbitrary) { (xs: [E2P<I, F>]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -206,7 +206,7 @@ private func prop_switch_payload3<I: Arbitrary & BinaryInteger, F: Arbitrary & F
         case .c(let i, let f): F(i) + f
         }
     }
-    property("switch_payload3") <-
+    property(String(describing: E3P<I,F>.self)+"+switch") <-
       forAllNoShrink([E3P<I,F>].arbitrary) { (xs: [E3P<I,F>]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
@@ -244,7 +244,7 @@ private func prop_switch_payload4<I: Arbitrary & BinaryInteger, F: Arbitrary & F
         case .d: F(0)
         }
     }
-    property("switch_payload4") <-
+    property(String(describing: E4P<I, F>.self)+"+switch") <-
       forAllNoShrink([E4P<I,F>].arbitrary) { (xs: [E4P<I,F>]) in
         let expected = xs.map(fn)
         let actual = map(xs, fn)
