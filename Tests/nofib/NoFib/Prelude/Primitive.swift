@@ -4,6 +4,14 @@ import SwiftCheck
 import SwiftToPTX
 
 @Suite("Primitive") struct Primitive {
+    @Suite("Bool") struct BoolTests {
+        @Test("Bool.==") func test_eq() { prop_eq(Bool.self) }
+        @Test("Bool.!=") func test_neq() { prop_neq(Bool.self) }
+        @Test("Bool.!") func test_lnot() { prop_lnot() }
+        @Test("Bool.||") func test_lor() { prop_lor() }
+        @Test("Bool.&&") func test_land() { prop_land() }
+    }
+
     @Suite("Int8") struct Int8Tests {
         // Ordering
         @Test("Int8.==") func test_eq() { prop_eq(Int8.self) }
@@ -771,6 +779,38 @@ private func prop_neq<T : Arbitrary & Equatable>(_ proxy: T.Type) {
 
 
 // MARK: Comparable
+
+// @inline(never)
+private func prop_lnot() {
+    property("Bool.lnot") <-
+      forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
+        let expected = xs.map(!)
+        let actual   = map(xs, !)
+        return try? #require( actual == expected )
+      }
+}
+
+// @inline(never)
+private func prop_lor() {
+    property("Bool.||") <-
+      forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
+      forAllNoShrink([Bool].arbitrary) { (ys: [Bool]) in
+        let expected = zip(xs, ys).map{ (x, y) in x || y }
+        let actual   = zipWith(xs, ys){ (x, y) in x || y }
+        return try? #require( actual == expected )
+      }}
+}
+
+// @inline(never)
+private func prop_land() {
+    property("Bool.&&") <-
+      forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
+      forAllNoShrink([Bool].arbitrary) { (ys: [Bool]) in
+        let expected = zip(xs, ys).map{ (x, y) in x && y }
+        let actual   = zipWith(xs, ys){ (x, y) in x && y }
+        return try? #require( actual == expected )
+      }}
+}
 
 // @inline(never)
 private func prop_lt<T : Arbitrary & Comparable>(_ proxy: T.Type) {
