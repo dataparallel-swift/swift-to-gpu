@@ -1,7 +1,7 @@
+import Foundation
 import SwiftCheck
 import SwiftToPTX
 import Testing
-import Foundation
 
 @Suite("defer") struct DeferSuite {
     @Test func test_defer1() { prop_defer1(Float32.self) }
@@ -46,4 +46,3 @@ private func prop_defer2<T: Numeric & Arbitrary & Similar & Comparable>(_ proxy:
         return try? #require( expected ~~~ actual )
       }
 }
-

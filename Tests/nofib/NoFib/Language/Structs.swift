@@ -3,28 +3,28 @@ import SwiftToPTX
 import Testing
 
 @Suite("structs") struct Structs {
-    @Suite("Struct Property Getters") struct StructPropertyGetters {
+    // The types of the members of the struct determine the layout (size and alignment)
+    // its overall size and alignmnt. The purpose of these tests is to check property access
+    // for varying layouts 
+
+    @Suite("Int32") struct Int32Tests {
         @Test func test_struct1_property_get() { prop_struct1_property_get(Int32.self) }
-        @Test func test_struct2_property_get() { prop_struct2_property_get(Int32.self, Int64.self) }
-        @Test func test_struct3_property_get() { prop_struct3_property_get(Int32.self, Int64.self, Bool.self) }
-         
-    }
-
-    @Suite("Struct Property Setters") struct StructPropertySetters {
         @Test func test_struct1_property_set() { prop_struct1_property_set(Int32.self) }
-        // @Test("S2.set", .bug(id: "86b6vg9th")) func test_struct2_property_set() { prop_struct2_property_set(Int32.self, Int64.self) }
-        // @Test("S3.set", .bug(id: "86b6vg9th")) func test_struct3_property_set() { prop_struct3_property_set(Int32.self, Int64.self, Int8.self) }
-    }
-
-    @Suite("Struct Property Setters Inout") struct StructPropertySetterInout {
         // @Test("S1.set_inout", .bug(id: "86b6vgh48")) func test_struct1_property_set_inout() { prop_struct1_property_set_inout(Int32.self) }
-        // @Test("S2.set_inout", .bug(id: "86b6vgh48")) func test_struct2_property_set_inout() { prop_struct2_property_set_inout(Int32.self, Int64.self) }
-        // @Test("S3.set_inout", .bug(id: "86b6vgh48")") func test_struct3_property_set_inout() { prop_struct3_property_set_inout(Int32.self, Int64.self, Int8.self) }
+        @Test func test_struct1_default_init() { prop_struct1_default_init(Int32.self) }
     }
 
-    @Suite("Struct Default Parameter Values") struct StructDefaultParameterValues {
-        @Test func test_struct1_default_init() { prop_struct1_default_init(Int32.self) }
+    @Suite("Int32Int64") struct Int32Int64Tests {
+        @Test func test_struct2_property_get() { prop_struct2_property_get(Int32.self, Int64.self) }
+        // @Test("S2.set", .bug(id: "86b6vg9th")) func test_struct2_property_set() { prop_struct2_property_set(Int32.self, Int64.self) }
+        // @Test("S2.set_inout", .bug(id: "86b6vgh48")) func test_struct2_property_set_inout() { prop_struct2_property_set_inout(Int32.self, Int64.self) }
         @Test func test_struct2_default_init() { prop_struct2_default_init(Int32.self, Int64.self) }
+    }
+
+    @Suite("Int32Int64Bool") struct Int32Int64BoolTests {
+        @Test func test_struct3_property_get() { prop_struct3_property_get(Int32.self, Int64.self, Bool.self) }
+        // @Test("S3.set", .bug(id: "86b6vg9th")) func test_struct3_property_set() { prop_struct3_property_set(Int32.self, Int64.self, Int8.self) }
+        // @Test("S3.set_inout", .bug(id: "86b6vgh48")") func test_struct3_property_set_inout() { prop_struct3_property_set_inout(Int32.self, Int64.self, Int8.self) }
         @Test func test_struct3_default_init() { prop_struct3_default_init(Int32.self, Int64.self, Int8.self) }
     }
 }
@@ -78,9 +78,11 @@ private func prop_struct1_property_set_inout<T: Arbitrary & Equatable>(_ proxy: 
       forAllNoShrink([T].arbitrary) { (vs: [T]) in
         let expected = zip(xs, vs).map { (s, v) in s1_property_set(s, v) }
         var actual = xs
+        // NOTE: `parallel_for` required here because of in-place mutation,
+        // i.e. modify accessor instead of subscript set
         parallel_for(iterations: min(xs.count, vs.count)) { i in
-            s1_property_set_inout(&actual[i], vs[i])
-        }
+          s1_property_set_inout(&actual[i], vs[i])
+        }.sync()
         return try? #require( expected == actual )
       }}
 }
@@ -157,9 +159,11 @@ private func prop_struct2_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
       forAllNoShrink(T2.arbitrary) { (v2: T2) in 
         let expected = xs.map { s2_property_set($0, v1, v2) }
         var actual = xs
+        // NOTE: `parallel_for` required here because of in-place mutation,
+        // i.e. modify accessor instead of subscript set
         parallel_for(iterations: xs.count) { i in
             s2_property_set_inout(&actual[i], v1, v2)
-        }
+        }.sync()
         return try? #require( expected == actual )
       }}}
 }
@@ -266,9 +270,11 @@ private func prop_struct3_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
       forAllNoShrink(T3.arbitrary) { (v3: T3) in 
         let expected = xs.map { s3_property_set($0, v1, v2, v3) }
         var actual = xs
+        // NOTE: `parallel_for` required here because of in-place mutation,
+        // i.e. modify accessor instead of subscript set
         parallel_for(iterations: xs.count) { i in
-            s3_property_set_inout(&actual[i], v1, v2, v3)
-        }
+          s3_property_set_inout(&actual[i], v1, v2, v3)
+        }.sync()
         return try? #require( expected == actual )
       }}}}
 }

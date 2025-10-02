@@ -27,7 +27,7 @@ import Testing
 extension Array where Element: AdditiveArithmetic {
     @inlinable
     func finite_difference() -> Self {
-        return self.enumerated().compactMap { (i, x) in
+        self.enumerated().compactMap { i, x in
             guard i != 0 else {
                 return nil
             }
@@ -49,15 +49,15 @@ private func prop_finite_difference<T: Arbitrary & AdditiveArithmetic & Similar>
     }
     property(String(describing: [T].self)+".adjacent_difference") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.finite_difference()
-        let actual = finite_difference(xs)
-        return try? #require( expected ~~~ actual )
-      }
+      let expected = xs.finite_difference()
+      let actual = finite_difference(xs)
+      return try? #require( expected ~~~ actual )
+    }
 }
 
 extension Array where Element: AdditiveArithmetic {
     func adjacent_difference() -> Self {
-        return self.enumerated().map { (i, x) in
+        self.enumerated().map { i, x in
             guard i != 0 else {
                 return x
             }
@@ -68,7 +68,7 @@ extension Array where Element: AdditiveArithmetic {
 
 private func prop_adjacent_difference<T: AdditiveArithmetic & Arbitrary & Similar>(_ proxy: T.Type) {
     func adjacent_difference(_ xs: Array<T>) -> Array<T> {
-        return imap(xs) { i, x in
+        imap(xs) { i, x in
             guard i != 0 else {
                 return x
             }
@@ -86,7 +86,7 @@ private func prop_adjacent_difference<T: AdditiveArithmetic & Arbitrary & Simila
 extension Array where Element: Numeric {
     @inlinable
     func laplace1D() -> Self {
-        return zip(self.indices, self).compactMap { (i, x) in
+        zip(self.indices, self).compactMap { i, x in
             guard i != self.startIndex else {
                 return nil
             }

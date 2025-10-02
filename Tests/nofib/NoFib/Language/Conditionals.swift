@@ -7,45 +7,74 @@ import Testing
     @Suite("if-else") struct IfElseTests {
         @Test func test_if_true() { prop_if_true() }
         @Test func test_if_false() { prop_if_false() }
-        @Test func test_if() { prop_if(Int64.self) }
-        @Test func test_ternary_operator() { prop_ternary_operator(Int64.self) }
-        @Test func test_if_else1() { prop_if_else1(Int64.self) }
-        @Test func test_if_else2() { prop_if_else2(Int64.self) }
-        @Test func test_if_else3() { prop_if_else3(Int64.self) }
-        @Test func test_nested_if() { prop_nested_if(Int64.self) }
+        @Test func test_if() { prop_if() }
+        @Test func test_ternary_operator() { prop_ternary_operator() }
+        @Test func test_if_else1() { prop_if_else1() }
+        @Test func test_if_else2() { prop_if_else2() }
+        @Test func test_if_else3() { prop_if_else3() }
+        @Test func test_nested_if() { prop_nested_if() }
     }
 
     @Suite("guard-statements") struct GuardStatements {
         @Test func test_guard_true() { prop_guard_true() }
         @Test func test_guard_false() { prop_guard_false() }
-        @Test func test_gaurd1() { prop_guard1(Int64.self) }
-        @Test func test_guard2() { prop_guard2(Int64.self) }
+        @Test func test_gaurd1() { prop_guard1() }
+        @Test func test_guard2() { prop_guard2() }
     }
 
     @Suite("switch-expressions") struct SwitchExpresions {
         @Suite("Int64") struct Int64Tests {
-            @Test func test_switch1() { prop_switch1(Int64.self) }
-            @Test func test_switch2() { prop_switch2(Int64.self) }
-            @Test func test_switch3() { prop_switch3(Int64.self) }
+            @Test("Int64.switch1") func test_switch1() { prop_switch1(Int64.self) }
+            @Test("Int64.switch2") func test_switch2() { prop_switch2(Int64.self) }
+            @Test("Int64.switch3") func test_switch3() { prop_switch3(Int64.self) }
             // @Test("Int64.switch4", .bug(id: "86b6xaz1f")) func test_switch4() { prop_switch4(Int64.self) }
             // @Test("Int64.switch5", .bug(id: "86b6xaz1f")) func test_switch5() { prop_switch5(Int64.self) }
-            @Test func test_switch6() { prop_switch6(Int64.self) }
+            @Test("Int64.switch6") func test_switch6() { prop_switch6(Int64.self) }
         }
+
         @Suite("Int32") struct Int32Tests {
-            @Test func test_switch1() { prop_switch1(Int32.self) }
-            @Test func test_switch2() { prop_switch2(Int32.self) }
-            @Test func test_switch3() { prop_switch3(Int32.self) }
+            @Test("Int32.switch1") func test_switch1() { prop_switch1(Int32.self) }
+            @Test("Int32.switch2") func test_switch2() { prop_switch2(Int32.self) }
+            @Test("Int32.switch3") func test_switch3() { prop_switch3(Int32.self) }
             // @Test("Int32.switch4", .bug(id: "86b6xaz1f")) func test_switch4() { prop_switch4(Int32.self) }
             // @Test("Int32.switch5", .bug(id: "86b6xaz1f")) func test_switch5() { prop_switch5(Int32.self) }
-            @Test func test_switch6() { prop_switch6(Int32.self) }
+            @Test("Int32.switch6") func test_switch6() { prop_switch6(Int32.self) }
         }
+
         @Suite("Int") struct IntTests {
-            @Test func test_switch1() { prop_switch1(Int.self) }
-            @Test func test_switch2() { prop_switch2(Int.self) }
-            @Test func test_switch3() { prop_switch3(Int.self) }
+            @Test("Int.switch1") func test_switch1() { prop_switch1(Int.self) }
+            @Test("Int.switch2") func test_switch2() { prop_switch2(Int.self) }
+            @Test("Int.switch3") func test_switch3() { prop_switch3(Int.self) }
             // @Test("Int.switch4", .bug(id: "86b6xaz1f")) func test_switch4() { prop_switch4(Int.self) }
             // @Test("Int.switch5", .bug(id: "86b6xaz1f")) func test_switch5() { prop_switch5(Int.self) }
-            @Test func test_switch6() { prop_switch6(Int.self) }
+            @Test("Int.switch6") func test_switch6() { prop_switch6(Int.self) }
+        }
+
+        @Suite("UInt64") struct UInt64Tests {
+            @Test("UInt64.switch1") func test_switch1() { prop_switch1(UInt64.self) }
+            @Test("UInt64.switch2") func test_switch2() { prop_switch2(UInt64.self) }
+            @Test("UInt64.switch3") func test_switch3() { prop_switch3(UInt64.self) }
+            // @Test("UInt64.switch4", .bug(id: "86b6xaz1f")) func test_switch4() { prop_switch4(UInt64.self) }
+            // @Test("UInt64.switch5", .bug(id: "86b6xaz1f")) func test_switch5() { prop_switch5(UInt64.self) }
+            @Test("UInt64.switch6") func test_switch6() { prop_switch6(UInt64.self) }
+        }
+
+        @Suite("UInt32") struct UInt32Tests {
+            @Test("UInt32.switch1") func test_switch1() { prop_switch1(UInt32.self) }
+            @Test("UInt32.switch2") func test_switch2() { prop_switch2(UInt32.self) }
+            @Test("UInt32.switch3") func test_switch3() { prop_switch3(UInt32.self) }
+            // @Test("UInt32.switch4", .bug(id: "86b6xaz1f")) func test_switch4() { prop_switch4(UInt32.self) }
+            // @Test("UInt32.switch5", .bug(id: "86b6xaz1f")) func test_switch5() { prop_switch5(UInt32.self) }
+            @Test("UInt32.switch6") func test_switch6() { prop_switch6(UInt32.self) }
+        }
+
+        @Suite("UInt") struct UIntTests {
+            @Test("UInt.switch1") func test_switch1() { prop_switch1(UInt.self) }
+            @Test("UInt.switch2") func test_switch2() { prop_switch2(UInt.self) }
+            @Test("UInt.switch3") func test_switch3() { prop_switch3(UInt.self) }
+            // @Test("UInt.switch4", .bug(id: "86b6xaz1f")) func test_switch4() { prop_switch4(UInt.self) }
+            // @Test("UInt.switch5", .bug(id: "86b6xaz1f")) func test_switch5() { prop_switch5(UInt.self) }
+            @Test("UInt.switch6") func test_switch6() { prop_switch6(UInt.self) }
         }
     }
 }
@@ -53,17 +82,18 @@ import Testing
 // MARK: test functions
 
 // MARK: if-statements
+
 private func prop_if_true() {
     func if_true(_ i: Int) -> Int {
         if true { return i }
         return 0
     }
     property("if_true") <-
-    forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
-      let expected = xs.map(if_true)
-      let actual = map(xs, if_true)
-      return try? #require( actual == expected )
-    }
+      forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
+        let expected = xs.map(if_true)
+        let actual = map(xs, if_true)
+        return try? #require( actual == expected )
+      }
 }
 
 private func prop_if_false() {
@@ -72,16 +102,16 @@ private func prop_if_false() {
         return 0
     }
     property("if_false") <-
-    forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
-      let expected = xs.map(if_false)
-      let actual = map(xs, if_false)
-      return try? #require( actual == expected )
-    }
+      forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
+        let expected = xs.map(if_false)
+        let actual = map(xs, if_false)
+        return try? #require( actual == expected )
+      }
 }
 
 // TODO: include type in property names
-private func prop_if<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func if_(_ b: Bool, _ x: T) -> T {
+private func prop_if() {
+    func if_(_ b: Bool, _ x: Int) -> Int {
         if b {
             return x
         }
@@ -89,45 +119,45 @@ private func prop_if<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ p
     }
     property("if") <-
       forAllNoShrink([Bool].arbitrary) { (bs: [Bool]) in
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
         let expected = zip(bs, xs).map { (b, x) in if_(b, x) }
         let actual = zipWith(bs, xs) { (b, x) in if_(b, x) }
         return try? #require( actual == expected )
       }}
 }
 
-private func prop_ternary_operator<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func ternary(_ b: Bool, _ x: T) -> T {
-        return b ? x : 0
+private func prop_ternary_operator() {
+    func ternary(_ b: Bool, _ x: Int) -> Int {
+        b ? x : 0
     }
     property("ternary") <-
       forAllNoShrink([Bool].arbitrary) { (bs: [Bool]) in
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
         let expected = zip(bs, xs).map { (b, x) in ternary(b, x) }
         let actual = zipWith(bs, xs) { (b, x) in ternary(b, x) }
         return try? #require( actual == expected )
       }}
 }
 
-private func prop_if_else1<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func if_else(_ b: Bool, _ x: T) -> T {
+private func prop_if_else1() {
+    func if_else(_ b: Bool, _ x: Int) -> Int {
         if b {
             return x
         } else {
             return 0
         }
     }
-    property(String(describing: T.self)+".if-else") <-
+    property("if_else") <-
       forAllNoShrink([Bool].arbitrary) { (bs: [Bool]) in
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
         let expected = zip(bs, xs).map { (b, x) in if_else(b, x) }
         let actual = zipWith(bs, xs, if_else)
         return try? #require( actual == expected )
       }}
 }
 
-private func prop_if_else2<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func if_else2(_ b1: Bool, _ b2: Bool, _ x: T) -> T {
+private func prop_if_else2() {
+    func if_else2(_ b1: Bool, _ b2: Bool, _ x: Int) -> Int {
         if b1 {
             return x
         } else if b2 {
@@ -136,18 +166,18 @@ private func prop_if_else2<T: Arbitrary & Equatable & ExpressibleByIntegerLitera
             return 1
         }
     }
-    property(String(describing: T.self)+".if_else2") <-
+    property("if_else2") <-
       forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
       forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
-      forAllNoShrink(T.arbitrary) { (x: T) in
+      forAllNoShrink(Int.arbitrary) { (x: Int) in
         let expected = zip(b1s, b2s).map { (b1, b2) in if_else2(b1, b2, x) }
         let actual = zipWith(b1s, b2s) { (b1, b2) in if_else2(b1, b2, x) }
         return try? #require( actual == expected )
       }}}
 }
 
-private func prop_if_else3<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func if_else3(_ b1: Bool, _ b2: Bool, _ b3: Bool, _ x: T) -> T {
+private func prop_if_else3() {
+    func if_else3(_ b1: Bool, _ b2: Bool, _ b3: Bool, _ x: Int) -> Int {
         if b1 {
             return x
         } else if b2 {
@@ -158,19 +188,19 @@ private func prop_if_else3<T: Arbitrary & Equatable & ExpressibleByIntegerLitera
             return 2
         }
     }
-    property(String(describing: T.self)+".if_else3") <-
+    property("if_else3") <-
       forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
       forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
       forAllNoShrink(Bool.arbitrary) { (b3: Bool) in
-      forAllNoShrink(T.arbitrary) { (x: T) in
+      forAllNoShrink(Int.arbitrary) { (x: Int) in
         let expected = zip(b1s, b2s).map { (b1, b2) in if_else3(b1, b2, b3, x) }
         let actual = zipWith(b1s, b2s) { (b1, b2) in if_else3(b1, b2, b3, x) }
         return try? #require( actual == expected )
       }}}}
 }
 
-private func prop_nested_if<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func nested_if(_ b1: Bool, _ b2: Bool, _ x: T) -> T {
+private func prop_nested_if() {
+    func nested_if(_ b1: Bool, _ b2: Bool, _ x: Int) -> Int {
         if b1 {
             if b2 {
                 return x
@@ -179,61 +209,64 @@ private func prop_nested_if<T: Arbitrary & Equatable & ExpressibleByIntegerLiter
         }
         return 1
     }
-    property(String(describing: T.self)+".nested-if") <-
+    property("nested_if") <-
       forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
       forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
-      forAllNoShrink(T.arbitrary) { (x: T) in
+      forAllNoShrink(Int.arbitrary) { (x: Int) in
         let expected = zip(b1s, b2s).map { (b1, b2) in nested_if(b1, b2, x) }
         let actual = zipWith(b1s, b2s) { (b1, b2) in nested_if(b1, b2, x) }
         return try? #require( actual == expected )
       }}}
 }
 
-
 // MARK: guard-statements
+
 private func prop_guard_true() {
-    func guard_true(_ x: Int) -> Int {
+    func guard_true(_ i: Int) -> Int {
         guard true else { return 0 }
-        return 1
+        return i
     }
     let count = 100_000
-    let gen = Int.arbitrary.suchThat { (0..<count).contains($0) }
-    property("guard-true") <- forAll(gen) { (n: Int) in
-        let expected = (0..<n).map(guard_true)
+    let gen = Int.arbitrary.suchThat { (0 ..< count).contains($0) }
+    property("guard_true") <-
+      forAll(gen) { (n: Int) in
+        let expected = (0 ..< n).map(guard_true)
         let actual = generate(count: n, guard_true)
         return try? #require( actual == expected )
     }
 }
 
 private func prop_guard_false() {
-    func guard_true(_ i: Int) -> Int {
-        guard true else { return i }
-        return 1
+    func guard_false(_ i: Int) -> Int {
+        guard true else { return 0 }
+        return i
     }
     let count = 100_000
-    property("guard-false") <- forAll(Gen<Int>.choose((0,count-1))) { (n: Int) in
-        let expected = (0..<n).map(guard_true)
-        let actual = generate(count: n, guard_true)
+    let gen = Int.arbitrary.suchThat { (0 ..< count).contains($0) }
+    property("guard_false") <-
+      forAll(gen) { (n: Int) in
+        let expected = (0 ..< n).map(guard_false)
+        let actual = generate(count: n, guard_false)
         return try? #require( actual == expected )
-    }
+      }
 }
 
-private func prop_guard1<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func guard1(_ b: Bool, _ x: T) -> T {
+private func prop_guard1() {
+    func guard1(_ b: Bool, _ x: Int) -> Int {
         guard b else { return 0 }
         return x
     }
-    property(String(describing: T.self)+".guard1") <-
+    property("guard1") <-
       forAllNoShrink([Bool].arbitrary) { (bs: [Bool]) in
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
         let expected = zip(bs, xs).map { (b, x) in guard1(b, x) }
         let actual = zipWith(bs, xs, guard1)
         return try? #require( actual == expected )
       }}
 }
 
-private func prop_guard2<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
-    func guard2(_ b1: Bool, _ b2: Bool, _ x: T) -> T {
+private func prop_guard2() {
+    func guard2(_ b1: Bool, _ b2: Bool, _ x: Int) -> Int {
         guard b1 else {
             return 0
         }
@@ -242,10 +275,10 @@ private func prop_guard2<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>
         }
         return x
     }
-    property(String(describing: T.self)+".guard2") <-
+    property("guard2") <-
       forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
       forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
-        let x: T = 42
+        let x = 42
         let expected = zip(b1s, b2s).map { (b1, b2) in guard2(b1, b2, x) }
         let actual = zipWith(b1s, b2s) { (b1, b2) in guard2(b1, b2, x) }
         return try? #require( actual == expected )
@@ -253,11 +286,12 @@ private func prop_guard2<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>
 }
 
 // MARK: switch-expressions
+
 private func prop_switch1<T: Arbitrary & Equatable & FixedWidthInteger & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
     func switch1(_ x: T) -> T {
-        return switch x {
-        case 0: 0
-        default: x
+        switch x {
+            case 0: 0
+            default: x
         }
     }
     property(String(describing: T.self)+".switch1") <-
@@ -270,7 +304,7 @@ private func prop_switch1<T: Arbitrary & Equatable & FixedWidthInteger & Express
 
 private func prop_switch2<T: Arbitrary & Equatable & FixedWidthInteger & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
     func switch2(_ x: T) -> T {
-        return switch x {
+        switch x {
             case 0: 0
             case 1: 2
             default: x
@@ -287,7 +321,7 @@ private func prop_switch2<T: Arbitrary & Equatable & FixedWidthInteger & Express
 private func prop_switch3<T: Arbitrary & Equatable & FixedWidthInteger & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
     func switch3(_ x: T) -> T {
         // introduce non-contiguity in the cases
-        return switch x {
+        switch x {
             case 0: 1
             case 1: 3
             case 4: 7
@@ -304,7 +338,7 @@ private func prop_switch3<T: Arbitrary & Equatable & FixedWidthInteger & Express
 
 private func prop_switch4<T: Arbitrary & Equatable & FixedWidthInteger & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
     func switch4(_ x: T) -> T {
-        return switch x {
+        switch x {
             case 0: 1
             case 1: 3
             case 4: 7
@@ -314,7 +348,7 @@ private func prop_switch4<T: Arbitrary & Equatable & FixedWidthInteger & Express
     }
     property(String(describing: T.self)+".switch4") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(switch4) 
+        let expected = xs.map(switch4)
         let actual = map(xs, switch4)
         return try? #require( actual == expected )
       }
@@ -322,7 +356,7 @@ private func prop_switch4<T: Arbitrary & Equatable & FixedWidthInteger & Express
 
 private func prop_switch5<T: Arbitrary & Equatable & FixedWidthInteger & ExpressibleByIntegerLiteral & AdditiveArithmetic>(_ proxy: T.Type) {
     func switch5(_ x: T) -> T {
-        return switch x {
+        switch x {
             case 0: 1
             case 1: 3
             case 4: 7
@@ -333,7 +367,7 @@ private func prop_switch5<T: Arbitrary & Equatable & FixedWidthInteger & Express
     }
     property(String(describing: T.self)+".switch5") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(switch5) 
+        let expected = xs.map(switch5)
         let actual = map(xs, switch5)
         return try? #require( actual == expected )
       }
@@ -342,14 +376,14 @@ private func prop_switch5<T: Arbitrary & Equatable & FixedWidthInteger & Express
 private func prop_switch6<T: Arbitrary & Equatable & FixedWidthInteger & ExpressibleByIntegerLiteral>(_ proxy: T.Type) {
     func switch6(_ x: T) -> T {
         // introduce range-based case in the mix
-        return switch x {
-            case (8...100): 99
+        switch x {
+            case 8 ... 100: 99
             default: x
         }
     }
     property(String(describing: T.self)+".switch5") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(switch6) 
+        let expected = xs.map(switch6)
         let actual = map(xs, switch6)
         return try? #require( actual == expected )
       }
