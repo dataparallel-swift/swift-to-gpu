@@ -64,7 +64,13 @@ let package = Package(
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
-            path: "Sources/swift-to-ptx"
+            path: "Sources/swift-to-ptx",
+            swiftSettings: [
+                .unsafeFlags([
+                    "-enable-cmo-everything",
+                ],
+                .when(configuration: .release)),
+            ],
         ),
 
         // Tests

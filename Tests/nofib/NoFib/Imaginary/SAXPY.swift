@@ -33,8 +33,14 @@ private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
         //
         // https://app.clickup.com/t/86b6bad4n
         //
-        // let actual = zipWith(xs, ys) { x, y in alpha * x + y }
-        let actual = generate(count: n) { i in alpha * xs[i] + ys[i] }
+        // let actual = generate(count: n) { i in alpha * xs[i] + ys[i] }
+
+        // TLM 2025-10-06: The above issue is fixed by enabling cross-module
+        // optimisation on everything (all APIs) with the -enable-cmo-everything
+        // flag. This is only necessary in release mode (in fact, will cause
+        // problems with swift-pm if enabled in debug).
+        //
+        let actual = zipWith(xs, ys) { x, y in alpha * x + y }
 
         return try? #require( expected ~~~ actual )
       }}}}
