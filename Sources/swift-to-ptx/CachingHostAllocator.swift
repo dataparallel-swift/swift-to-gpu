@@ -121,7 +121,6 @@ public struct CachingHostAllocator {
         defer { __zone.end() }
 
         // swiftlint:disable force_unwrapping
-        // swiftlint:disable:next redundant_optional_initialization
         var ptr: UnsafeMutableRawPointer? = nil
 
         if let bin = findBin(for: bytes) {
