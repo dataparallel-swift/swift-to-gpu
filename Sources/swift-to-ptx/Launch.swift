@@ -16,25 +16,26 @@ private let logger = Logger(label: "Launch")
 // produce the same result, but it is definitely a memory leak.
 //
 public struct ParallelForKernel {
-    let image : UnsafePointer<UInt8>
-    let name : UnsafePointer<CChar>
-    var module : CUmodule?
-    var function : CUfunction
-    var smallBlockSize : Int32
-    var largeBlockSize : Int32
+    let image: UnsafePointer<UInt8>
+    let name: UnsafePointer<CChar>
+    var module: CUmodule?
+    var function: CUfunction
+    var smallBlockSize: Int32
+    var largeBlockSize: Int32
 }
 
-@inline(never)  // we need to access this from the llvm-plugin
+@inline(never) // we need to access this from the llvm-plugin
 @discardableResult
+// swiftlint:disable:next function_body_length function_parameter_count
 public func launch_parallel_for
 (
-    iterations:     Int,
-    context:        Context,
-    stream:         Stream,
-    kernel:         inout ParallelForKernel,
-    env:            UnsafeMutableRawPointer,
-    swifterror:     UnsafeMutableRawPointer,
-    thrownerror:    UnsafeMutableRawPointer
+    iterations: Int,
+    context: Context,
+    stream: Stream,
+    kernel: inout ParallelForKernel,
+    env: UnsafeMutableRawPointer,
+    swifterror: UnsafeMutableRawPointer,
+    thrownerror: UnsafeMutableRawPointer
 ) -> Event
 {
     let __zone = #Zone
@@ -46,25 +47,25 @@ public func launch_parallel_for
         // Technically this configuration is per-context, since we could have
         // different contexts referring to devices of differing compute
         // capability. ---TLM 2025-09-23
-        var staticSharedMem : Int32 = 0
-        let dynamicSharedMem : Int = 0
-        var function : CUfunction?
+        var staticSharedMem: Int32 = 0
+        let dynamicSharedMem: Int = 0
+        var function: CUfunction? = nil
 
         cuda_safe_call{cuModuleLoadData(&kernel.module, kernel.image)}
         cuda_safe_call{cuModuleGetFunction(&function, kernel.module, kernel.name)}
-        kernel.function = function!
+        kernel.function = function! // swiftlint:disable:this force_unwrapping
 
         // active threads per multiprocessor
         var smallBlockActiveThreads: Int32 = 0
         var largeBlockActiveThreads: Int32 = 0
 
         for blockSize in stride(from: context.warpSize, through: context.maxThreadsPerMultiprocessor, by: Int(context.warpSize)) {
-            var activeBlocks : Int32 = 0
+            var activeBlocks: Int32 = 0
             cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, blockSize, dynamicSharedMem)}
 
             // No coming back from here
             if activeBlocks == 0 {
-                break;
+                break
             }
 
             // Record thread block sizes for local maximums in occupancy
@@ -83,11 +84,11 @@ public func launch_parallel_for
         let activeThreads = smallBlockActiveThreads
         let activeBlocks = smallBlockActiveThreads / kernel.smallBlockSize
         let activeWarps = activeThreads / context.warpSize
-        let occupancy : Float = Float(activeThreads) / Float(context.maxThreadsPerMultiprocessor) * 100.0
+        let occupancy: Float = Float(activeThreads) / Float(context.maxThreadsPerMultiprocessor) * 100.0
 
-        var registersPerThread : Int32 = 0
-        var constantMem : Int32 = 0
-        var localMem : Int32 = 0
+        var registersPerThread: Int32 = 0
+        var constantMem: Int32 = 0
+        var localMem: Int32 = 0
         cuda_safe_call{cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, kernel.function)}
         cuda_safe_call{cuFuncGetAttribute(&staticSharedMem, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, kernel.function)}
         cuda_safe_call{cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function)}
