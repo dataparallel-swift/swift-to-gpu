@@ -1,7 +1,9 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import CUDA
-import Tracy
 import Logging
 import SwiftToPTX_cbits
+import Tracy
 
 private let logger = Logger(label: "Launch")
 
@@ -36,8 +38,7 @@ public func launch_parallel_for
     env: UnsafeMutableRawPointer,
     swifterror: UnsafeMutableRawPointer,
     thrownerror: UnsafeMutableRawPointer
-) -> Event
-{
+) -> Event {
     let __zone = #Zone
     defer { __zone.end() }
 
@@ -51,8 +52,8 @@ public func launch_parallel_for
         let dynamicSharedMem: Int = 0
         var function: CUfunction? = nil
 
-        cuda_safe_call{cuModuleLoadData(&kernel.module, kernel.image)}
-        cuda_safe_call{cuModuleGetFunction(&function, kernel.module, kernel.name)}
+        cuda_safe_call { cuModuleLoadData(&kernel.module, kernel.image) }
+        cuda_safe_call { cuModuleGetFunction(&function, kernel.module, kernel.name) }
         kernel.function = function! // swiftlint:disable:this force_unwrapping
 
         // active threads per multiprocessor
@@ -61,7 +62,7 @@ public func launch_parallel_for
 
         for blockSize in stride(from: context.warpSize, through: context.maxThreadsPerMultiprocessor, by: Int(context.warpSize)) {
             var activeBlocks: Int32 = 0
-            cuda_safe_call{cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, blockSize, dynamicSharedMem)}
+            cuda_safe_call { cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, blockSize, dynamicSharedMem) }
 
             // No coming back from here
             if activeBlocks == 0 {
@@ -89,17 +90,21 @@ public func launch_parallel_for
         var registersPerThread: Int32 = 0
         var constantMem: Int32 = 0
         var localMem: Int32 = 0
-        cuda_safe_call{cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, kernel.function)}
-        cuda_safe_call{cuFuncGetAttribute(&staticSharedMem, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, kernel.function)}
-        cuda_safe_call{cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function)}
-        cuda_safe_call{cuFuncGetAttribute(&localMem, CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, kernel.function)}
+        cuda_safe_call { cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, kernel.function) }
+        cuda_safe_call { cuFuncGetAttribute(&staticSharedMem, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, kernel.function) }
+        cuda_safe_call { cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function) }
+        cuda_safe_call { cuFuncGetAttribute(&localMem, CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, kernel.function) }
 
+        // swiftformat:disable wrap
         logger.trace("Kernel function \"\(String(cString: kernel.name))\"")
         logger.trace(" ├ Uses \(registersPerThread) registers, \(Int(staticSharedMem) + dynamicSharedMem) bytes shared memory, \(localMem) bytes local memory, and \(constantMem) bytes constant memory")
         logger.trace(" └ Multiprocessor occupancy \(occupancy) % : \(activeThreads) threads over \(activeWarps) warps in \(activeBlocks) blocks")
+        // swiftformat:enable wrap
     }
 
     if iterations > 0 {
+        // swiftformat:disable indent
+
         // Try to automatically choose a good thread block size. Currently we only
         // support kernels that do not require inter-block thread communication, so
         // we prefer smaller block sizes so that we can fill the available
@@ -138,8 +143,11 @@ public func launch_parallel_for
             buffer[1] = UnsafeMutableRawPointer(p_env)
             buffer[2] = UnsafeMutableRawPointer(p_swifterror)
             buffer[3] = UnsafeMutableRawPointer(p_thrownerror)
-            cuda_safe_call{cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil)}
-        })})})})})
+            // swiftformat:disable:next wrap wrapArguments
+            cuda_safe_call { cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil) }
+        }) }) }) }) })
+
+        // swiftformat:enable indent
     }
 
     let event = stream.record()
@@ -147,4 +155,3 @@ public func launch_parallel_for
 
     return event
 }
-
