@@ -1,7 +1,9 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import CUDA
-import Tracy
 import Logging
 import SwiftToPTX_cbits
+import Tracy
 
 private let logger = Logger(label: "Stream")
 
@@ -36,7 +38,7 @@ public struct Stream {
         var tmp: CUstream? = nil
 
         // Assumes we have an active context
-        cuda_safe_call{cuStreamCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
+        cuda_safe_call { cuStreamCreate(&tmp, withFlags.reduce(0, { $0 | $1.rawValue })) }
 
         // cuStreamCreate will error before this is nil
         // swiftlint:disable:next force_unwrapping
@@ -60,7 +62,7 @@ public struct Stream {
         defer { __zone.end() }
 
         logger.trace(".sync() \(self.rawStream)")
-        cuda_safe_call{cuStreamSynchronize(self.rawStream)}
+        cuda_safe_call { cuStreamSynchronize(self.rawStream) }
     }
 
     /// Capture the contents of the stream at the time of the call. Subsequent
@@ -73,7 +75,7 @@ public struct Stream {
 
         let event = Event()
         logger.trace(".record() in \(self.rawStream) -> \(event.rawEvent)")
-        cuda_safe_call{cuEventRecord(event.rawEvent, self.rawStream)}
+        cuda_safe_call { cuEventRecord(event.rawEvent, self.rawStream) }
 
         return event
     }
@@ -87,7 +89,7 @@ public struct Stream {
         defer { __zone.end() }
 
         logger.trace(".waitOn(event: \(event.rawEvent))")
-        cuda_safe_call{cuStreamWaitEvent(self.rawStream, event.rawEvent, 0)}
+        cuda_safe_call { cuStreamWaitEvent(self.rawStream, event.rawEvent, 0) }
     }
 
     /// The work stream may be destroyed while the device is still doing work in
@@ -100,7 +102,7 @@ public struct Stream {
         defer { __zone.end() }
 
         logger.trace("destroy() \(self.rawStream)")
-        cuda_safe_call{cuStreamDestroy_v2(self.rawStream)}
+        cuda_safe_call { cuStreamDestroy_v2(self.rawStream) }
     }
 }
 
