@@ -5,6 +5,9 @@ import Logging
 import SwiftToPTX_cbits
 import Tracy
 
+// We really only want to disable this for cuda_safe_call
+// swiftformat:disable spaceAroundBraces spaceInsideBraces
+
 private let logger = Logger(label: "Event")
 
 /// An event in the current CUDA Context, used to signal when something like a
@@ -61,13 +64,13 @@ public final class Event {
             case CUDA_SUCCESS: true
             case CUDA_ERROR_NOT_READY: false
             default: { () -> Bool in
-                var name: UnsafePointer<CChar>? = nil
-                var desc: UnsafePointer<CChar>? = nil
-                cuGetErrorName(status, &name)
-                cuGetErrorString(status, &desc)
-                // swiftlint:disable:next no_fatalerror force_unwrapping
-                fatalError("CUDA call failed with error \(String(cString: name!)) (\(status.rawValue)): \(String(cString: desc!))")
-            }()
+                    var name: UnsafePointer<CChar>? = nil
+                    var desc: UnsafePointer<CChar>? = nil
+                    cuGetErrorName(status, &name)
+                    cuGetErrorString(status, &desc)
+                    // swiftlint:disable:next no_fatalerror force_unwrapping
+                    fatalError("CUDA call failed with error \(String(cString: name!)) (\(status.rawValue)): \(String(cString: desc!))")
+                }()
         }
         return result
     }
