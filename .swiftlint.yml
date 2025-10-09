@@ -1,5 +1,6 @@
 disabled_rules:
   - redundant_optional_initialization
+  - blanket_disable_command
 
 identifier_name:
   allowed_symbols: "_"
