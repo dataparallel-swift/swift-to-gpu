@@ -5,9 +5,6 @@ import Logging
 import SwiftToPTX_cbits
 import Tracy
 
-// We really only want to disable this for cuda_safe_call
-// swiftformat:disable spaceAroundBraces spaceInsideBraces
-
 private let logger = Logger(label: "Event")
 
 /// An event in the current CUDA Context, used to signal when something like a
@@ -27,7 +24,7 @@ public final class Event {
         var tmp: CUevent? = nil
 
         // Assumes we have an active context
-        cuda_safe_call{cuEventCreate(&tmp, withFlags.reduce(0, {$0 | $1.rawValue}))}
+        cuda_safe_call { cuEventCreate(&tmp, withFlags.reduce(0, { $0 | $1.rawValue })) }
 
         // cuEventCreate will error before this is nil
         // swiftlint:disable:next force_unwrapping
@@ -50,7 +47,7 @@ public final class Event {
         let __zone = #Zone
         defer { __zone.end() }
 
-        cuda_safe_call{cuEventSynchronize(self.rawEvent)}
+        cuda_safe_call { cuEventSynchronize(self.rawEvent) }
     }
 
     /// Returns 'true' if this event is complete
@@ -80,6 +77,6 @@ public final class Event {
     // will automatically be released asynchronously upon completion.
     deinit {
         logger.trace("Destroy event \(self.rawEvent)")
-        cuda_safe_call{cuEventDestroy_v2(self.rawEvent)}
+        cuda_safe_call { cuEventDestroy_v2(self.rawEvent) }
     }
 }

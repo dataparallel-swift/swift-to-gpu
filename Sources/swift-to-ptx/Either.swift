@@ -1,6 +1,5 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
-// swiftformat:disable consecutiveSpaces
 // swiftlint:disable identifier_name comma
 
 /// The 'Either' type represents values with two possibilities: a value of type

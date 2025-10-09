@@ -5,8 +5,6 @@ import NIOConcurrencyHelpers
 import SwiftToPTX_cbits
 import Tracy
 
-// swiftformat:disable consecutiveSpaces
-
 private let logger = Logger(label: "CachingHostAllocator")
 
 struct BlockDescriptor: Hashable, Equatable {
