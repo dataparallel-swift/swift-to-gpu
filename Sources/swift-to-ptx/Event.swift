@@ -7,8 +7,10 @@ import Tracy
 
 private let logger = Logger(label: "Event")
 
-/// An event in the current CUDA Context, used to signal when something like a
-/// kernel launch completes or takes place
+/// An event is a marker that can be inserted into the current execution stream
+/// and later queried. For example, it is can be used to signal when a kernel
+/// launch completes or takes place.
+///
 public final class Event {
     internal var rawEvent: CUevent
     // TODO: we should probably keep track of which context this event is
