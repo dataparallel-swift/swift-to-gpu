@@ -1,7 +1,12 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import CUDA
-import Tracy
 import Logging
 import SwiftToPTX_cbits
+import Tracy
+
+// We really only want to disable this for cuda_safe_call
+// swiftformat:disable spaceAroundBraces spaceInsideBraces consecutiveSpaces
 
 private let logger = Logger(label: "Context")
 
@@ -9,8 +14,7 @@ private let logger = Logger(label: "Context")
 /// to a specific execution context.
 public struct Context {
     internal let rawContext: CUcontext  // opaque pointer
-    internal let rawDevice: CUdevice    // int32_t
-                                        // -> context first for better alignment & packing
+    internal let rawDevice: CUdevice    // int32_t => context first for better alignment & packing (!)
     internal let multiProcessorCount: Int32
     internal let maxThreadsPerMultiprocessor: Int32
     internal let maxBlocksPerMultiprocessor: Int32
@@ -49,19 +53,20 @@ public struct Context {
         // Define the GPU architecture types (using the SM version in
         // hexadecimal notation) to determine the number of cores per SM.
         // swiftlint:disable colon
-        let gpuArchCoresPerSM : [Int32: Int32] =
-            [ 0x30: 192, 0x32: 192, 0x35: 192, 0x37: 192
-            , 0x50: 128, 0x52: 128, 0x53: 128
-            , 0x60:  64, 0x61: 128, 0x62: 128
-            , 0x70:  64, 0x72:  64, 0x75:  64
-            , 0x80:  64, 0x86: 128, 0x87: 128, 0x89: 128
-            , 0x90: 128
+        let gpuArchCoresPerSM: [Int32: Int32] =
+            [
+                0x30: 192, 0x32: 192, 0x35: 192, 0x37: 192,
+                0x50: 128, 0x52: 128, 0x53: 128,
+                0x60:  64, 0x61: 128, 0x62: 128,
+                0x70:  64, 0x72:  64, 0x75:  64,
+                0x80:  64, 0x86: 128, 0x87: 128, 0x89: 128,
+                0x90: 128,
             ]
         // swiftlint:enable colon
         let coresPerMP =
-          if let x = gpuArchCoresPerSM[(major << 4)+minor] { x } else {
-              fatalError("Number of cores for SM \(major).\(minor) is undefined") // swiftlint:disable:this no_fatalerror
-          }
+            if let x = gpuArchCoresPerSM[(major << 4) + minor] { x } else {
+                fatalError("Number of cores for SM \(major).\(minor) is undefined") // swiftlint:disable:this no_fatalerror
+            }
         var multiProcessorCount: Int32 = 0
         cuda_safe_call{cuDeviceGetAttribute(&multiProcessorCount, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, rawDevice)}
 
@@ -71,7 +76,7 @@ public struct Context {
         var maxBlocksPerMultiprocessor: Int32 = 0
         cuda_safe_call{cuDeviceGetAttribute(&maxBlocksPerMultiprocessor, CU_DEVICE_ATTRIBUTE_MAX_BLOCKS_PER_MULTIPROCESSOR, rawDevice)}
 
-        var totalGlobalMem: Int = 0
+        var totalGlobalMem: Int = 0 // swiftformat:disable:this redundantType
         cuda_safe_call{cuDeviceTotalMem_v2(&totalGlobalMem, rawDevice)}
 
         var gpuClock: Int32 = 0
@@ -79,6 +84,7 @@ public struct Context {
 
         cuda_safe_call{cuCtxPopCurrent_v2(nil)}
 
+        // swiftformat:disable:next wrap
         logger.trace("Device 0: \(name) (compute capability \(major).\(minor)), \(multiProcessorCount) multiprocessors @ \(gpuClock / 1000) MHz (\(coresPerMP * multiProcessorCount) cores), \(totalGlobalMem / (1024 * 1024)) MB global memory")
 
         self.rawDevice = rawDevice
