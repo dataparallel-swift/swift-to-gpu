@@ -1,7 +1,11 @@
-import Tracy
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import Logging
-import SwiftToPTX_cbits
 import NIOConcurrencyHelpers
+import SwiftToPTX_cbits
+import Tracy
+
+// swiftformat:disable consecutiveSpaces
 
 private let logger = Logger(label: "CachingHostAllocator")
 
@@ -60,8 +64,8 @@ public struct CachingHostAllocator {
         // assert the input is monotonically increasing
         assert(bins.count > 1)
         assert(bins[0] > 0)
-        for i in 0..<bins.count - 1 {   // XXX: check this loop disappears in release mode
-            assert(bins[i] < bins[i+1])
+        for i in 0 ..< bins.count - 1 { // XXX: check this loop disappears in release mode
+            assert(bins[i] < bins[i + 1])
         }
 
         logger.trace(".init(using: \(bins))")
@@ -81,7 +85,7 @@ public struct CachingHostAllocator {
 
         let count = max_bin - min_bin + 1
         let bins  = Array(unsafeUninitializedCapacity: count, initializingWith: { buffer, initialisedCount in
-            for i in 0..<count{
+            for i in 0 ..< count {
                 buffer[i] = pow(bin_growth, min_bin + i)
             }
             initialisedCount = count
@@ -102,7 +106,7 @@ public struct CachingHostAllocator {
         // allocator using geometrically increasing bin sizes--but we assume
         // that the number of bins is relatively small and so doing the dumb
         // thing is actually probably fastest.
-        for i in 0..<bin_size_bytes.count {
+        for i in 0 ..< bin_size_bytes.count {
             // swiftlint:disable:next for_where
             if value <= bin_size_bytes[i] {
                 return i
@@ -184,7 +188,8 @@ public struct CachingHostAllocator {
                 blocks.removeValue(forKey: ptr)
                 if let bin = exists {
                     _ = cached_blocks[bin].withLockedValue { $0.insert(block) }
-                } else {
+                }
+                else {
                     // This was a large-block allocation. We don't cache these, but just
                     // deallocate them (which still needs to happen asynchronously)
                     // deferred_free.insert(block)
@@ -218,7 +223,7 @@ public struct CachingHostAllocator {
             live_bytes      = blocks.values.reduce(0, { x, y in x + y! }) // swiftlint:disable:this force_unwrapping
         }
 
-        for bin in 0..<bin_size_bytes.count {
+        for bin in 0 ..< bin_size_bytes.count {
             let size = bin_size_bytes[bin]
             cached_blocks[bin].withLockedValue { blocks in
                 for block in blocks {
@@ -227,7 +232,8 @@ public struct CachingHostAllocator {
                         swift_slowDealloc(block.ptr, size, 0)
                         num_cached_blocks_freed += 1
                         cached_bytes_freed += size
-                    } else {
+                    }
+                    else {
                         num_cached_blocks_outstanding += 1
                         cached_bytes_outstanding += size
                     }
@@ -235,7 +241,10 @@ public struct CachingHostAllocator {
             }
         }
 
-        logger.info("Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding")
+        logger
+            .info(
+                "Freed \(num_cached_blocks_freed) blocks (\(cached_bytes_freed) bytes). \(num_cached_blocks_outstanding) cached blocks (\(cached_bytes_outstanding) bytes), \(num_live_blocks) live blocks (\(live_bytes) bytes) outstanding"
+            )
 
         return cached_bytes_freed > 0
     }
@@ -245,7 +254,7 @@ public struct CachingHostAllocator {
         let __zone = #Zone
         defer { __zone.end() }
 
-        for bin in 0..<bin_size_bytes.count {
+        for bin in 0 ..< bin_size_bytes.count {
             assert(live_blocks.withLockedValue { $0.count } == 0, "allocator is still holding onto live memory")
 
             let size = bin_size_bytes[bin]
@@ -260,13 +269,11 @@ public struct CachingHostAllocator {
     }
 }
 
-// swiftlint:disable:next private_over_fileprivate
-fileprivate func pow(_ base: Int, _ exp: Int) -> Int
-{
+private func pow(_ base: Int, _ exp: Int) -> Int {
     // swiftlint:disable identifier_name shorthand_operator
-    var r: Int = 1
-    var b: Int = base
-    var e: Int = exp
+    var r = 1
+    var b = base
+    var e = exp
 
     while e > 0 {
         if e & 1 != 0 {
