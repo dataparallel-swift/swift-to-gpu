@@ -46,6 +46,11 @@ include:
     inputs:
       product-names:
         - SwiftToPTX
+  - component: gitlab.com/PassiveLogic/ci/swift-dependabot@4
+    inputs:
+      token: ${SWIFT_DEPENDABOT_TOKEN}
+      token-email: ${SWIFT_DEPENDABOT_EMAIL}
+      assignee-username: trevor@passivelogic.com
 
 benchmark-orin:
   extends: .run_benchmarks
