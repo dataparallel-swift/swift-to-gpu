@@ -1,3 +1,5 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 extension Array {
     @usableFromInline
     init(unsafeUninitializedCapacity count: Int) {
@@ -7,7 +9,8 @@ extension Array {
             unsafeUninitializedCapacity: count,
             initializingWith: { _, initializedCount in
                 initializedCount = count
-            })
+            }
+        )
     }
 
     @usableFromInline
@@ -17,10 +20,11 @@ extension Array {
         self.init(
             unsafeUninitializedCapacity: count,
             initializingWith: { buffer, initializedCount in
-                for i in 0..<count {
+                for i in 0 ..< count {
                     buffer.initializeElement(at: i, to: generator(i))
                 }
                 initializedCount = count
-            })
+            }
+        )
     }
 }
