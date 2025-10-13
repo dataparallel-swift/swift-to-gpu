@@ -1,3 +1,5 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import SwiftCheck
 
 // swiftlint:disable public_in_test
@@ -10,7 +12,7 @@ extension FloatingPointRoundingRule: @retroactive Arbitrary {
             .toNearestOrAwayFromZero,
             .toNearestOrEven,
             .towardZero,
-            .up
+            .up,
         ])
     }
 }

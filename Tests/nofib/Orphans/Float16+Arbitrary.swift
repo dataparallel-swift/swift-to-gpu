@@ -1,3 +1,5 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import SwiftCheck
 
 // swiftlint:disable public_in_test
@@ -17,8 +19,9 @@ extension Float16: @retroactive Arbitrary {
             let denominator = Gen<Int64>.choose((1, precision))
 
             return numerator.flatMap { x in
-                return denominator.flatMap { y in
-                    Gen<Float16>.pure(Float16(Float64(x) / Float64(y))) }
+                denominator.flatMap { y in
+                    Gen<Float16>.pure(Float16(Float64(x) / Float64(y)))
+                }
             }
         }
     }
