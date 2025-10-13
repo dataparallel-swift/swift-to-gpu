@@ -28,7 +28,7 @@ let package = Package(
     platforms: [.macOS(.v10_15)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"])
+        .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
@@ -53,7 +53,7 @@ let package = Package(
             ],
             path: "Sources/swift-to-ptx-cbits",
             publicHeadersPath: ".",
-            cSettings: _cSettings,
+            cSettings: _cSettings
         ),
         .target(
             name: "SwiftToPTX",
@@ -65,7 +65,7 @@ let package = Package(
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
-            path: "Sources/swift-to-ptx",
+            path: "Sources/swift-to-ptx"
         ),
 
         // Tests
@@ -98,7 +98,7 @@ let package = Package(
                     // "-num-threads", "1",
                     // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
                     // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
-                ])
+                ]),
             ]
         ),
 
@@ -108,7 +108,7 @@ let package = Package(
             dependencies: [
                 "SwiftToPTX",
                 "BenchmarkFunctions_cbits",
-                .product(name: "Numerics", package: "swift-numerics")
+                .product(name: "Numerics", package: "swift-numerics"),
             ],
             path: "Benchmarks/benchmark-functions",
             swiftSettings: [
@@ -116,15 +116,15 @@ let package = Package(
                     "-O",
                     "-num-threads", "1",
                     "-Xllvm", "--swift-to-ptx-verbose",
-                    "-Xllvm", "-time-passes"
-                ])
+                    "-Xllvm", "-time-passes",
+                ]),
             ]
         ),
         .target(
             name: "BenchmarkFunctions_cbits",
             dependencies: [
                 "SwiftToPTX_cbits",
-                .product(name: "CUDA", package: "swift-cuda")
+                .product(name: "CUDA", package: "swift-cuda"),
             ],
             path: "Benchmarks/benchmark-functions-cbits"
         ),
@@ -133,13 +133,13 @@ let package = Package(
             dependencies: [
                 "Randy",
                 "BenchmarkFunctions",
-                .product(name: "Benchmark", package: "package-benchmark")
+                .product(name: "Benchmark", package: "package-benchmark"),
             ],
             path: "Benchmarks/saxpy",
             swiftSettings: [
                 .unsafeFlags([
                     // "-Rpass-missed=specialize"
-                ])
+                ]),
             ],
             plugins: [
                 .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
@@ -150,22 +150,22 @@ let package = Package(
             dependencies: [
                 "Randy",
                 "BenchmarkFunctions",
-                .product(name: "Benchmark", package: "package-benchmark")
+                .product(name: "Benchmark", package: "package-benchmark"),
             ],
             path: "Benchmarks/black-scholes",
             swiftSettings: [
                 .unsafeFlags([
                     // "-Rpass-missed=specialize"
-                ])
+                ]),
             ],
             plugins: [
                 .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
             ]
-        )
+        ),
     ]
 )
 
-fileprivate extension String? {
+private extension String? {
   var isSet: Bool {
     if let value = self {
       return value.isEmpty || value == "1" || value.lowercased() == "true"
