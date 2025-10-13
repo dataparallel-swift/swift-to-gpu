@@ -49,4 +49,3 @@ private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
         return try? #require( expected ~~~ actual )
       }}}}
 }
-

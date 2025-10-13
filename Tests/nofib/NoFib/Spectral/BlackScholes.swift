@@ -3,6 +3,8 @@ import Numerics
 import SwiftCheck
 import SwiftToPTX
 
+// swiftlint:disable identifier_name
+
 @Suite("BlackScholes") struct BlackScholes {
     @Test("Float16") func test_float16() { prop_blackscholes(Float16.self) }
     @Test("Float32", .bug(id: "86b6an9y0")) func test_float32() { withKnownIssue { prop_blackscholes(Float32.self) } }
@@ -10,18 +12,18 @@ import SwiftToPTX
 }
 
 private func prop_blackscholes<T: Arbitrary & Similar & RandomType & BinaryFloatingPoint & ElementaryFunctions>(_ proxy: T.Type) {
-    let riskfree   : T = 0.02
-    let volatility : T = 0.30
+    let riskfree: T   = 0.02
+    let volatility: T = 0.30
     property(String(describing: T.self)+".blackscholes") <-
       forAllNoShrink(Gen<Int>.choose((1, 4096))) { n in
-      forAllNoShrink(Gen<T>.choose((0, 30)).proliferate(withSize: n)) { (price : [T]) in
-      forAllNoShrink(Gen<T>.choose((1, 100)).proliferate(withSize: n)) { (strike : [T]) in
-      forAllNoShrink(Gen<T>.choose((0.25, 10)).proliferate(withSize: n)) { (years : [T]) in
+      forAllNoShrink(Gen<T>.choose((0, 30)).proliferate(withSize: n)) { (price: [T]) in
+      forAllNoShrink(Gen<T>.choose((1, 100)).proliferate(withSize: n)) { (strike: [T]) in
+      forAllNoShrink(Gen<T>.choose((0.25, 10)).proliferate(withSize: n)) { (years: [T]) in
         let expected = (0..<n).map { i in blackscholes(riskfree: riskfree, volatility: volatility, price: price[i], strike: strike[i], years: years[i]) }
         let actual   = generate(count: n) { i in blackscholes(riskfree: riskfree, volatility: volatility, price: price[i], strike: strike[i], years: years[i]) }
 
-        let calls : ()? = try? #require( expected.map{$0.call} ~~~ actual.map{$0.call} )
-        let puts  : ()? = try? #require( expected.map{$0.put} ~~~ actual.map{$0.put} )
+        let calls: ()? = try? #require( expected.map{$0.call} ~~~ actual.map{$0.call} )
+        let puts: ()?  = try? #require( expected.map{$0.put} ~~~ actual.map{$0.put} )
         return (calls != nil && puts != nil)
       }}}}
 }
@@ -29,12 +31,12 @@ private func prop_blackscholes<T: Arbitrary & Similar & RandomType & BinaryFloat
 // Polynomial approximation of cumulative normal distribution function
 private func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A
 {
-    let A1 : A =  0.319381530
-    let A2 : A = -0.356563782
-    let A3 : A =  1.781477937
-    let A4 : A = -1.821255978
-    let A5 : A =  1.330274429
-    let RSQRT2PI : A = 0.39894228040143267793994605993438
+    let A1: A =  0.319381530
+    let A2: A = -0.356563782
+    let A3: A =  1.781477937
+    let A4: A = -1.821255978
+    let A5: A =  1.330274429
+    let RSQRT2PI: A = 0.39894228040143267793994605993438
 
     let K  = 1.0 / (1.0 + 0.2316419 * abs(d))
 
@@ -45,7 +47,7 @@ private func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A
 
     let cnd = RSQRT2PI * A.exp(-0.5 * d * d) * (K * H1)
 
-    if (d > 0) {
+    if d > 0 {
         return 1.0 - cnd
     } else {
         return cnd
@@ -58,15 +60,14 @@ private func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A
 private func blackscholes<A: BinaryFloatingPoint & ElementaryFunctions>(riskfree r: A, volatility v: A, price s: A, strike x: A, years t: A) -> (call: A, put: A)
 {
   let v_sqrtT = v * A.sqrt(t)
-  let d1      = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT;
-  let d2      = d1 - v_sqrtT;
-  let cnd_d1  = cnd(d1);
-  let cnd_d2  = cnd(d2);
+  let d1      = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
+  let d2      = d1 - v_sqrtT
+  let cnd_d1  = cnd(d1)
+  let cnd_d2  = cnd(d2)
 
   let x_expRT = x * A.exp(-r * t)
 
   return ( call: s * cnd_d1 - x_expRT * cnd_d2
-         , put:  x_expRT * (1.0 - cnd_d2) - s * (1.0 - cnd_d1)
+         , put: x_expRT * (1.0 - cnd_d2) - s * (1.0 - cnd_d1)
          )
 }
-

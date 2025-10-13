@@ -3,6 +3,8 @@ import Numerics
 import SwiftCheck
 import SwiftToPTX
 
+// swiftlint:disable file_length
+
 @Suite("Primitive") struct Primitive {
     @Suite("Bool") struct BoolTests {
         @Test("Bool.==") func test_eq() { prop_eq(Bool.self) }
@@ -756,7 +758,7 @@ import SwiftToPTX
 // MARK: Equality
 
 // @inline(never)
-private func prop_eq<T : Arbitrary & Equatable>(_ proxy: T.Type) {
+private func prop_eq<T: Arbitrary & Equatable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".==") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -767,7 +769,7 @@ private func prop_eq<T : Arbitrary & Equatable>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_neq<T : Arbitrary & Equatable>(_ proxy: T.Type) {
+private func prop_neq<T: Arbitrary & Equatable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".!=") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -776,7 +778,6 @@ private func prop_neq<T : Arbitrary & Equatable>(_ proxy: T.Type) {
         return try? #require( actual == expected )
       }}
 }
-
 
 // MARK: Comparable
 
@@ -813,7 +814,7 @@ private func prop_land() {
 }
 
 // @inline(never)
-private func prop_lt<T : Arbitrary & Comparable>(_ proxy: T.Type) {
+private func prop_lt<T: Arbitrary & Comparable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".<") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -824,7 +825,7 @@ private func prop_lt<T : Arbitrary & Comparable>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_gt<T : Arbitrary & Comparable>(_ proxy: T.Type) {
+private func prop_gt<T: Arbitrary & Comparable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".>") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -835,7 +836,7 @@ private func prop_gt<T : Arbitrary & Comparable>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_lte<T : Arbitrary & Comparable>(_ proxy: T.Type) {
+private func prop_lte<T: Arbitrary & Comparable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".<=") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -846,7 +847,7 @@ private func prop_lte<T : Arbitrary & Comparable>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_gte<T : Arbitrary & Comparable>(_ proxy: T.Type) {
+private func prop_gte<T: Arbitrary & Comparable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".>=") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -857,7 +858,7 @@ private func prop_gte<T : Arbitrary & Comparable>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_min<T : Arbitrary & Comparable>(_ proxy: T.Type) {
+private func prop_min<T: Arbitrary & Comparable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".>=") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -868,7 +869,7 @@ private func prop_min<T : Arbitrary & Comparable>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_max<T : Arbitrary & Comparable>(_ proxy: T.Type) {
+private func prop_max<T: Arbitrary & Comparable>(_ proxy: T.Type) {
     property(String(describing: T.self)+".>=") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -878,11 +879,10 @@ private func prop_max<T : Arbitrary & Comparable>(_ proxy: T.Type) {
       }}
 }
 
-
 // MARK: SignedNumeric
 
 // @inline(never)
-private func prop_negate<T : Arbitrary & SignedNumeric>(_ proxy: T.Type) {
+private func prop_negate<T: Arbitrary & SignedNumeric>(_ proxy: T.Type) {
     property(String(describing: T.self)+".negate") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map { x in -x }
@@ -892,7 +892,7 @@ private func prop_negate<T : Arbitrary & SignedNumeric>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_abs<T : Arbitrary & Comparable & SignedNumeric>(_ proxy: T.Type) {
+private func prop_abs<T: Arbitrary & Comparable & SignedNumeric>(_ proxy: T.Type) {
     property(String(describing: T.self)+".abs") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map { abs($0) }
@@ -904,7 +904,7 @@ private func prop_abs<T : Arbitrary & Comparable & SignedNumeric>(_ proxy: T.Typ
 // MARK: BinaryInteger
 
 // @inline(never)
-private func prop_signum<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_signum<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".signum") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map { $0.signum() }
@@ -916,7 +916,7 @@ private func prop_signum<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 // MARK: AdditiveArithmetic
 
 // @inline(never)
-private func prop_plus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
+private func prop_plus<T: Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
     property(String(describing: T.self)+".+") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -928,7 +928,7 @@ private func prop_plus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
 
 // @inline(never)
 // Workaround for https://app.clickup.com/t/86b4gq1tv
-private func prop_plus_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_plus_safe<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     let gen = T.arbitrary.suchThat { (T.min/2) <= $0 && $0 <= (T.max/2) }
     property(String(describing: T.self)+".avoiding_overflow.+") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
@@ -940,7 +940,7 @@ private func prop_plus_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) 
 }
 
 // @inline(never)
-private func prop_minus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
+private func prop_minus<T: Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
     property(String(describing: T.self)+".-") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -952,7 +952,7 @@ private func prop_minus<T : Arbitrary & AdditiveArithmetic>(_ proxy: T.Type) {
 
 // @inline(never)
 // Workaround for https://app.clickup.com/t/86b4gq1tv
-private func prop_minus_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_minus_safe<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     let gen = T.arbitrary.suchThat { (T.min/2) <= $0 && $0 <= (T.max/2) }
     property(String(describing: T.self)+".avoiding_underflow.-") <-
       forAllNoShrink(gen.proliferate) { (xs: [T]) in
@@ -963,11 +963,10 @@ private func prop_minus_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type)
       }}
 }
 
-
 // MARK: Numeric
 
 // @inline(never)
-private func prop_mul<T : Arbitrary & Numeric>(_ proxy: T.Type) {
+private func prop_mul<T: Arbitrary & Numeric>(_ proxy: T.Type) {
     property(String(describing: T.self)+".*") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -979,7 +978,7 @@ private func prop_mul<T : Arbitrary & Numeric>(_ proxy: T.Type) {
 
 // @inline(never)
 // Workaround for https://app.clickup.com/t/86b4gq1tv
-private func prop_mul_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_mul_safe<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     let lim = Double(T.max).squareRoot()
     let gen = T.arbitrary.suchThat { abs(Double($0)) <= lim }
     property(String(describing: T.self)+".avoiding_overflow.*") <-
@@ -994,7 +993,7 @@ private func prop_mul_safe<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
 // MARK: BinaryInteger
 
 // @inline(never)
-private func prop_quot<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_quot<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 == 0) }
     property(String(describing: T.self)+"./") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1006,7 +1005,7 @@ private func prop_quot<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_rem<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_rem<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 == 0) }
     property(String(describing: T.self)+"./") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1018,21 +1017,21 @@ private func prop_rem<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_quotientAndRemainder<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_quotientAndRemainder<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 == 0) }
     property(String(describing: T.self)+"./") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen.proliferate) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.quotientAndRemainder(dividingBy: y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.quotientAndRemainder(dividingBy: y) }
-        let r1 : ()? = try? #require( actual.map{$0.quotient}  == expected.map{$0.quotient} )
-        let r2 : ()? = try? #require( actual.map{$0.remainder} == expected.map{$0.remainder} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.quotient}  == expected.map{$0.quotient} )
+        let result2: ()? = try? #require( actual.map{$0.remainder} == expected.map{$0.remainder} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_isMultiple<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_isMultiple<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+"./") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1043,7 +1042,7 @@ private func prop_isMultiple<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_and<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_and<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".&") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1054,7 +1053,7 @@ private func prop_and<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_or<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_or<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".&") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1065,7 +1064,7 @@ private func prop_or<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_xor<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_xor<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".&") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1076,7 +1075,7 @@ private func prop_xor<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_shiftL<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_shiftL<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     let gen = Gen<Int>.choose((-T.zero.bitWidth, T.zero.bitWidth))
     property(String(describing: T.self)+".<<") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1088,7 +1087,7 @@ private func prop_shiftL<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
 }
 
 // @inline(never)
-private func prop_shiftR<T : Arbitrary & BinaryInteger>(_ proxy: T.Type) {
+private func prop_shiftR<T: Arbitrary & BinaryInteger>(_ proxy: T.Type) {
     let gen = Gen<Int>.choose((-T.zero.bitWidth, T.zero.bitWidth))
     property(String(describing: T.self)+".>>") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1171,9 +1170,8 @@ private func prop_bigEndian<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     }
 }
 
-
 // @inline(never)
-private func prop_uncheckedPlus<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_uncheckedPlus<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".&*") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1184,7 +1182,7 @@ private func prop_uncheckedPlus<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Ty
 }
 
 // @inline(never)
-private func prop_uncheckedMinus<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_uncheckedMinus<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".&-") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1195,7 +1193,7 @@ private func prop_uncheckedMinus<T : Arbitrary & FixedWidthInteger>(_ proxy: T.T
 }
 
 // @inline(never)
-private func prop_uncheckedMul<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_uncheckedMul<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".&*") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1206,7 +1204,7 @@ private func prop_uncheckedMul<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Typ
 }
 
 // @inline(never)
-private func prop_uncheckedShiftL<T : Arbitrary & RandomType & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_uncheckedShiftL<T: Arbitrary & RandomType & FixedWidthInteger>(_ proxy: T.Type) {
     let gen = Gen.choose((0, T(T.zero.bitWidth)))
     property(String(describing: T.self)+".&<<") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1218,7 +1216,7 @@ private func prop_uncheckedShiftL<T : Arbitrary & RandomType & FixedWidthInteger
 }
 
 // @inline(never)
-private func prop_uncheckedShiftR<T : Arbitrary & RandomType & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_uncheckedShiftR<T: Arbitrary & RandomType & FixedWidthInteger>(_ proxy: T.Type) {
     let gen = Gen.choose((0, T(T.zero.bitWidth)))
     property(String(describing: T.self)+".&>>") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1230,92 +1228,92 @@ private func prop_uncheckedShiftR<T : Arbitrary & RandomType & FixedWidthInteger
 }
 
 // @inline(never)
-private func prop_addingReportingOverflow<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_addingReportingOverflow<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".addingReportingOverflow") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.addingReportingOverflow(y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.addingReportingOverflow(y) }
-        let r1 : ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
-        let r2 : ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
+        let result2: ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_subtractingReportingOverflow<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_subtractingReportingOverflow<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".subtractingReportingOverflow") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.subtractingReportingOverflow(y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.subtractingReportingOverflow(y) }
-        let r1 : ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
-        let r2 : ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
+        let result2: ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_multipliedReportingOverflow<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_multipliedReportingOverflow<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".multipliedReportingOverflow") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.multipliedReportingOverflow(by: y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.multipliedReportingOverflow(by: y) }
-        let r1 : ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
-        let r2 : ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
+        let result2: ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_dividedReportingOverflow<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_dividedReportingOverflow<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".dividedReportingOverflow") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.dividedReportingOverflow(by: y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.dividedReportingOverflow(by: y) }
-        let r1 : ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
-        let r2 : ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
+        let result2: ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_remainderReportingOverflow<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_remainderReportingOverflow<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".remainderReportingOverflow") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.remainderReportingOverflow(dividingBy: y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.remainderReportingOverflow(dividingBy: y) }
-        let r1 : ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
-        let r2 : ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.partialValue} == expected.map{$0.partialValue} )
+        let result2: ()? = try? #require( actual.map{$0.overflow} == expected.map{$0.overflow} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_multipliedFullWidth<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
+private func prop_multipliedFullWidth<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type) {
     property(String(describing: T.self)+".multipliedFullWidth") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map{ (x, y) in x.multipliedFullWidth(by: y) }
         let actual   = zipWith(xs, ys) { (x, y) in x.multipliedFullWidth(by: y) }
-        let r1 : ()? = try? #require( actual.map{$0.high} == expected.map{$0.high} )
-        let r2 : ()? = try? #require( actual.map{$0.low} == expected.map{$0.low} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.high} == expected.map{$0.high} )
+        let result2: ()? = try? #require( actual.map{$0.low} == expected.map{$0.low} )
+        return (result1 != nil && result2 != nil)
       }}
 }
 
 // @inline(never)
-private func prop_dividingFullWidth<T : Arbitrary & FixedWidthInteger>(_ proxy: T.Type)
+private func prop_dividingFullWidth<T: Arbitrary & FixedWidthInteger>(_ proxy: T.Type)
   where T.Magnitude: Arbitrary {
     property(String(describing: T.self)+".dividingFullWidth") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
       forAllNoShrink([T.Magnitude].arbitrary) { (zs: [T.Magnitude]) in
         let expected = zip(xs, zip(ys, zs).map{ (y, z) in (high: y, low: z) })
-                        .map{ (x, yz) in x.dividingFullWidth(yz) }
+                        .map{ (x, yz) in x.dividingFullWidth(yz) } // swiftlint:disable:this identifier_name
 
         // TODO: zipWith3
         let n        = min(min(xs.count, ys.count), zs.count)
@@ -1326,17 +1324,16 @@ private func prop_dividingFullWidth<T : Arbitrary & FixedWidthInteger>(_ proxy: 
             return x.dividingFullWidth((high: y, low: z))
         }
 
-        let r1 : ()? = try? #require( actual.map{$0.quotient} == expected.map{$0.quotient} )
-        let r2 : ()? = try? #require( actual.map{$0.remainder} == expected.map{$0.remainder} )
-        return (r1 != nil && r2 != nil)
+        let result1: ()? = try? #require( actual.map{$0.quotient} == expected.map{$0.quotient} )
+        let result2: ()? = try? #require( actual.map{$0.remainder} == expected.map{$0.remainder} )
+        return (result1 != nil && result2 != nil)
       }}}
 }
-
 
 // MARK: FloatingPoint
 
 // @inline(never)
-private func prop_quot<T : Arbitrary & Similar & FloatingPoint>(_ proxy: T.Type) {
+private func prop_quot<T: Arbitrary & Similar & FloatingPoint>(_ proxy: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 ~~~ 0) }
     property(String(describing: T.self)+"./") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
@@ -1553,7 +1550,7 @@ private func prop_truncate<T: Arbitrary & FloatingPoint>(_ proxy: T.Type) {
 // MARK: swift-numerics
 
 // @inline(never)
-private func prop_pow<T : Arbitrary & Similar & ElementaryFunctions>(_ proxy: T.Type) {
+private func prop_pow<T: Arbitrary & Similar & ElementaryFunctions>(_ proxy: T.Type) {
     property(String(describing: T.self)+"pow") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1564,7 +1561,7 @@ private func prop_pow<T : Arbitrary & Similar & ElementaryFunctions>(_ proxy: T.
 }
 
 // @inline(never)
-private func prop_powi<T : Arbitrary & Similar & ElementaryFunctions>(_ proxy: T.Type) {
+private func prop_powi<T: Arbitrary & Similar & ElementaryFunctions>(_ proxy: T.Type) {
     property(String(describing: T.self)+"powi") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([Int].arbitrary) { (ys: [Int]) in
@@ -1805,7 +1802,7 @@ private func prop_atanh<T: Arbitrary & Similar & RandomType & FloatingPoint & El
 }
 
 // @inline(never)
-private func prop_atan2<T : Arbitrary & Similar & RealFunctions>(_ proxy: T.Type) {
+private func prop_atan2<T: Arbitrary & Similar & RealFunctions>(_ proxy: T.Type) {
     property(String(describing: T.self)+"atan2") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1856,7 +1853,7 @@ private func prop_logGamma<T: Arbitrary & Similar & RealFunctions>(_ proxy: T.Ty
 }
 
 // @inline(never)
-private func prop_hypot<T : Arbitrary & Similar & RealFunctions>(_ proxy: T.Type) {
+private func prop_hypot<T: Arbitrary & Similar & RealFunctions>(_ proxy: T.Type) {
     property(String(describing: T.self)+"hypot") <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
@@ -1865,4 +1862,3 @@ private func prop_hypot<T : Arbitrary & Similar & RealFunctions>(_ proxy: T.Type
         return try? #require( actual ~~~ expected )
       }}
 }
-

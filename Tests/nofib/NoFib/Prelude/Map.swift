@@ -4,4 +4,3 @@ import SwiftToPTX
 
 // @Suite("Map") struct Map {
 // }
-

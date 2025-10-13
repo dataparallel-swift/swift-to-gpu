@@ -4,4 +4,3 @@ import SwiftToPTX
 
 // @Suite("Stencil") struct Stencil {
 // }
-
