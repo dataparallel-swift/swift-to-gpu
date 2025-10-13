@@ -1,7 +1,7 @@
-
 extension Array {
     @usableFromInline
     init(unsafeUninitializedCapacity count: Int) {
+        // swiftlint:disable:next no_precondition
         precondition(count >= 0, "arrays must have non-negative sizes")
         self.init(
             unsafeUninitializedCapacity: count,
@@ -12,6 +12,7 @@ extension Array {
 
     @usableFromInline
     init(count: Int, generator: @escaping (Int) -> Element) {
+        // swiftlint:disable:next no_precondition
         precondition(count >= 0, "arrays must have non-negative sizes")
         self.init(
             unsafeUninitializedCapacity: count,
@@ -23,4 +24,3 @@ extension Array {
             })
     }
 }
-
