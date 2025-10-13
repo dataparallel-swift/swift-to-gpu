@@ -9,6 +9,7 @@ let disableJemalloc = ProcessInfo.processInfo.environment["BENCHMARK_DISABLE_JEM
 let enableTracy     = ProcessInfo.processInfo.environment["SWIFT_TRACY_ENABLE"].isSet
 
 if !disableJemalloc {
+    // swiftlint:disable:next logger_over_print
     print("Set BENCHMARK_DISABLE_JEMALLOC=true to get accurate data from package-benchmark!")
 }
 
@@ -166,10 +167,9 @@ let package = Package(
 
 fileprivate extension String? {
   var isSet: Bool {
-    if let v = self {
-      return v.isEmpty || v == "1" || v.lowercased() == "true"
+    if let value = self {
+      return value.isEmpty || value == "1" || value.lowercased() == "true"
     }
     return false
   }
 }
-
