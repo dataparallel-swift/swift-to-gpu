@@ -4,8 +4,6 @@ import Benchmark
 import BenchmarkFunctions
 import Randy
 
-// swiftlint:disable identifier_name
-
 let benchmarks: @Sendable () -> Void = {
     var gen = UniformRandomNumberGenerator()
     let configs: [(Int, BenchmarkScalingFactor)] = [

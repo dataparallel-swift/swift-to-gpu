@@ -3,7 +3,7 @@
 import BenchmarkFunctions_cbits
 import SwiftToPTX
 
-// swiftlint:disable identifier_name missing_docs
+// swiftlint:disable missing_docs
 
 // MARK: CPU
 
