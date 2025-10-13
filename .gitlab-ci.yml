@@ -41,6 +41,12 @@ include:
       additional-setup:
         - apt install -y libcapstone-dev
 
+  # Deploy stage
+  - component: gitlab.com/PassiveLogic/ci/swift-docs@4
+    inputs:
+      product-names:
+        - SwiftToPTX
+
 benchmark-orin:
   extends: .run_benchmarks
   tags:
