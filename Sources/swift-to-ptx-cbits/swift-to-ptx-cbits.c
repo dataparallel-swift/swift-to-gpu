@@ -1,3 +1,4 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
 
 #include <errno.h>
 #include <stdarg.h>
@@ -173,4 +174,3 @@ void swift_slowDealloc(void* ptr, size_t size, size_t align_mask) {
 size_t swift_usableSize(const void* ptr) {
   return mi_usable_size(ptr);
 }
-

@@ -1,3 +1,4 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
 
 #ifndef __SWIFT2PTX_CBITS__
 #define __SWIFT2PTX_CBITS__
@@ -11,4 +12,3 @@ void* swift_slowRealloc(void* ptr, size_t size, size_t align_mask);
 void swift_slowDealloc(void* ptr, size_t size, size_t align_mask);
 
 #endif // __SWIFT2PTX_CBITS__
-
