@@ -1,6 +1,8 @@
 import SwiftToPTX
 import BenchmarkFunctions_cbits
 
+// swiftlint:disable identifier_name missing_docs
+
 // MARK: CPU
 // --------------------------------------------------------------------------------
 
@@ -9,7 +11,7 @@ public func saxpy_cpu_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) ->
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array.init(
+    return Array(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             for i in 0..<n {
@@ -25,7 +27,7 @@ public func saxpy_cpu_f32(_ alpha: Float32, _ xs: [Float32], _ ys: [Float32]) ->
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array.init(
+    return Array(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             for i in 0..<n {
@@ -36,12 +38,11 @@ public func saxpy_cpu_f32(_ alpha: Float32, _ xs: [Float32], _ ys: [Float32]) ->
     )
 }
 
-
 public func saxpy_cpu_f64(_ alpha: Float64, _ xs: [Float64], _ ys: [Float64]) -> [Float64]
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array.init(
+    return Array(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             for i in 0..<n {
@@ -56,7 +57,7 @@ public func saxpy_cpu_generic<A: Numeric>(_ alpha: A, _ xs: [A], _ ys: [A]) -> [
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array<A>.init(
+    return Array<A>(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             for i in 0..<n {
@@ -90,7 +91,7 @@ public func saxpy_cpu_specialised<A: Numeric> (_ alpha: A, _ xs: [A], _ ys: [A])
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array<A>.init(
+    return Array<A>(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             for i in 0..<n {
@@ -100,7 +101,6 @@ public func saxpy_cpu_specialised<A: Numeric> (_ alpha: A, _ xs: [A], _ ys: [A])
         }
     )
 }
-
 
 // MARK: PTX
 // --------------------------------------------------------------------------------
@@ -129,7 +129,6 @@ public func saxpy_ptx_f64(_ alpha: Float64, _ xs: [Float64], _ ys: [Float64]) ->
 // saxpy_ptx_generic
 // saxpy_ptx_specialised
 
-
 // MARK: CUDA
 // --------------------------------------------------------------------------------
 
@@ -138,7 +137,7 @@ public func saxpy_cuda_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) -
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array.init(
+    return Array(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             BenchmarkFunctions_cbits.saxpy_cuda_f16(alpha, xs, ys, buffer.baseAddress, n)
@@ -151,7 +150,7 @@ public func saxpy_cuda_f32(_ alpha: Float32, _ xs: [Float32], _ ys: [Float32]) -
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array.init(
+    return Array(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             BenchmarkFunctions_cbits.saxpy_cuda_f32(alpha, xs, ys, buffer.baseAddress, n)
@@ -163,11 +162,10 @@ public func saxpy_cuda_f64(_ alpha: Float64, _ xs: [Float64], _ ys: [Float64]) -
 {
     assert(xs.count == ys.count)
     let n = xs.count
-    return Array.init(
+    return Array(
         unsafeUninitializedCapacity: n,
         initializingWith: { buffer, initializedCount in
             BenchmarkFunctions_cbits.saxpy_cuda_f64(alpha, xs, ys, buffer.baseAddress, n)
             initializedCount = n
         })
 }
-

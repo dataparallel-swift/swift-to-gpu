@@ -2,9 +2,11 @@ import Benchmark
 import BenchmarkFunctions
 import Randy
 
-let benchmarks : @Sendable () -> Void = {
+// swiftlint:disable identifier_name
+
+let benchmarks: @Sendable () -> Void = {
     var gen = UniformRandomNumberGenerator()
-    let configs : [(Int, BenchmarkScalingFactor)] = [
+    let configs: [(Int, BenchmarkScalingFactor)] = [
         (100, .one),
         (1000, .one),
         (10_000, .one),
@@ -32,10 +34,11 @@ let benchmarks : @Sendable () -> Void = {
         )
     }
 
+    // swiftlint:disable:next large_tuple
     func setup<A: BinaryFloatingPoint & RandomizableWithDistribution>(_ proxy: A.Type, _ n: Int) -> (A, A, [A], [A], [A])
     {
-        let riskfree   : A = 0.02
-        let volatility : A = 0.30
+        let riskfree: A   = 0.02
+        let volatility: A = 0.30
         let price  = Array<A>.random(count: n, in: RandomDistribution(.uniform(min: 5, max: 30)), using: &gen)
         let strike = Array<A>.random(count: n, in: RandomDistribution(.uniform(min: 1, max: 100)), using: &gen)
         let time   = Array<A>.random(count: n, in: RandomDistribution(.uniform(min: 0.25, max: 10)), using: &gen)
@@ -43,7 +46,7 @@ let benchmarks : @Sendable () -> Void = {
     }
 
     func bench<Input, Output>(_ function: @escaping ((Input) -> Output)) -> (Benchmark, Input) -> Void {
-        return { benchmark, input in
+        return { _, input in
             // for _ in benchmark.scaledIterations {
                 blackHole(function(input))
             // }
@@ -51,20 +54,21 @@ let benchmarks : @Sendable () -> Void = {
     }
 
     for (size, scaling) in configs {
+        // swiftlint:disable comma
 #if arch(arm64)
-        Benchmark.init("blackscholes/ptx/f16/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f16),          setup: { setup(Float16.self, size) })
-        Benchmark.init("blackscholes/cpu/f16/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f16),          setup: { setup(Float16.self, size) })
-        Benchmark.init("blackscholes/cpu_generic_safe/f16/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float16.self, size) })
+        Benchmark("blackscholes/ptx/f16/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f16),          setup: { setup(Float16.self, size) })
+        Benchmark("blackscholes/cpu/f16/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f16),          setup: { setup(Float16.self, size) })
+        Benchmark("blackscholes/cpu_generic_safe/f16/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float16.self, size) })
 #endif
 
-        Benchmark.init("blackscholes/cuda/f32/\(size)",             configuration: config(scaling), closure: bench(blackscholes_cuda_f32),         setup: { setup(Float32.self, size) })
-        Benchmark.init("blackscholes/ptx/f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f32),          setup: { setup(Float32.self, size) })
-        Benchmark.init("blackscholes/cpu/f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f32),          setup: { setup(Float32.self, size) })
-        Benchmark.init("blackscholes/cpu_generic_safe/f32/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float32.self, size) })
+        Benchmark("blackscholes/cuda/f32/\(size)",             configuration: config(scaling), closure: bench(blackscholes_cuda_f32),         setup: { setup(Float32.self, size) })
+        Benchmark("blackscholes/ptx/f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f32),          setup: { setup(Float32.self, size) })
+        Benchmark("blackscholes/cpu/f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f32),          setup: { setup(Float32.self, size) })
+        Benchmark("blackscholes/cpu_generic_safe/f32/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float32.self, size) })
 
-        Benchmark.init("blackscholes/ptx/f64/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f64),          setup: { setup(Float64.self, size) })
-        Benchmark.init("blackscholes/cpu/f64/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f64),          setup: { setup(Float64.self, size) })
-        Benchmark.init("blackscholes/cpu_generic_safe/f64/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float64.self, size) })
+        Benchmark("blackscholes/ptx/f64/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f64),          setup: { setup(Float64.self, size) })
+        Benchmark("blackscholes/cpu/f64/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f64),          setup: { setup(Float64.self, size) })
+        Benchmark("blackscholes/cpu_generic_safe/f64/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float64.self, size) })
+        // swiftlint:enable comma
     }
 }
-
