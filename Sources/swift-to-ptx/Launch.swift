@@ -17,6 +17,7 @@ private let logger = Logger(label: "Launch")
 // really an error if multiple threads race at this point, since they should all
 // produce the same result, but it is definitely a memory leak.
 //
+// swiftlint:disable:next missing_docs
 public struct ParallelForKernel {
     let image: UnsafePointer<UInt8>
     let name: UnsafePointer<CChar>
@@ -28,7 +29,7 @@ public struct ParallelForKernel {
 
 @inline(never) // we need to access this from the llvm-plugin
 @discardableResult
-// swiftlint:disable:next function_body_length function_parameter_count
+// swiftlint:disable:next function_body_length function_parameter_count missing_docs
 public func launch_parallel_for
 (
     iterations: Int,
@@ -143,6 +144,7 @@ public func launch_parallel_for
             buffer[1] = UnsafeMutableRawPointer(p_env)
             buffer[2] = UnsafeMutableRawPointer(p_swifterror)
             buffer[3] = UnsafeMutableRawPointer(p_thrownerror)
+            // swiftlint:disable line_length
             // swiftformat:disable:next wrap wrapArguments
             cuda_safe_call { cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil) }
         }) }) }) }) })
