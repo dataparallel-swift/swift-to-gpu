@@ -46,6 +46,14 @@ include:
     inputs:
       product-names:
         - SwiftToPTX
+      runner-tags:
+        - passivelogic-linux-small-amd64
+      additional-setup:
+        - apt-get -y install wget
+        - wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+        - dpkg -i cuda-keyring_1.1-1_all.deb
+        - apt-get update
+        - apt-get -y install cuda-nvcc-12-6
   - component: gitlab.com/PassiveLogic/ci/swift-dependabot@4
     inputs:
       token: ${SWIFT_DEPENDABOT_TOKEN}
