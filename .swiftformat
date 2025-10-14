@@ -1,0 +1,10 @@
+# file options
+--exclude icebox
+
+# rules
+--disable redundantType # clarity
+--disable consecutiveSpaces # alignment
+
+[nofib]
+--filter Tests/nofib/**
+--disable indent,braces,wrapAttributes # forAll[NoShrink]

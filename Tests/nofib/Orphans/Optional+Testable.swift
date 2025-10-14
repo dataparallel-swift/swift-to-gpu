@@ -1,12 +1,16 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import SwiftCheck
+
+// swiftlint:disable public_in_test
 
 extension Optional: @retroactive Testable where Wrapped == () {
     public var property: Property {
-        if let () = self {
+        if self != nil {
             TestResult.succeeded.property
-        } else {
+        }
+        else {
             TestResult.failed("Falsifiable").property
         }
     }
 }
-

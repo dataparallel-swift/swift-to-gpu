@@ -1,0 +1,20 @@
+disabled_rules:
+  - redundant_optional_initialization
+  - blanket_disable_command
+
+identifier_name:
+  allowed_symbols: "_"
+  excluded:
+    - i
+    - j
+    - k
+    - x
+    - y
+    - z
+    - n
+    - xs
+    - ys
+    - zs
+
+excluded:
+  - icebox

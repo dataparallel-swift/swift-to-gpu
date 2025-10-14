@@ -1,6 +1,8 @@
-import Testing
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import SwiftCheck
 import SwiftToPTX
+import Testing
 
 @Suite("SAXPY") struct SAXPY {
     @Test("Float16") func test_float16() { prop_saxpy(Float16.self) }
@@ -8,13 +10,13 @@ import SwiftToPTX
     @Test("Float64") func test_float64() { prop_saxpy(Float64.self) }
 }
 
-private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
-    property(String(describing: T.self)+".saxpy") <-
+private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_: T.Type) {
+    property(String(describing: T.self) + ".saxpy") <-
       forAllNoShrink(Gen<Int>.choose((0, 8192))) { n in
       forAllNoShrink(T.arbitrary) { alpha in
       forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { (xs: [T]) in
       forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { (ys: [T]) in
-        let expected = zip(xs, ys).map { (x, y) in alpha * x + y }
+        let expected = zip(xs, ys).map { x, y in alpha * x + y }
 
         // XXX: The following zipWith implementation is currently failing to
         // compile in release mode (only) with the error:
@@ -46,7 +48,6 @@ private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_ proxy: T.Type) {
         // let actual = zipWith(xs, ys) { x, y in alpha * x + y }
         let actual = generate(count: n) { i in alpha * xs[i] + ys[i] }
 
-        return try? #require( expected ~~~ actual )
+        return try? #require(expected ~~~ actual)
       }}}}
 }
-
