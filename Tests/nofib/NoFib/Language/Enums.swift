@@ -1,3 +1,5 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
 import Foundation
 import SwiftCheck
 import SwiftToPTX
@@ -49,240 +51,237 @@ import Testing
 // MARK: enums without payloads
 
 enum E1: Arbitrary {
-    case a
+    case opt1
 
-    public static var arbitrary: Gen<Self> {
-        Bool.arbitrary.map { _ in Self.a }
+    static var arbitrary: Gen<Self> {
+        Bool.arbitrary.map { _ in Self.opt1 }
     }
 }
 
 private func prop_enum_switch1() {
-    func enum_switch1(_ e: E1) -> Int32 {
-        switch e {
-            case .a: 0
+    func enum_switch1(_ value: E1) -> Int32 {
+        switch value {
+            case .opt1: 0
         }
     }
-    property(String(describing: E1.self)+".enum_switch1") <-
+    property(String(describing: E1.self) + ".enum_switch1") <-
       forAllNoShrink([E1].arbitrary) { (xs: [E1]) in
         let expected = xs.map(enum_switch1)
         let actual = map(xs, enum_switch1)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 enum E2: Arbitrary {
-    case a
-    case b
+    case opt1
+    case opt2
 
-    public static var arbitrary: Gen<Self> {
-        Bool.arbitrary.map { $0 ? Self.a : Self.b }
+    static var arbitrary: Gen<Self> {
+        Bool.arbitrary.map { $0 ? Self.opt1 : Self.opt2 }
     }
 }
 
 private func prop_enum_switch2() {
-    func enum_switch2(_ e: E2) -> Int32 {
-        switch e {
-            case .a: 0
-            case .b: 1
+    func enum_switch2(_ value: E2) -> Int32 {
+        switch value {
+            case .opt1: 0
+            case .opt2: 1
         }
     }
-    property(String(describing: E2.self)+".enum_switch2") <-
+    property(String(describing: E2.self) + ".enum_switch2") <-
       forAllNoShrink([E2].arbitrary) { (xs: [E2]) in
         let expected = xs.map(enum_switch2)
         let actual = map(xs, enum_switch2)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 enum E3: Arbitrary, Equatable {
-    case a
-    case b
-    case c
+    case opt1
+    case opt2
+    case opt3
 
-    public static var arbitrary: Gen<Self> {
+    static var arbitrary: Gen<Self> {
         UInt8.arbitrary.map {
             switch $0 % 3 {
-                case 0: Self.a
-                case 1: Self.b
-                default: Self.c
+                case 0: Self.opt1
+                case 1: Self.opt2
+                default: Self.opt3
             }
         }
     }
 }
 
 private func prop_enum_switch3() {
-    func enum_switch3(_ e: E3) -> Int32 {
-        switch e {
-            case .a: 0
-            case .b: 1
-            case .c: 2
+    func enum_switch3(_ value: E3) -> Int32 {
+        switch value {
+            case .opt1: 0
+            case .opt2: 1
+            case .opt3: 2
         }
     }
-    property(String(describing: E3.self)+".enum_switch3") <-
+    property(String(describing: E3.self) + ".enum_switch3") <-
       forAllNoShrink([E3].arbitrary) { (xs: [E3]) in
         let expected = xs.map(enum_switch3)
         let actual = map(xs, enum_switch3)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 enum E4: Arbitrary {
-    case a
-    case b
-    case c
-    case d
+    case opt1
+    case opt2
+    case opt3
+    case opt4
 
-    public static var arbitrary: Gen<Self> {
+    static var arbitrary: Gen<Self> {
         UInt8.arbitrary.map {
             switch $0 % 4 {
-                case 0: Self.a
-                case 1: Self.b
-                case 2: Self.c
-                default: Self.d
+                case 0: Self.opt1
+                case 1: Self.opt2
+                case 2: Self.opt3
+                default: Self.opt4
             }
         }
     }
 }
 
 private func prop_enum_switch4() {
-    func enum_switch4(_ e: E4) -> Int32 {
-        switch e {
-            case .a: 0
-            case .b: 1
-            case .c: 2
-            case .d: 3
+    func enum_switch4(_ value: E4) -> Int32 {
+        switch value {
+            case .opt1: 0
+            case .opt2: 1
+            case .opt3: 2
+            case .opt4: 3
         }
     }
-    property(String(describing: E4.self)+".enum_switch4") <-
+    property(String(describing: E4.self) + ".enum_switch4") <-
       forAllNoShrink([E4].arbitrary) { (xs: [E4]) in
         let expected = xs.map(enum_switch4)
         let actual = map(xs, enum_switch4)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 // MARK: enums with primitive payloads
 
 enum E1P<T: Arbitrary>: Arbitrary {
-    case a(T)
+    case opt1(T)
 
-    public static var arbitrary: Gen<Self> {
-        T.arbitrary.map { Self.a($0) }
+    static var arbitrary: Gen<Self> {
+        T.arbitrary.map { Self.opt1($0) }
     }
 }
 
-private func prop_enum_switch_payload1<T: Arbitrary & Equatable>(_ proxy: T.Type) {
-    func enum_switch_payload1(_ e: E1P<T>) -> T {
-        switch e {
-            case let .a(payload): payload
+private func prop_enum_switch_payload1<T: Arbitrary & Equatable>(_: T.Type) {
+    func enum_switch_payload1(_ value: E1P<T>) -> T {
+        switch value {
+            case let .opt1(payload): payload
         }
     }
-    property(String(describing: E1P<T>.self)+".enum_switch_payload1") <-
+    property(String(describing: E1P<T>.self) + ".enum_switch_payload1") <-
       forAllNoShrink([E1P<T>].arbitrary) { (xs: [E1P<T>]) in
         let expected = xs.map(enum_switch_payload1)
         let actual = map(xs, enum_switch_payload1)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 enum E2P<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>: Arbitrary {
-    case a(T1)
-    case b(T2)
+    case opt1(T1)
+    case opt2(T2)
 
-    public static var arbitrary: Gen<Self> {
-        Gen<E2P>.compose { c -> E2P in
-            let select: Bool = c.generate()
-            return select ? Self.a(c.generate()) : Self.b(c.generate())
+    static var arbitrary: Gen<Self> {
+        Gen<E2P>.compose { composer -> E2P in
+            let select: Bool = composer.generate()
+            return select ? Self.opt1(composer.generate()) : Self.opt2(composer.generate())
         }
     }
 }
 
-private func prop_enum_switch_payload2<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(
-    _ proxy1: T1.Type, _ proxy2: T2.Type
-) {
-    func enum_switch_payload2(_ e: E2P<T1, T2>) -> Float64 {
-        switch e {
-            case let .a(v): Float64(v)
-            case let .b(v): Float64(v)
+// swiftformat:disable:next wrapArguments
+private func prop_enum_switch_payload2<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
+    func enum_switch_payload2(_ value: E2P<T1, T2>) -> Float64 {
+        switch value {
+            case let .opt1(payload): Float64(payload)
+            case let .opt2(payload): Float64(payload)
         }
     }
-    property(String(describing: E2P<T1, T2>.self)+".enum_switch_payload2") <-
+    property(String(describing: E2P<T1, T2>.self) + ".enum_switch_payload2") <-
       forAllNoShrink([E2P<T1, T2>].arbitrary) { (xs: [E2P<T1, T2>]) in
         let expected = xs.map(enum_switch_payload2)
         let actual = map(xs, enum_switch_payload2)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 enum E3P<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>: Arbitrary {
-    case a(T1)
-    case b(T2)
-    case c(T1, T2)
+    case opt1(T1)
+    case opt2(T2)
+    case opt3(T1, T2)
 
-    public static var arbitrary: Gen<Self> {
-        Gen<E3P>.compose { c -> E3P in
-            let select: UInt8 = c.generate()
+    static var arbitrary: Gen<Self> {
+        Gen<E3P>.compose { composer -> E3P in
+            let select: UInt8 = composer.generate()
             return switch select % 3 {
-                case 0: Self.a(c.generate())
-                case 1: Self.b(c.generate())
-                default: Self.c(c.generate(), c.generate())
+                case 0: Self.opt1(composer.generate())
+                case 1: Self.opt2(composer.generate())
+                default: Self.opt3(composer.generate(), composer.generate())
             }
         }
     }
 }
 
-private func prop_enum_switch_payload3<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(
-    _ proxy1: T1.Type, _ proxy2: T2.Type
-) {
-    func enum_switch_payload3(_ e: E3P<T1, T2>) -> Float64 {
-        switch e {
-            case let .a(v): Float64(v)
-            case let .b(v): Float64(v)
-            case let .c(v1, v2): Float64(v1) + Float64(v2)
+// swiftformat:disable:next wrapArguments
+private func prop_enum_switch_payload3<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
+    func enum_switch_payload3(_ value: E3P<T1, T2>) -> Float64 {
+        switch value {
+            case let .opt1(payload): Float64(payload)
+            case let .opt2(payload): Float64(payload)
+            case let .opt3(payload1, payload2): Float64(payload1) + Float64(payload2)
         }
     }
-    property(String(describing: E3P<T1, T2>.self)+".enum_switch_payload3") <-
+    property(String(describing: E3P<T1, T2>.self) + ".enum_switch_payload3") <-
       forAllNoShrink([E3P<T1, T2>].arbitrary) { (xs: [E3P<T1, T2>]) in
         let expected = xs.map(enum_switch_payload3)
         let actual = map(xs, enum_switch_payload3)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }
 
 enum E4P<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>: Arbitrary {
-    case a(T1)
-    case b(T2)
-    case c(T1, T2)
-    case d
+    case opt1(T1)
+    case opt2(T2)
+    case opt3(T1, T2)
+    case opt4
 
-    public static var arbitrary: Gen<Self> {
-        Gen<E4P>.compose { c -> E4P in
-            let select: UInt8 = c.generate()
+    static var arbitrary: Gen<Self> {
+        Gen<E4P>.compose { composer -> E4P in
+            let select: UInt8 = composer.generate()
             return switch select % 4 {
-                case 0: Self.a(c.generate())
-                case 1: Self.b(c.generate())
-                case 2: Self.c(c.generate(), c.generate())
-                default: Self.d
+                case 0: Self.opt1(composer.generate())
+                case 1: Self.opt2(composer.generate())
+                case 2: Self.opt3(composer.generate(), composer.generate())
+                default: Self.opt4
             }
         }
     }
 }
 
-private func prop_enum_switch_payload4<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(
-    _ proxy1: T1.Type, _ proxy2: T2.Type
-) {
-    func enum_switch_payload4(_ e: E4P<T1, T2>) -> Float64 {
-        switch e {
-            case let .a(v): Double(v)
-            case let .b(v): Double(v)
-            case let .c(v1, v2): Double(v1) + Double(v2)
-            case .d: 0
+// swiftformat:disable:next wrapArguments
+private func prop_enum_switch_payload4<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
+    func enum_switch_payload4(_ value: E4P<T1, T2>) -> Float64 {
+        switch value {
+            case let .opt1(payload): Double(payload)
+            case let .opt2(payload): Double(payload)
+            case let .opt3(payload1, payload2): Double(payload1) + Double(payload2)
+            case .opt4: 0
         }
     }
-    property(String(describing: E4P<T1, T2>.self)+".enum_switch_payload4") <-
+    property(String(describing: E4P<T1, T2>.self) + ".enum_switch_payload4") <-
       forAllNoShrink([E4P<T1, T2>].arbitrary) { (xs: [E4P<T1, T2>]) in
         let expected = xs.map(enum_switch_payload4)
         let actual = map(xs, enum_switch_payload4)
-        return try? #require( expected == actual )
+        return try? #require(expected == actual)
       }
 }

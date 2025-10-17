@@ -58,7 +58,6 @@ extension UInt: Similar {
     }
 }
 
-extension UInt16 : Similar {
 extension UInt8: Similar {
     @inlinable
     static func ~~~ (lhs: Self, rhs: Self) -> Bool {
