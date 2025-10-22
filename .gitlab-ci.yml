@@ -27,7 +27,7 @@ include:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
       runner-tags:
         - passivelogic-linux-small-arm64
-  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4.17  # TODO: update to @4 once swift-image 6.2 is available
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
       enable-code-coverage: false
