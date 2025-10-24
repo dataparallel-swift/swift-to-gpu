@@ -71,7 +71,7 @@ private func prop_simple_for_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
         return result
     }
-    property(String(describing: T.self) + ".simple_for_loop") <-
+    property("simple_for_loop." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(simple_for_loop)
         let actual = map(xs, simple_for_loop)
@@ -93,7 +93,7 @@ private func prop_for_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property(String(describing: T.self) + ".for_loop_break") <-
+    property("for_loop_break." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (k: Int) in
         let expected = xs.map { x in for_loop_break(x, k) }
@@ -117,7 +117,7 @@ private func prop_for_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type)
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property(String(describing: T.self) + ".for_loop_continue") <-
+    property("for_loop_continue." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (k: Int) in
         let expected = xs.map { x in for_loop_continue(x, k) }
@@ -140,7 +140,7 @@ private func prop_nested_for_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
         }
         return result
     }
-    property(String(describing: T.self) + ".nested_for_loops") <-
+    property("nested_for_loops." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_for_loops(x, y) }
@@ -167,7 +167,7 @@ private func prop_nested_for_loops_break_inner<T: Arbitrary & FixedWidthInteger>
         }
         return result
     }
-    property(String(describing: T.self) + ".nested_for_loops_break_inner") <-
+    property("nested_for_loops_break_inner." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_for_loops_break_inner(x, y) }
@@ -193,7 +193,7 @@ private func prop_nested_for_loops_break_outer<T: Arbitrary & FixedWidthInteger>
         }
         return result
     }
-    property(String(describing: T.self) + ".nested_for_loops_break_outer") <-
+    property("nested_for_loops_break_outer." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink([T].arbitrary) { (ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_for_loops_break_outer(x, y) }
@@ -214,7 +214,7 @@ private func prop_simple_while_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type)
         }
         return result
     }
-    property(String(describing: T.self) + ".simple_while_loop") <-
+    property("simple_while_loop." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(simple_while_loop)
         let actual = map(xs, simple_while_loop)
@@ -238,7 +238,7 @@ private func prop_while_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property(String(describing: T.self) + ".while_loop_break") <-
+    property("while_loop_break." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (k: Int) in
         let expected = xs.map { x in while_loop_break(x, k) }
@@ -265,7 +265,7 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Typ
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property(String(describing: T.self) + ".while_loop_continue") <-
+    property("while_loop_continue." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       forAllNoShrink(gen) { (k: Int) in
         let expected = xs.map { x in while_loop_continue(x, k) }

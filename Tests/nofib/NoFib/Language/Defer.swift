@@ -6,28 +6,29 @@ import SwiftToPTX
 import Testing
 
 @Suite("defer") struct DeferSuite {
-    @Test func test_defer1() { prop_defer1(Float32.self) }
-    @Test func test_defer2() { prop_defer2(Float32.self) }
-    // TODO: More tests, defer interacting with for loops, while loops, switch statements, in general multiple exit blocks
+    @Test func test_defer1() { prop_defer1() }
+    @Test func test_defer2() { prop_defer2() }
+    // TODO: More tests, defer interacting with for loops, while loops,
+    // switch statements, in general multiple exit blocks
 }
 
-private func prop_defer1<T: Numeric & Arbitrary & Similar>(_: T.Type) {
-    func defer1(_ x: T) -> T {
+private func prop_defer1() {
+    func defer1(_ x: Double) -> Double {
         var x = x
         defer { x *= 2 }
         x += 1
         return x
     }
-    property(String(describing: T.self) + ".defer1") <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+    property("defer1") <-
+      forAllNoShrink([Double].arbitrary) { (xs: [Double]) in
         let expected = xs.map(defer1)
         let actual = map(xs, defer1)
         return try? #require(expected ~~~ actual)
       }
 }
 
-private func prop_defer2<T: Numeric & Arbitrary & Similar & Comparable>(_: T.Type) {
-    func defer2(_ x: T) -> T {
+private func prop_defer2() {
+    func defer2(_ x: Double) -> Double {
         var x = x
         var i = 0
         while i < 10 {
@@ -42,8 +43,8 @@ private func prop_defer2<T: Numeric & Arbitrary & Similar & Comparable>(_: T.Typ
         }
         return x
     }
-    property(String(describing: T.self) + ".defer2") <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+    property("defer2") <-
+      forAllNoShrink([Double].arbitrary) { (xs: [Double]) in
         let expected = xs.map(defer2)
         let actual = map(xs, defer2)
         return try? #require(expected ~~~ actual)

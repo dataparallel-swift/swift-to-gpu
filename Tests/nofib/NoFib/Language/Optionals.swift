@@ -5,6 +5,7 @@ import SwiftToPTX
 import Testing
 
 @Suite("Optionals") struct Optionals {
+    // if-let bindings
     @Test("if_let.Int") func test_if_let_1() { prop_if_let(Int.self) }
     @Test("if_let.Int8") func test_if_let_2() { prop_if_let(Int8.self) }
     @Test("if_let.Int64") func test_if_let_3() { prop_if_let(Int16.self) }
@@ -18,6 +19,35 @@ import Testing
     @Test("if_let.Float32") func test_if_let_13() { prop_if_let(Float32.self) }
     @Test("if_let.Float64") func test_if_let_14() { prop_if_let(Float64.self) }
 
+    // guard-let bindings
+    @Test("guard_let.Int") func test_guard_let_1() { prop_guard_let(Int.self) }
+    @Test("guard_let.Int8") func test_guard_let_2() { prop_guard_let(Int8.self) }
+    @Test("guard_let.Int64") func test_guard_let_3() { prop_guard_let(Int16.self) }
+    @Test("guard_let.Int32") func test_guard_let_4() { prop_guard_let(Int32.self) }
+    @Test("guard_let.Int64") func test_guard_let_5() { prop_guard_let(Int64.self) }
+    @Test("guard_let.UInt") func test_guard_let_6() { prop_guard_let(UInt.self) }
+    @Test("guard_let.UInt8") func test_guard_let_7() { prop_guard_let(UInt8.self) }
+    @Test("guard_let.UInt16") func test_guard_let_8() { prop_guard_let(UInt16.self) }
+    @Test("guard_let.UInt32") func test_guard_let_9() { prop_guard_let(UInt32.self) }
+    @Test("guard_let.UInt64") func test_guard_let_10() { prop_guard_let(UInt64.self) }
+    @Test("guard_let.Float32") func test_guard_let_13() { prop_guard_let(Float32.self) }
+    @Test("guard_let.Float64") func test_guard_let_14() { prop_guard_let(Float64.self) }
+
+    // nil-coalescing operator
+    @Test("nil_coalescing_operator.Int") func test_nil_coalescing_operator_1() { prop_nil_coalescing_operator(Int.self) }
+    @Test("nil_coalescing_operator.Int8") func test_nil_coalescing_operator_2() { prop_nil_coalescing_operator(Int8.self) }
+    @Test("nil_coalescing_operator.Int64") func test_nil_coalescing_operator_3() { prop_nil_coalescing_operator(Int16.self) }
+    @Test("nil_coalescing_operator.Int32") func test_nil_coalescing_operator_4() { prop_nil_coalescing_operator(Int32.self) }
+    @Test("nil_coalescing_operator.Int64") func test_nil_coalescing_operator_5() { prop_nil_coalescing_operator(Int64.self) }
+    @Test("nil_coalescing_operator.UInt") func test_nil_coalescing_operator_6() { prop_nil_coalescing_operator(UInt.self) }
+    @Test("nil_coalescing_operator.UInt8") func test_nil_coalescing_operator_7() { prop_nil_coalescing_operator(UInt8.self) }
+    @Test("nil_coalescing_operator.UInt16") func test_nil_coalescing_operator_8() { prop_nil_coalescing_operator(UInt16.self) }
+    @Test("nil_coalescing_operator.UInt32") func test_nil_coalescing_operator_9() { prop_nil_coalescing_operator(UInt32.self) }
+    @Test("nil_coalescing_operator.UInt64") func test_nil_coalescing_operator_10() { prop_nil_coalescing_operator(UInt64.self) }
+    @Test("nil_coalescing_operator.Float32") func test_nil_coalescing_operator_13() { prop_nil_coalescing_operator(Float32.self) }
+    @Test("nil_coalescing_operator.Float64") func test_nil_coalescing_operator_14() { prop_nil_coalescing_operator(Float64.self) }
+
+    // optional as a return type
     @Test("optional_return_type.Int") func test_optional_return_type_1() { prop_optional_return_type(Int.self) }
     @Test("optional_return_type.Int8") func test_optional_return_type_2() { prop_optional_return_type(Int8.self) }
     @Test("optional_return_type.Int32") func test_optional_return_type_3() { prop_optional_return_type(Int32.self) }
@@ -31,6 +61,7 @@ import Testing
     @Test("optional_return_type.Float32") func test_optional_return_type_13() { prop_optional_return_type(Float32.self) }
     @Test("optional_return_type.Float64") func test_optional_return_type_14() { prop_optional_return_type(Float64.self) }
 
+    // force-unwrapping non-nil values
     @Test("force_unwrap_nonnil.Int") func test_force_unwrap_nonnil_1() { prop_force_unwrap_nonnil(Int.self) }
     @Test("force_unwrap_nonnil.Int8") func test_force_unwrap_nonnil_2() { prop_force_unwrap_nonnil(Int8.self) }
     @Test("force_unwrap_nonnil.Int64") func test_force_unwrap_nonnil_3() { prop_force_unwrap_nonnil(Int16.self) }
@@ -52,10 +83,37 @@ private func prop_if_let<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>
         }
         return 0
     }
-    property(String(describing: T.self) + ".if_let") <-
+    property("if_let." + String(describing: T.self)) <-
       forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
         let expected = xs.map(if_let)
         let actual = map(xs, if_let)
+        return try? #require(expected == actual)
+      }
+}
+
+private func prop_guard_let<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_: T.Type) {
+    func guard_let(_ x: T?) -> T {
+        guard let unwrapped = x else {
+            return 0
+        }
+        return unwrapped
+    }
+    property("guard_let." + String(describing: T.self)) <-
+      forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
+        let expected = xs.map(guard_let)
+        let actual = map(xs, guard_let)
+        return try? #require(expected == actual)
+      }
+}
+
+private func prop_nil_coalescing_operator<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_: T.Type) {
+    func nil_coalescing_operator(_ x: T?) -> T {
+        x ?? 0
+    }
+    property("nil_coalescing_operator." + String(describing: T.self)) <-
+      forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
+        let expected = xs.map(nil_coalescing_operator)
+        let actual = map(xs, nil_coalescing_operator)
         return try? #require(expected == actual)
       }
 }
@@ -68,7 +126,7 @@ private func prop_optional_return_type<T: Arbitrary & Comparable & FloatingPoint
         }
         return .some(x)
     }
-    property(String(describing: T.self) + ".optional_return_type") <-
+    property("optional_return_type." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(optional_return_type)
         let actual = map(xs, optional_return_type)
@@ -84,7 +142,7 @@ private func prop_optional_return_type<T: Arbitrary & Comparable & ExpressibleBy
         }
         return .some(x)
     }
-    property(String(describing: T.self) + ".optional_return_type") <-
+    property("optional_return_type." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.map(optional_return_type)
         let actual = map(xs, optional_return_type)
@@ -99,7 +157,7 @@ private func prop_force_unwrap_nonnil<T: Arbitrary & Equatable>(_: T.Type) {
         // swiftlint:disable:next force_unwrapping
         x!
     }
-    property(String(describing: T.self) + ".force_unwrap_nonnil") <-
+    property("force_unwrap_nonnil." + String(describing: T.self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let ys = xs.map { Optional($0) }
         let expected = ys.map(force_unwrap_nonnil)
