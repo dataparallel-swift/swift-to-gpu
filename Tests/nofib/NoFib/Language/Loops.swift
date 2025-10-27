@@ -56,6 +56,9 @@ import Testing
         @Test("while_loop_continue.Int32") func test_while_loop_continue_2() { prop_while_loop_continue(Int32.self) }
         @Test("while_loop_continue.UInt") func test_while_loop_continue_3() { prop_while_loop_continue(UInt.self) }
         @Test("while_loop_continue.UInt32") func test_while_loop_continue_4() { prop_while_loop_continue(UInt32.self) }
+
+        // non-range based loops, i.e. ones that defy transliteration to range-based for loops for
+        @Test("while_loop_collatz") func test_while_loop_collatz() { prop_while_loop_collatz() }
     }
 }
 
@@ -272,4 +275,29 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Typ
         let actual = map(xs) { x in while_loop_continue(x, k) }
         return try? #require(expected == actual)
       }}
+}
+
+private func prop_while_loop_collatz() {
+    func while_loop_collatz(_ n: Int) -> Int {
+        var iterations = 0
+        var n = n
+        while n != 1 {
+            iterations += 1
+            if n % 2 == 0 {
+                n >>= 1
+            }
+            else {
+                n = 3 * n + 1
+            }
+        }
+        return iterations
+    }
+    // Collatz conjecture's iterations complete successfully without intermediate overflows in this range
+    let gen = Int.arbitrary.suchThat { $0 > 0 && $0 < 100000 }
+    property("while_loop_collatz") <-
+      forAllNoShrink(gen.proliferate) { (xs: [Int]) in
+        let expected = xs.map(while_loop_collatz)
+        let actual = map(xs, while_loop_collatz)
+        return try? #require(expected == actual)
+      }
 }
