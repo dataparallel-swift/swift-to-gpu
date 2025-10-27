@@ -5,26 +5,28 @@ import SwiftToPTX
 import Testing
 
 @Suite("Stencil") struct Stencil {
-    @Suite("Float16") struct Float16Tests {
-        // @Test("finite_difference<Float16>", .bug(id: "86b6vgvy0")) func test_finite_difference() { prop_finite_difference(Float16.self) }
-        // @Test("adjacent_difference<Float16>", .bug(id: "86b6vhbg7")) func test_adjacent_difference() {
-        // prop_adjacent_difference(Float16.self) }
-        // @Test("laplace1D<Float16>", .bug(id: "86b6vhbg7")) func test_laplace1D() { prop_laplace1D(Float16.self) }
-    }
+    // @Test("finite_difference.Float16", .bug(id: "86b6vgvy0")) func test_finite_difference_1() { prop_finite_difference(Float16.self) }
+    // @Test("finite_difference.Float32", .bug(id: "86b6vgvy0")) func test_finite_difference_2() { prop_finite_difference(Float32.self) }
+    // @Test("finite_difference.Float64", .bug(id: "86b6vgvy0")) func test_finite_difference_3() { prop_finite_difference(Float64.self) }
+    // @Test("finite_difference.Int32", .bug(id: "86b6vgvy0")) func test_finite_difference_4() { prop_finite_difference(Int32.self) }
+    // @Test("finite_difference.Int64", .bug(id: "86b6vgvy0")) func test_finite_difference_5() { prop_finite_difference(Int64.self) }
 
-    @Suite("Float32") struct Float32Tests {
-        // @Test("finite_difference<Float32>", .bug(id: "86b6vgvy0")) func test_finite_difference() { prop_finite_difference(Float32.self) }
-        // @Test("adjacent_difference<Float32>", .bug(id: "86b6vhbg7")) func test_adjacent_difference() {
-        // prop_adjacent_difference(Float32.self) }
-        // @Test("laplace1D<Float32>", .bug(id: "86b6vhbg7")) func test_laplace1D() { prop_laplace1D(Float32.self) }
-    }
+    // @Test("adjacent_difference.Float16", .bug(id: "86b6vhbg7")) func test_adjacent_difference_1() {
+    //     prop_adjacent_difference(Float16.self) }
+    // @Test("adjacent_difference.Float32", .bug(id: "86b6vhbg7")) func test_adjacent_difference_2() {
+    //     prop_adjacent_difference(Float32.self) }
+    // @Test("adjacent_difference.Float64", .bug(id: "86b6vhbg7")) func test_adjacent_difference_3() {
+    //     prop_adjacent_difference(Float64.self) }
+    // @Test("adjacent_difference.Int32", .bug(id: "86b6vhbg7")) func test_adjacent_difference_4() {
+    //     prop_adjacent_difference(Int32.self) }
+    // @Test("adjacent_difference.Int64", .bug(id: "86b6vhbg7")) func test_adjacent_difference_5() {
+    //     prop_adjacent_difference(Int64.self) }
 
-    @Suite("Float64") struct Float64Tests {
-        // @Test("finite_difference<Float64>", .bug(id: "86b6vgvy0")) func test_finite_difference() { prop_finite_difference(Float64.self) }
-        // @Test("adjacent_difference<Float64>", .bug(id: "86b6vhbg7")) func test_adjacent_difference() {
-        // prop_adjacent_difference(Float64.self) }
-        // @Test("laplace1D<Float64>", .bug(id: "86b6vhbg7")) func test_laplace1D() { prop_laplace1D(Float64.self) }
-    }
+    // @Test("laplace1D.Float16", .bug(id: "86b6vhbg7")) func test_laplace1D_1() { prop_laplace1D(Float16.self) }
+    // @Test("laplace1D.Float32", .bug(id: "86b6vhbg7")) func test_laplace1D_2() { prop_laplace1D(Float32.self) }
+    // @Test("laplace1D.Float64", .bug(id: "86b6vhbg7")) func test_laplace1D_3() { prop_laplace1D(Float64.self) }
+    // @Test("laplace1D.Int32", .bug(id: "86b6vhbg7")) func test_laplace1D_4() { prop_laplace1D(Int32.self) }
+    // @Test("laplace1D.Int64", .bug(id: "86b6vhbg7")) func test_laplace1D_5() { prop_laplace1D(Int64.self) }
 }
 
 extension Array where Element: AdditiveArithmetic {
@@ -50,7 +52,7 @@ private func prop_finite_difference<T: Arbitrary & AdditiveArithmetic & Similar>
         }
         return output
     }
-    property(String(describing: [T].self) + ".adjacent_difference") <-
+    property("adjacent_difference." + String(describing: [T].self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
       let expected = xs.finite_difference()
       let actual = finite_difference(xs)
@@ -78,7 +80,7 @@ private func prop_adjacent_difference<T: AdditiveArithmetic & Arbitrary & Simila
             return x - xs[i - 1]
         }
     }
-    property(String(describing: [T].self) + ".finite_difference") <-
+    property("finite_difference." + String(describing: [T].self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.adjacent_difference()
         let actual = adjacent_difference(xs)
@@ -112,7 +114,7 @@ private func prop_laplace1D<T: Numeric & Arbitrary & Similar>(_: T.Type) {
         }
         return output
     }
-    property(String(describing: [T].self) + ".laplace1D") <-
+    property("laplace1D." + String(describing: [T].self)) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
         let expected = xs.laplace1D()
         let actual = laplace1D(xs)

@@ -57,6 +57,21 @@ import Testing
         @Test("while_loop_continue.UInt") func test_while_loop_continue_3() { prop_while_loop_continue(UInt.self) }
         @Test("while_loop_continue.UInt32") func test_while_loop_continue_4() { prop_while_loop_continue(UInt32.self) }
 
+        @Test("nested_while_loop.Int") func test_nested_while_loop_1() { prop_nested_while_loops(Int.self) }
+        @Test("nested_while_loop.Int32") func test_nested_while_loop_2() { prop_nested_while_loops(Int32.self) }
+        @Test("nested_while_loop.UInt") func test_nested_while_loop_3() { prop_nested_while_loops(UInt.self) }
+        @Test("nested_while_loop.UInt32") func test_nested_while_loop_4() { prop_nested_while_loops(UInt32.self) }
+
+        @Test("nested_while_loops_break_inner.Int") func test_nested_while_loops_break_inner_1() { prop_nested_while_loops_break_inner(Int.self) }
+        @Test("nested_while_loops_break_inner.Int32") func test_nested_while_loops_break_inner_2() { prop_nested_while_loops_break_inner(Int32.self) }
+        @Test("nested_while_loops_break_inner.UInt") func test_nested_while_loops_break_inner_3() { prop_nested_while_loops_break_inner(UInt.self) }
+        @Test("nested_while_loops_break_inner.UInt32") func test_nested_while_loops_break_inner_4() { prop_nested_while_loops_break_inner(UInt32.self) }
+
+        @Test("nested_while_loops_break_outer.Int") func test_nested_while_loops_break_outer_1() { prop_nested_while_loops_break_outer(Int.self) }
+        @Test("nested_while_loops_break_outer.Int32") func test_nested_while_loops_break_outer_2() { prop_nested_while_loops_break_outer(Int32.self) }
+        @Test("nested_while_loops_break_outer.UInt") func test_nested_while_loops_break_outer_3() { prop_nested_while_loops_break_outer(UInt.self) }
+        @Test("nested_while_loops_break_outer.UInt32") func test_nested_while_loops_break_outer_4() { prop_nested_while_loops_break_outer(UInt32.self) }
+
         // non-range based loops, i.e. ones that defy transliteration to range-based for loops for
         @Test("while_loop_collatz") func test_while_loop_collatz() { prop_while_loop_collatz() }
     }
@@ -273,6 +288,94 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Typ
       forAllNoShrink(gen) { (k: Int) in
         let expected = xs.map { x in while_loop_continue(x, k) }
         let actual = map(xs) { x in while_loop_continue(x, k) }
+        return try? #require(expected == actual)
+      }}
+}
+
+private func prop_nested_while_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func nested_while_loops(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0  // be comfortable about avoiding overflows
+        let iStart = min(k, 0)
+        let iEnd = max(k, 0)
+        let jStart = min(n, 0)
+        let jEnd = max(n, 0)
+        var i = iStart
+        while i < iEnd {
+            defer { i += 1 }
+            var j = jStart
+            while j < jEnd {
+                result += Double(i) * Double(j)
+                j += 1
+            }
+        }
+        return result
+    }
+    property("nested_while_loops." + String(describing: T.self)) <-
+      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+        let expected = zip(xs, ys).map { x, y in nested_while_loops(x, y) }
+        let actual = zipWith(xs, ys) { x, y in nested_while_loops(x, y) }
+        return try? #require(expected == actual)
+      }}
+}
+
+private func prop_nested_while_loops_break_inner<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func nested_while_loops_break_inner(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0  // Double to comfortably avoid overflow
+        let iStart = min(k, 0)
+        let iEnd = max(k, 0)
+        let jStart = min(k, 0)
+        let jEnd = max(k, 0)
+        var i = iStart
+        while i < iEnd {
+            defer { i += 1 }
+            var j = jStart
+            while j < jEnd {
+                defer { j += 1 }
+                result += Double(i) * Double(j)
+                guard result < Double(k) + Double(n) else {
+                    break
+                }
+            }
+            result -= Double(k)
+        }
+        return result
+    }
+    property("nested_while_loops_break_inner." + String(describing: T.self)) <-
+      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+        let expected = zip(xs, ys).map { x, y in nested_while_loops_break_inner(x, y) }
+        let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_inner(x, y) }
+        return try? #require(expected == actual)
+      }}
+}
+
+private func prop_nested_while_loops_break_outer<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func nested_while_loops_break_outer(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0  // Double to comfortably avoid overflow
+        let iStart = min(k, 0)
+        let iEnd = max(k, 0)
+        let jStart = min(k, 0)
+        let jEnd = max(k, 0)
+        var i = iStart
+        outer: while i < iEnd {
+            defer { i += 1 }
+            var j = jStart
+            while j < jEnd {
+                defer { j += 1 }
+                result += Double(i) * Double(j)
+                guard result < Double(k) + Double(n) else {
+                    break outer
+                }
+            }
+        }
+        return result
+    }
+    property("nested_while_loops_break_outer." + String(describing: T.self)) <-
+      forAllNoShrink([T].arbitrary) { (xs: [T]) in
+      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+        let expected = zip(xs, ys).map { x, y in nested_while_loops_break_outer(x, y) }
+        let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_outer(x, y) }
         return try? #require(expected == actual)
       }}
 }
