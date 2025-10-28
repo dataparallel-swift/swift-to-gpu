@@ -5,6 +5,8 @@ import SwiftCheck
 import SwiftToPTX
 import Testing
 
+// swiftformat:disable blankLinesBetweenScopes trailingCommas wrap wrapArguments
+
 @Suite("Enums") struct Enums {
     @Suite("EnumsWithoutPayloads") struct EnumsWithoutPayloadsTests {
         @Test func test_enum_switch1() { prop_enum_switch1() }
@@ -53,7 +55,7 @@ import Testing
         @Test("enum_switch_payload2.Int32,UInt16") func test_enum_switch_payload2_i32_8() { prop_enum_switch_payload2(Int8.self, UInt16.self) }
         @Test("enum_switch_payload2.Int32,UInt32") func test_enum_switch_payload2_i32_9() { prop_enum_switch_payload2(Int8.self, UInt32.self) }
         @Test("enum_switch_payload2.Int32,UInt64") func test_enum_switch_payload2_i32_10() { prop_enum_switch_payload2(Int8.self, UInt64.self) }
-       
+
         // T1 = Int8
         @Test("enum_switch_payload3.Int8,Int") func test_enum_switch_payload3_i8_1() { prop_enum_switch_payload3(Int8.self, Int.self) }
         @Test("enum_switch_payload3.Int8,Int8") func test_enum_switch_payload3_i8_2() { prop_enum_switch_payload3(Int8.self, Int8.self) }
