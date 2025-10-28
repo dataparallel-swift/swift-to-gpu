@@ -24,12 +24,12 @@ include:
   # Test stage
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       runner-tags:
         - passivelogic-linux-small-arm64
-  - component: gitlab.com/PassiveLogic/ci/swift-test@4.17  # TODO: update to @4 once swift-image 6.2 is available
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       enable-code-coverage: false
       additional-setup:
         - apt install -y libcapstone-dev
@@ -37,7 +37,7 @@ include:
         - passivelogic-compiler-orin
   - component: gitlab.com/PassiveLogic/ci/swift-benchmarks@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       additional-setup:
         - apt install -y libcapstone-dev
 
