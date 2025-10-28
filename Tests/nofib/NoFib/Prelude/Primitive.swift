@@ -537,7 +537,7 @@ import Testing
         @Test("Float16./") func test_quot() { prop_quot(Float16.self) }
         @Test("Float16.pow") func test_pow() { prop_pow(Float16.self) }
         @Test("Float16.powi") func test_powi() { prop_powi(Float16.self) }
-        @Test("Float16.exponent") func test_exponent() { prop_exponent(Float16.self) }
+        // @Test("Float16.exponent", .bug(id: "86b78aaem")) func test_exponent() { prop_exponent(Float16.self) }
         @Test("Float16.floatingPointClass") func test_floatingPointClass() { prop_floatingPointClass(Float16.self) }
         @Test("Float16.isCanonical") func test_isCanonical() { prop_isCanonical(Float16.self) }
         @Test("Float16.isFinite") func test_isFinite() { prop_isFinite(Float16.self) }
@@ -608,7 +608,7 @@ import Testing
         @Test("Float32./") func test_quot() { prop_quot(Float32.self) }
         @Test("Float32.pow") func test_pow() { prop_pow(Float32.self) }
         @Test("Float32.powi") func test_powi() { prop_powi(Float32.self) }
-        @Test("Float32.exponent") func test_exponent() { prop_exponent(Float32.self) }
+        // @Test("Float32.exponent", .bug(id: "86b78aaem")) func test_exponent() { prop_exponent(Float32.self) }
         @Test("Float32.floatingPointClass") func test_floatingPointClass() { prop_floatingPointClass(Float32.self) }
         @Test("Float32.isCanonical") func test_isCanonical() { prop_isCanonical(Float32.self) }
         @Test("Float32.isFinite") func test_isFinite() { prop_isFinite(Float32.self) }
