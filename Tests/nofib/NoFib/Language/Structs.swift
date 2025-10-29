@@ -34,7 +34,7 @@ import Testing
             // non-primitive members
             @Test("S1<S2<Int64,Int8>>") func test_struct1_property_get_15() { prop_struct1_property_get(S2<Int64, Int8>.self) }
             @Test("S1<S3<Int64,Int8,Float64>>") func test_struct1_property_get_16() { prop_struct1_property_get(S3<Int64, Int8, Float64>.self) }
-            // @Test("S1<Array<Int32>>") func test_struct1_property_get_17() { prop_struct1_property_get(Array<Int32>.self) }
+            @Test("S1<Array<Int32>>") func test_struct1_property_get_17() { prop_struct1_property_get(Array<Int32>.self) }
         }
 
         // structs with 2 member variables
@@ -110,41 +110,41 @@ import Testing
             // This is where bugs started surfacing for the first time in the property setter tests
             @Suite("S3<Int8,T2,T3>") struct S3Int8Tests {
                 // T2 = Int16
-                // @Test("S3<Int8,Int16,Int8>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_1() { prop_struct3_property_get(Int8.self, Int16.self, Int8.self) }
-                // @Test("S3<Int8,Int16,Int16>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_2() { prop_struct3_property_get(Int8.self, Int16.self, Int16.self) }
-                // @Test("S3<Int8,Int16,Int32>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_3() { prop_struct3_property_get(Int8.self, Int16.self, Int32.self) }
-                // @Test("S3<Int8,Int16,Int64>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_4() { prop_struct3_property_get(Int8.self, Int16.self, Int64.self) }
-                // TODO: presence of unsigned integers seem to be causing a crash
+                @Test("S3<Int8,Int16,Int8>.get") func test_struct3_property_get_i16_1() { prop_struct3_property_get(Int8.self, Int16.self, Int8.self) }
+                @Test("S3<Int8,Int16,Int16>.get") func test_struct3_property_get_i16_2() { prop_struct3_property_get(Int8.self, Int16.self, Int16.self) }
+                @Test("S3<Int8,Int16,Int32>.get") func test_struct3_property_get_i16_3() { prop_struct3_property_get(Int8.self, Int16.self, Int32.self) }
+                @Test("S3<Int8,Int16,Int64>.get") func test_struct3_property_get_i16_4() { prop_struct3_property_get(Int8.self, Int16.self, Int64.self) }
+                // XXX: presence of unsigned integers seem to be causing a crash
                 // @Test("S3<Int8,Int16,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_5() { prop_struct3_property_get(Int8.self, Int16.self, UInt8.self) }
                 // @Test("S3<Int8,Int16,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_6() { prop_struct3_property_get(Int8.self, Int16.self, UInt16.self) }
                 // @Test("S3<Int8,Int16,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_7() { prop_struct3_property_get(Int8.self, Int16.self, UInt32.self) }
                 // @Test("S3<Int8,Int16,UInt64>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_8() { prop_struct3_property_get(Int8.self, Int16.self, UInt64.self) }
 
                 // T2 = Int64
-                // @Test("S3<Int8,Int64,Int8>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_1() { prop_struct3_property_get(Int8.self, Int64.self, Int8.self) }
-                // @Test("S3<Int8,Int64,Int16>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_2() { prop_struct3_property_get(Int8.self, Int64.self, Int16.self) }
-                // @Test("S3<Int8,Int64,Int32>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_3() { prop_struct3_property_get(Int8.self, Int64.self, Int32.self) }
-                // @Test("S3<Int8,Int64,Int64>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_4() { prop_struct3_property_get(Int8.self, Int64.self, Int64.self) }
+                @Test("S3<Int8,Int64,Int8>.get") func test_struct3_property_get_i64_1() { prop_struct3_property_get(Int8.self, Int64.self, Int8.self) }
+                @Test("S3<Int8,Int64,Int16>.get") func test_struct3_property_get_i64_2() { prop_struct3_property_get(Int8.self, Int64.self, Int16.self) }
+                @Test("S3<Int8,Int64,Int32>.get") func test_struct3_property_get_i64_3() { prop_struct3_property_get(Int8.self, Int64.self, Int32.self) }
+                @Test("S3<Int8,Int64,Int64>.get") func test_struct3_property_get_i64_4() { prop_struct3_property_get(Int8.self, Int64.self, Int64.self) }
                 // @Test("S3<Int8,Int64,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_5() { prop_struct3_property_get(Int8.self, Int64.self, UInt8.self) }
                 // @Test("S3<Int8,Int64,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_6() { prop_struct3_property_get(Int8.self, Int64.self, UInt16.self) }
                 // @Test("S3<Int8,Int64,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_7() { prop_struct3_property_get(Int8.self, Int64.self, UInt32.self) }
                 // @Test("S3<Int8,Int64,UInt64>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_8() { prop_struct3_property_get(Int8.self, Int64.self, UInt64.self) }
 
                 // T2 = Float32
-                // @Test("S3<Float32,Int64,Int8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_1() { prop_struct3_property_get(Float32.self, Int64.self, Int8.self) }
-                // @Test("S3<Float32,Int64,Int16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_2() { prop_struct3_property_get(Float32.self, Int64.self, Int16.self) }
-                // @Test("S3<Float32,Int64,Int32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_3() { prop_struct3_property_get(Float32.self, Int64.self, Int32.self) }
-                // @Test("S3<Float32,Int64,Int64>.get") func test_struct3_property_get_f32_4() { prop_struct3_property_get(Float32.self, Int64.self, Int64.self) }
+                @Test("S3<Float32,Int64,Int8>.get") func test_struct3_property_get_f32_1() { prop_struct3_property_get(Float32.self, Int64.self, Int8.self) }
+                @Test("S3<Float32,Int64,Int16>.get") func test_struct3_property_get_f32_2() { prop_struct3_property_get(Float32.self, Int64.self, Int16.self) }
+                @Test("S3<Float32,Int64,Int32>.get") func test_struct3_property_get_f32_3() { prop_struct3_property_get(Float32.self, Int64.self, Int32.self) }
+                @Test("S3<Float32,Int64,Int64>.get") func test_struct3_property_get_f32_4() { prop_struct3_property_get(Float32.self, Int64.self, Int64.self) }
                 // @Test("S3<Float32,Int64,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_5() { prop_struct3_property_get(Float32.self, Int64.self, UInt8.self) }
                 // @Test("S3<Float32,Int64,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_6() { prop_struct3_property_get(Float32.self, Int64.self, UInt16.self) }
                 // @Test("S3<Float32,Int64,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_7() { prop_struct3_property_get(Float32.self, Int64.self, UInt32.self) }
                 // @Test("S3<Float32,Int64,UInt64>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f32_8() { prop_struct3_property_get(Float32.self, Int64.self, UInt64.self) }
 
                 // T2 = Float64
-                // @Test("S3<Float64,Int64,Int8>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_f64_1() { prop_struct3_property_get(Float64.self, Int64.self, Int8.self) }
-                // @Test("S3<Float64,Int64,Int16>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_f64_2() { prop_struct3_property_get(Float64.self, Int64.self, Int16.self) }
-                // @Test("S3<Float64,Int64,Int32>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_f64_3() { prop_struct3_property_get(Float64.self, Int64.self, Int32.self) }
-                // @Test("S3<Float64,Int64,Int64>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_f64_4() { prop_struct3_property_get(Float64.self, Int64.self, Int64.self) }
+                @Test("S3<Float64,Int64,Int8>.get") func test_struct3_property_get_f64_1() { prop_struct3_property_get(Float64.self, Int64.self, Int8.self) }
+                @Test("S3<Float64,Int64,Int16>.get") func test_struct3_property_get_f64_2() { prop_struct3_property_get(Float64.self, Int64.self, Int16.self) }
+                @Test("S3<Float64,Int64,Int32>.get") func test_struct3_property_get_f64_3() { prop_struct3_property_get(Float64.self, Int64.self, Int32.self) }
+                @Test("S3<Float64,Int64,Int64>.get") func test_struct3_property_get_f64_4() { prop_struct3_property_get(Float64.self, Int64.self, Int64.self) }
                 // @Test("S3<Float64,Int64,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f64_5() { prop_struct3_property_get(Float64.self, Int64.self, UInt8.self) }
                 // @Test("S3<Float64,Int64,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f64_6() { prop_struct3_property_get(Float64.self, Int64.self, UInt16.self) }
                 // @Test("S3<Float64,Int64,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_f64_7() { prop_struct3_property_get(Float64.self, Int64.self, UInt32.self) }
@@ -153,20 +153,20 @@ import Testing
 
             @Suite("S3<Int32,T2,T3>") struct S3Int32Tests {
                 // T2 = Int16
-                // @Test("S3<Int32,Int16,Int8>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_1() { prop_struct3_property_get(Int32.self, Int16.self, Int8.self) }
-                // @Test("S3<Int32,Int16,Int16>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_2() { prop_struct3_property_get(Int32.self, Int16.self, Int16.self) }
-                // @Test("S3<Int32,Int16,Int32>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_3() { prop_struct3_property_get(Int32.self, Int16.self, Int32.self) }
-                // @Test("S3<Int32,Int16,Int64>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i16_4() { prop_struct3_property_get(Int32.self, Int16.self, Int64.self) }
+                @Test("S3<Int32,Int16,Int8>.get") func test_struct3_property_get_i16_1() { prop_struct3_property_get(Int32.self, Int16.self, Int8.self) }
+                @Test("S3<Int32,Int16,Int16>.get") func test_struct3_property_get_i16_2() { prop_struct3_property_get(Int32.self, Int16.self, Int16.self) }
+                @Test("S3<Int32,Int16,Int32>.get") func test_struct3_property_get_i16_3() { prop_struct3_property_get(Int32.self, Int16.self, Int32.self) }
+                @Test("S3<Int32,Int16,Int64>.get") func test_struct3_property_get_i16_4() { prop_struct3_property_get(Int32.self, Int16.self, Int64.self) }
                 // @Test("S3<Int32,Int16,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_5() { prop_struct3_property_get(Int32.self, Int16.self, UInt8.self) }
                 // @Test("S3<Int32,Int16,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_6() { prop_struct3_property_get(Int32.self, Int16.self, UInt16.self) }
                 // @Test("S3<Int32,Int16,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_7() { prop_struct3_property_get(Int32.self, Int16.self, UInt32.self) }
                 // @Test("S3<Int32,Int16,UInt64>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_8() { prop_struct3_property_get(Int32.self, Int16.self, UInt64.self) }
 
                 // T2 = Int64
-                // @Test("S3<Int32,Int64,Int8>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_1() { prop_struct3_property_get(Int32.self, Int64.self, Int8.self) }
-                // @Test("S3<Int32,Int64,Int16>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_2() { prop_struct3_property_get(Int32.self, Int64.self, Int16.self) }
-                // @Test("S3<Int32,Int64,Int32>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_3() { prop_struct3_property_get(Int32.self, Int64.self, Int32.self) }
-                // @Test("S3<Int32,Int64,Int64>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_4() { prop_struct3_property_get(Int32.self, Int64.self, Int64.self) }
+                @Test("S3<Int32,Int64,Int8>.get") func test_struct3_property_get_i64_1() { prop_struct3_property_get(Int32.self, Int64.self, Int8.self) }
+                @Test("S3<Int32,Int64,Int16>.get") func test_struct3_property_get_i64_2() { prop_struct3_property_get(Int32.self, Int64.self, Int16.self) }
+                @Test("S3<Int32,Int64,Int32>.get") func test_struct3_property_get_i64_3() { prop_struct3_property_get(Int32.self, Int64.self, Int32.self) }
+                @Test("S3<Int32,Int64,Int64>.get") func test_struct3_property_get_i64_4() { prop_struct3_property_get(Int32.self, Int64.self, Int64.self) }
                 // @Test("S3<Int32,Int64,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_5() { prop_struct3_property_get(Int32.self, Int64.self, UInt8.self) }
                 // @Test("S3<Int32,Int64,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_6() { prop_struct3_property_get(Int32.self, Int64.self, UInt16.self) }
                 // @Test("S3<Int32,Int64,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_7() { prop_struct3_property_get(Int32.self, Int64.self, UInt32.self) }
@@ -197,20 +197,20 @@ import Testing
 
             @Suite("S3<Array<Int32>,T2,T3>") struct S3Int32sTests {
                 // T2 = Int16
-                // @Test("S3<Array<Int32>,Int16,Int8>.get") func test_struct3_property_get_i16_1() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int8.self) }
-                // @Test("S3<Array<Int32>,Int16,Int16>.get") func test_struct3_property_get_i16_2() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int16.self) }
-                // @Test("S3<Array<Int32>,Int16,Int32>.get") func test_struct3_property_get_i16_3() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int32.self) }
-                // @Test("S3<Array<Int32>,Int16,Int64>.get") func test_struct3_property_get_i16_4() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int64.self) }
+                @Test("S3<Array<Int32>,Int16,Int8>.get") func test_struct3_property_get_i16_1() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int8.self) }
+                @Test("S3<Array<Int32>,Int16,Int16>.get") func test_struct3_property_get_i16_2() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int16.self) }
+                @Test("S3<Array<Int32>,Int16,Int32>.get") func test_struct3_property_get_i16_3() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int32.self) }
+                @Test("S3<Array<Int32>,Int16,Int64>.get") func test_struct3_property_get_i16_4() { prop_struct3_property_get(Array<Int32>.self, Int16.self, Int64.self) }
                 // @Test("S3<Array<Int32>,Int16,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_5() { prop_struct3_property_get(Array<Int32>.self, Int16.self, UInt8.self) }
                 // @Test("S3<Array<Int32>,Int16,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_6() { prop_struct3_property_get(Array<Int32>.self, Int16.self, UInt16.self) }
                 // @Test("S3<Array<Int32>,Int16,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_7() { prop_struct3_property_get(Array<Int32>.self, Int16.self, UInt32.self) }
                 // @Test("S3<Array<Int32>,Int16,UInt64>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i16_8() { prop_struct3_property_get(Array<Int32>.self, Int16.self, UInt64.self) }
 
                 // T2 = Int64
-                // @Test("S3<Array<Int32>,Int64,Int8>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_1() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int8.self) }
-                // @Test("S3<Array<Int32>,Int64,Int16>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_2() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int16.self) }
-                // @Test("S3<Array<Int32>,Int64,Int32>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_3() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int32.self) }
-                // @Test("S3<Array<Int32>,Int64,Int64>.get", .bug(id: "86b6vgh48")) func test_struct3_property_get_i64_4() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int64.self) }
+                @Test("S3<Array<Int32>,Int64,Int8>.get") func test_struct3_property_get_i64_1() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int8.self) }
+                @Test("S3<Array<Int32>,Int64,Int16>.get") func test_struct3_property_get_i64_2() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int16.self) }
+                @Test("S3<Array<Int32>,Int64,Int32>.get") func test_struct3_property_get_i64_3() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int32.self) }
+                @Test("S3<Array<Int32>,Int64,Int64>.get") func test_struct3_property_get_i64_4() { prop_struct3_property_get(Array<Int32>.self, Int64.self, Int64.self) }
                 // @Test("S3<Array<Int32>,Int64,UInt8>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_5() { prop_struct3_property_get(Array<Int32>.self, Int64.self, UInt8.self) }
                 // @Test("S3<Array<Int32>,Int64,UInt16>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_6() { prop_struct3_property_get(Array<Int32>.self, Int64.self, UInt16.self) }
                 // @Test("S3<Array<Int32>,Int64,UInt32>.get", .bug(id: "86b70m272")) func test_struct3_property_get_i64_7() { prop_struct3_property_get(Array<Int32>.self, Int64.self, UInt32.self) }
@@ -421,7 +421,6 @@ import Testing
             @Test("S2d<Int16,Int16>.default_init") func test_struct2_default_init_i16_2() { prop_struct2_default_init(Int16.self, Int16.self) }
             @Test("S2d<Int16,Int32>.default_init") func test_struct2_default_init_i16_3() { prop_struct2_default_init(Int16.self, Int32.self) }
             @Test("S2d<Int16,Int64>.default_init") func test_struct2_default_init_i16_4() { prop_struct2_default_init(Int16.self, Int64.self) }
-
             // @Test("S2d<Int16,Int>.default_init", .bug(id: "86b70m272")) func test_struct2_default_init_i16_5() { prop_struct2_default_init(Int16.self, Int.self) }
             // @Test("S2d<Int16,UInt8>.default_init", .bug(id: "86b70m272")) func test_struct2_default_init_i16_6() { prop_struct2_default_init(Int16.self, UInt8.self) }
             // @Test("S2d<Int16,UInt16>.default_init", .bug(id: "86b70m272")) func test_struct2_default_init_i16_7() { prop_struct2_default_init(Int16.self, UInt16.self) }
@@ -470,32 +469,32 @@ import Testing
         @Suite("S3d") struct S3dTests {
             @Suite("S3d<UInt8,T2,T3>") struct S3dUInt8Tests {
                 // T2 = Int32
-                // @Test("S3d<UInt8,Int32,Int8>.default_init") func test_struct3_default_init_i32_1() { prop_struct3_default_init(UInt8.self, Int32.self, Int8.self) }
-                // @Test("S3d<UInt8,Int32,Int16>.default_init") func test_struct3_default_init_i32_2() { prop_struct3_default_init(UInt8.self, Int32.self, Int16.self) }
-                // @Test("S3d<UInt8,Int32,Int32>.default_init") func test_struct3_default_init_i32_3() { prop_struct3_default_init(UInt8.self, Int32.self, Int32.self) }
-                // @Test("S3d<UInt8,Int32,Int64>.default_init") func test_struct3_default_init_i32_4() { prop_struct3_default_init(UInt8.self, Int32.self, Int64.self) }
+                // @Test("S3d<UInt8,Int32,Int8>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_1() { prop_struct3_default_init(UInt8.self, Int32.self, Int8.self) }
+                // @Test("S3d<UInt8,Int32,Int16>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_2() { prop_struct3_default_init(UInt8.self, Int32.self, Int16.self) }
+                // @Test("S3d<UInt8,Int32,Int32>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_3() { prop_struct3_default_init(UInt8.self, Int32.self, Int32.self) }
+                // @Test("S3d<UInt8,Int32,Int64>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_4() { prop_struct3_default_init(UInt8.self, Int32.self, Int64.self) }
                 // @Test("S3d<UInt8,Int32,Int>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_5() { prop_struct3_default_init(UInt8.self, Int32.self, Int.self) }
                 // @Test("S3d<UInt8,Int32,UInt8>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_6() { prop_struct3_default_init(UInt8.self, Int32.self, UInt8.self) }
                 // @Test("S3d<UInt8,Int32,UInt16>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_7() { prop_struct3_default_init(UInt8.self, Int32.self, UInt16.self) }
                 // @Test("S3d<UInt8,Int32,UInt32>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_8() { prop_struct3_default_init(UInt8.self, Int32.self, UInt32.self) }
                 // @Test("S3d<UInt8,Int32,UInt64>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_9() { prop_struct3_default_init(UInt8.self, Int32.self, UInt64.self) }
                 // @Test("S3d<UInt8,Int32,UInt>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i32_10() { prop_struct3_default_init(UInt8.self, Int32.self, UInt.self) }
-                // @Test("S3d<UInt8,Int32,Float32>.default_init") func test_struct3_default_init_i32_11() { prop_struct3_default_init(UInt8.self, Int32.self, Float32.self) }
-                // @Test("S3d<UInt8,Int32,Float64>.default_init") func test_struct3_default_init_i32_12() { prop_struct3_default_init(UInt8.self, Int32.self, Float32.self) }
+                // @Test("S3d<UInt8,Int32,Float32>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i32_11() { prop_struct3_default_init(UInt8.self, Int32.self, Float32.self) }
+                // @Test("S3d<UInt8,Int32,Float64>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i32_12() { prop_struct3_default_init(UInt8.self, Int32.self, Float32.self) }
 
                 // T2 = Int64
-                // @Test("S3d<UInt8,Int64,Int8>.default_init") func test_struct3_default_init_i64_1() { prop_struct3_default_init(UInt8.self, Int64.self, Int8.self) }
-                // @Test("S3d<UInt8,Int64,Int16>.default_init") func test_struct3_default_init_i64_2() { prop_struct3_default_init(UInt8.self, Int64.self, Int16.self) }
-                // @Test("S3d<UInt8,Int64,Int32>.default_init") func test_struct3_default_init_i64_3() { prop_struct3_default_init(UInt8.self, Int64.self, Int32.self) }
-                // @Test("S3d<UInt8,Int64,Int64>.default_init") func test_struct3_default_init_i64_4() { prop_struct3_default_init(UInt8.self, Int64.self, Int64.self) }
+                // @Test("S3d<UInt8,Int64,Int8>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i64_1() { prop_struct3_default_init(UInt8.self, Int64.self, Int8.self) }
+                // @Test("S3d<UInt8,Int64,Int16>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i64_2() { prop_struct3_default_init(UInt8.self, Int64.self, Int16.self) }
+                // @Test("S3d<UInt8,Int64,Int32>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i64_3() { prop_struct3_default_init(UInt8.self, Int64.self, Int32.self) }
+                // @Test("S3d<UInt8,Int64,Int64>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i64_4() { prop_struct3_default_init(UInt8.self, Int64.self, Int64.self) }
                 // @Test("S3d<UInt8,Int64,Int>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i64_5() { prop_struct3_default_init(UInt8.self, Int64.self, Int.self) }
                 // @Test("S3d<UInt8,Int64,UInt8>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i64_6() { prop_struct3_default_init(UInt8.self, Int64.self, UInt8.self) }
                 // @Test("S3d<UInt8,Int64,UInt16>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i64_7() { prop_struct3_default_init(UInt8.self, Int64.self, UInt16.self) }
                 // @Test("S3d<UInt8,Int64,UInt32>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i64_8() { prop_struct3_default_init(UInt8.self, Int64.self, UInt32.self) }
                 // @Test("S3d<UInt8,Int64,UInt64>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i64_9() { prop_struct3_default_init(UInt8.self, Int64.self, UInt64.self) }
                 // @Test("S3d<UInt8,Int64,UInt>.default_init", .bug(id: "86b70m272")) func test_struct3_default_init_i64_10() { prop_struct3_default_init(UInt8.self, Int64.self, UInt.self) }
-                // @Test("S3d<UInt8,Int64,Float32>.default_init") func test_struct3_default_init_i64_11() { prop_struct3_default_init(UInt8.self, Int64.self, Float32.self) }
-                // @Test("S3d<UInt8,Int64,Float64>.default_init") func test_struct3_default_init_i64_12() { prop_struct3_default_init(UInt8.self, Int64.self, Float32.self) }
+                // @Test("S3d<UInt8,Int64,Float32>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i64_11() { prop_struct3_default_init(UInt8.self, Int64.self, Float32.self) }
+                // @Test("S3d<UInt8,Int64,Float64>.default_init", .bug(id: "86b70m272") func test_struct3_default_init_i64_12() { prop_struct3_default_init(UInt8.self, Int64.self, Float32.self) }
             }
 
             @Suite("S3d<UInt,T2,T3>") struct S3dUIntTests {

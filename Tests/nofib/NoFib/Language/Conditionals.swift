@@ -26,46 +26,70 @@ import Testing
 
     @Suite("switch-expressions") struct SwitchExpresions {
         @Test("switch1.Int") func test_switch1_1() { prop_switch1(Int.self) }
-        @Test("switch1.Int32") func test_switch1_2() { prop_switch1(Int32.self) }
-        @Test("switch1.Int64") func test_switch1_3() { prop_switch1(Int64.self) }
-        @Test("switch1.UInt") func test_switch1_4() { prop_switch1(UInt.self) }
-        @Test("switch1.UInt32") func test_switch1_5() { prop_switch1(UInt32.self) }
-        @Test("switch1.UInt64") func test_switch1_6() { prop_switch1(UInt64.self) }
+        @Test("switch1.Int8") func test_switch1_2() { prop_switch1(Int8.self) }
+        @Test("switch1.Int16") func test_switch1_3() { prop_switch1(Int16.self) }
+        @Test("switch1.Int32") func test_switch1_4() { prop_switch1(Int32.self) }
+        @Test("switch1.Int64") func test_switch1_5() { prop_switch1(Int64.self) }
+        @Test("switch1.UInt") func test_switch1_6() { prop_switch1(UInt.self) }
+        @Test("switch1.UInt8") func test_switch1_7() { prop_switch1(UInt8.self) }
+        @Test("switch1.UInt16") func test_switch1_8() { prop_switch1(UInt16.self) }
+        @Test("switch1.UInt32") func test_switch1_9() { prop_switch1(UInt32.self) }
+        @Test("switch1.UInt64") func test_switch1_10() { prop_switch1(UInt64.self) }
 
         @Test("switch2.Int") func test_switch2_1() { prop_switch2(Int.self) }
-        @Test("switch2.Int32") func test_switch2_2() { prop_switch2(Int32.self) }
-        @Test("switch2.Int64") func test_switch2_3() { prop_switch2(Int64.self) }
-        @Test("switch2.UInt") func test_switch2_4() { prop_switch2(UInt.self) }
-        @Test("switch2.UInt32") func test_switch2_5() { prop_switch2(UInt32.self) }
-        @Test("switch2.UInt64") func test_switch2_6() { prop_switch2(UInt64.self) }
+        @Test("switch2.Int8") func test_switch2_2() { prop_switch2(Int8.self) }
+        @Test("switch2.Int16") func test_switch2_3() { prop_switch2(Int16.self) }
+        @Test("switch2.Int32") func test_switch2_4() { prop_switch2(Int32.self) }
+        @Test("switch2.Int64") func test_switch2_5() { prop_switch2(Int64.self) }
+        @Test("switch2.UInt") func test_switch2_6() { prop_switch2(UInt.self) }
+        @Test("switch2.UInt8") func test_switch2_7() { prop_switch2(UInt8.self) }
+        @Test("switch2.UInt16") func test_switch2_8() { prop_switch2(UInt16.self) }
+        @Test("switch2.UInt32") func test_switch2_9() { prop_switch2(UInt32.self) }
+        @Test("switch2.UInt64") func test_switch2_10() { prop_switch2(UInt64.self) }
 
         @Test("switch3.Int") func test_switch3_1() { prop_switch3(Int.self) }
-        @Test("switch3.Int32") func test_switch3_2() { prop_switch3(Int32.self) }
-        @Test("switch3.Int64") func test_switch3_3() { prop_switch3(Int64.self) }
-        @Test("switch3.UInt") func test_switch3_4() { prop_switch3(UInt.self) }
-        @Test("switch3.UInt32") func test_switch3_5() { prop_switch3(UInt32.self) }
-        @Test("switch3.UInt64") func test_switch3_6() { prop_switch3(UInt64.self) }
+        @Test("switch3.Int8") func test_switch3_2() { prop_switch3(Int8.self) }
+        @Test("switch3.Int16") func test_switch3_3() { prop_switch3(Int16.self) }
+        @Test("switch3.Int32") func test_switch3_4() { prop_switch3(Int32.self) }
+        @Test("switch3.Int64") func test_switch3_5() { prop_switch3(Int64.self) }
+        @Test("switch3.UInt") func test_switch3_6() { prop_switch3(UInt.self) }
+        @Test("switch3.UInt8") func test_switch3_7() { prop_switch3(UInt8.self) }
+        @Test("switch3.UInt16") func test_switch3_8() { prop_switch3(UInt16.self) }
+        @Test("switch3.UInt32") func test_switch3_9() { prop_switch3(UInt32.self) }
+        @Test("switch3.UInt64") func test_switch3_10() { prop_switch3(UInt64.self) }
 
         // @Test("switch4.Int", .bug(id: "86b6xaz1f")) func test_switch4_1() { prop_switch4(Int.self) }
-        // @Test("switch4.Int32", .bug(id: "86b6xaz1f")) func test_switch4_2() { prop_switch4(Int32.self) }
-        // @Test("switch4.Int64", .bug(id: "86b6xaz1f")) func test_switch4_3() { prop_switch4(Int64.self) }
-        // @Test("switch4.UInt", .bug(id: "86b6xaz1f")) func test_switch4_4() { prop_switch4(UInt.self) }
-        // @Test("switch4.UInt32", .bug(id: "86b6xaz1f")) func test_switch4_5() { prop_switch4(UInt32.self) }
-        // @Test("switch4.UInt64", .bug(id: "86b6xaz1f")) func test_switch4_6() { prop_switch4(UInt64.self) }
+        // @Test("switch4.Int8", .bug(id: "86b6xaz1f")) func test_switch4_2() { prop_switch4(Int8.self) }
+        // @Test("switch4.Int16", .bug(id: "86b6xaz1f")) func test_switch4_3() { prop_switch4(Int16.self) }
+        // @Test("switch4.Int32", .bug(id: "86b6xaz1f")) func test_switch4_4() { prop_switch4(Int32.self) }
+        // @Test("switch4.Int64", .bug(id: "86b6xaz1f")) func test_switch4_5() { prop_switch4(Int64.self) }
+        // @Test("switch4.UInt", .bug(id: "86b6xaz1f")) func test_switch4_6() { prop_switch4(UInt.self) }
+        // @Test("switch4.UInt8", .bug(id: "86b6xaz1f")) func test_switch4_7() { prop_switch4(UInt8.self) }
+        // @Test("switch4.UInt16", .bug(id: "86b6xaz1f")) func test_switch4_8() { prop_switch4(UInt16.self) }
+        // @Test("switch4.UInt32", .bug(id: "86b6xaz1f")) func test_switch4_9() { prop_switch4(UInt32.self) }
+        // @Test("switch4.UInt64", .bug(id: "86b6xaz1f")) func test_switch4_10() { prop_switch4(UInt64.self) }
 
         @Test("switch5.Int") func test_switch5_1() { prop_switch5(Int.self) }
-        @Test("switch5.Int32") func test_switch5_2() { prop_switch5(Int32.self) }
-        @Test("switch5.Int64") func test_switch5_3() { prop_switch5(Int64.self) }
-        @Test("switch5.UInt") func test_switch5_4() { prop_switch5(UInt.self) }
-        @Test("switch5.UInt32") func test_switch5_5() { prop_switch5(UInt32.self) }
-        @Test("switch5.UInt64") func test_switch5_6() { prop_switch5(UInt64.self) }
+        @Test("switch5.Int8") func test_switch5_2() { prop_switch5(Int8.self) }
+        @Test("switch5.Int16") func test_switch5_3() { prop_switch5(Int16.self) }
+        @Test("switch5.Int32") func test_switch5_4() { prop_switch5(Int32.self) }
+        @Test("switch5.Int64") func test_switch5_5() { prop_switch5(Int64.self) }
+        @Test("switch5.UInt") func test_switch5_6() { prop_switch5(UInt.self) }
+        @Test("switch5.UInt8") func test_switch5_7() { prop_switch5(UInt8.self) }
+        @Test("switch5.UInt16") func test_switch5_8() { prop_switch5(UInt16.self) }
+        @Test("switch5.UInt32") func test_switch5_9() { prop_switch5(UInt32.self) }
+        @Test("switch5.UInt64") func test_switch5_10() { prop_switch5(UInt64.self) }
 
         @Test("switch6.Int") func test_switch6_1() { prop_switch6(Int.self) }
-        @Test("switch6.Int32") func test_switch6_2() { prop_switch6(Int32.self) }
-        @Test("switch6.Int64") func test_switch6_3() { prop_switch6(Int64.self) }
-        @Test("switch6.UInt") func test_switch6_4() { prop_switch6(UInt.self) }
-        @Test("switch6.UInt32") func test_switch6_5() { prop_switch6(UInt32.self) }
-        @Test("switch6.UInt64") func test_switch6_6() { prop_switch6(UInt64.self) }
+        @Test("switch6.Int8") func test_switch6_2() { prop_switch6(Int8.self) }
+        @Test("switch6.Int16") func test_switch6_3() { prop_switch6(Int16.self) }
+        @Test("switch6.Int32") func test_switch6_4() { prop_switch6(Int32.self) }
+        @Test("switch6.Int64") func test_switch6_5() { prop_switch6(Int64.self) }
+        @Test("switch6.UInt") func test_switch6_6() { prop_switch6(UInt.self) }
+        @Test("switch6.UInt8") func test_switch6_7() { prop_switch6(UInt8.self) }
+        @Test("switch6.UInt16") func test_switch6_8() { prop_switch6(UInt16.self) }
+        @Test("switch6.UInt32") func test_switch6_9() { prop_switch6(UInt32.self) }
+        @Test("switch6.UInt64") func test_switch6_10() { prop_switch6(UInt64.self) }
     }
 }
 
