@@ -127,7 +127,7 @@ public struct CachingHostAllocator {
             // First iterate through the cached blocks of the given bin size
             // looking for an allocation that is ready to be reused.
             cached_blocks[bin].withLockedValue { blocks in
-                for block in blocks where block.ready_event.complete() {
+                for block in blocks where try! block.ready_event.complete() { // swiftlint:disable:this force_try
                     blocks.remove(block)
                     ptr = block.ptr
                     break
@@ -224,7 +224,7 @@ public struct CachingHostAllocator {
             let size = bin_size_bytes[bin]
             cached_blocks[bin].withLockedValue { blocks in
                 for block in blocks {
-                    if block.ready_event.complete() {
+                    if try! block.ready_event.complete() { // swiftlint:disable:this force_try
                         blocks.remove(block)
                         swift_slowDealloc(block.ptr, size, 0)
                         num_cached_blocks_freed += 1
@@ -257,7 +257,7 @@ public struct CachingHostAllocator {
             let size = bin_size_bytes[bin]
             cached_blocks[bin].withLockedValue { blocks in
                 for block in blocks {
-                    block.ready_event.sync()
+                    try! block.ready_event.sync() // swiftlint:disable:this force_try
                     blocks.remove(block)
                     swift_slowDealloc(block.ptr, size, 0)
                 }

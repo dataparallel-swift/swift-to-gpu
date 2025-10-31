@@ -22,11 +22,11 @@ private let logger = Logger(label: "Stream")
 /// Use 'Event's to synchronise operations between streams.
 ///
 public struct Stream {
-    internal var rawStream: CUstream
+    internal let rawStream: CUstream
 
     /// Create a new execution stream with the given flags
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1ga581f0c5833e21ded8b5a56594e243f4
-    public init(withFlags: [CUstream_flags] = []) {
+    public init(withFlags: [CUstream_flags] = []) throws(CUDAError) {
         let __zone = #Zone
         defer { __zone.end() }
 
@@ -38,7 +38,7 @@ public struct Stream {
         var tmp: CUstream? = nil
 
         // Assumes we have an active context
-        cuda_safe_call { cuStreamCreate(&tmp, withFlags.reduce(0, { $0 | $1.rawValue })) }
+        try cuda_safe_call { cuStreamCreate(&tmp, withFlags.reduce(0, { $0 | $1.rawValue })) }
 
         // cuStreamCreate will error before this is nil
         // swiftlint:disable:next force_unwrapping
@@ -57,25 +57,25 @@ public struct Stream {
 
     /// Wait until the device has completed all operations in this stream.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g15e49dd91ec15991eb7c0a741beb7dad
-    public func sync() {
+    public func sync() throws(CUDAError) {
         let __zone = #Zone
         defer { __zone.end() }
 
         logger.trace(".sync() \(self.rawStream)")
-        cuda_safe_call { cuStreamSynchronize(self.rawStream) }
+        try cuda_safe_call { cuStreamSynchronize(self.rawStream) }
     }
 
     /// Capture the contents of the stream at the time of the call. Subsequent
     /// calls to 'Event.complete' and 'Stream.waitOn' will examine or wait for
     /// completion of the work that was captured.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html#group__CUDA__EVENT_1g95424d3be52c4eb95d83861b70fb89d1
-    public func record() -> Event {
+    public func record() throws(CUDAError) -> Event {
         let __zone = #Zone
         defer { __zone.end() }
 
-        let event = Event()
+        let event = try Event()
         logger.trace(".record() in \(self.rawStream) -> \(event.rawEvent)")
-        cuda_safe_call { cuEventRecord(event.rawEvent, self.rawStream) }
+        try cuda_safe_call { cuEventRecord(event.rawEvent, self.rawStream) }
 
         return event
     }
@@ -84,12 +84,12 @@ public struct Stream {
     /// complete before continuing. The synchronisation will be performed
     /// efficiently on the device, where possible.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g6a898b652dfc6aa1d5c8d97062618b2f
-    public func waitOn(event: Event) {
+    public func waitOn(event: Event) throws(CUDAError) {
         let __zone = #Zone
         defer { __zone.end() }
 
         logger.trace(".waitOn(event: \(event.rawEvent))")
-        cuda_safe_call { cuStreamWaitEvent(self.rawStream, event.rawEvent, 0) }
+        try cuda_safe_call { cuStreamWaitEvent(self.rawStream, event.rawEvent, 0) }
     }
 
     /// The work stream may be destroyed while the device is still doing work in
@@ -97,12 +97,12 @@ public struct Stream {
     /// the resources associated with this stream will be released asynchronously
     /// once the device completes work in this stream.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g244c8833de4596bcd31a06cdf21ee758
-    public func destroy() {
+    public func destroy() throws(CUDAError) {
         let __zone = #Zone
         defer { __zone.end() }
 
         logger.trace("destroy() \(self.rawStream)")
-        cuda_safe_call { cuStreamDestroy_v2(self.rawStream) }
+        try cuda_safe_call { cuStreamDestroy_v2(self.rawStream) }
     }
 }
 

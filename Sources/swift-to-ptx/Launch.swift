@@ -5,6 +5,9 @@ import Logging
 import SwiftToPTX_cbits
 import Tracy
 
+// The swift parallel_for pass needs to be updated to return typed errors
+// swiftlint:disable force_try
+
 private let logger = Logger(label: "Launch")
 
 // XXX: This module will be loaded into a specific CUDA context, but on
@@ -43,7 +46,7 @@ public func launch_parallel_for
     let __zone = #Zone
     defer { __zone.end() }
 
-    context.push()
+    try! context.push()
 
     if kernel.module == nil {
         // Technically this configuration is per-context, since we could have
@@ -53,8 +56,8 @@ public func launch_parallel_for
         let dynamicSharedMem: Int = 0
         var function: CUfunction? = nil
 
-        cuda_safe_call { cuModuleLoadData(&kernel.module, kernel.image) }
-        cuda_safe_call { cuModuleGetFunction(&function, kernel.module, kernel.name) }
+        try! cuda_safe_call { cuModuleLoadData(&kernel.module, kernel.image) }
+        try! cuda_safe_call { cuModuleGetFunction(&function, kernel.module, kernel.name) }
         kernel.function = function! // swiftlint:disable:this force_unwrapping
 
         // active threads per multiprocessor
@@ -63,7 +66,7 @@ public func launch_parallel_for
 
         for blockSize in stride(from: context.warpSize, through: context.maxThreadsPerMultiprocessor, by: Int(context.warpSize)) {
             var activeBlocks: Int32 = 0
-            cuda_safe_call { cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, blockSize, dynamicSharedMem) }
+            try! cuda_safe_call { cuOccupancyMaxActiveBlocksPerMultiprocessor(&activeBlocks, function, blockSize, dynamicSharedMem) }
 
             // No coming back from here
             if activeBlocks == 0 {
@@ -91,10 +94,10 @@ public func launch_parallel_for
         var registersPerThread: Int32 = 0
         var constantMem: Int32 = 0
         var localMem: Int32 = 0
-        cuda_safe_call { cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, kernel.function) }
-        cuda_safe_call { cuFuncGetAttribute(&staticSharedMem, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, kernel.function) }
-        cuda_safe_call { cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function) }
-        cuda_safe_call { cuFuncGetAttribute(&localMem, CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, kernel.function) }
+        try! cuda_safe_call { cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, kernel.function) }
+        try! cuda_safe_call { cuFuncGetAttribute(&staticSharedMem, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, kernel.function) }
+        try! cuda_safe_call { cuFuncGetAttribute(&constantMem, CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, kernel.function) }
+        try! cuda_safe_call { cuFuncGetAttribute(&localMem, CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, kernel.function) }
 
         // swiftformat:disable wrap
         logger.trace("Kernel function \"\(String(cString: kernel.name))\"")
@@ -146,14 +149,14 @@ public func launch_parallel_for
             buffer[3] = UnsafeMutableRawPointer(p_thrownerror)
             // swiftlint:disable line_length
             // swiftformat:disable:next wrap wrapArguments
-            cuda_safe_call { cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil) }
+            try! cuda_safe_call { cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil) }
         }) }) }) }) })
 
         // swiftformat:enable indent
     }
 
-    let event = stream.record()
-    context.pop()
+    let event = try! stream.record()
+    try! context.pop()
 
     return event
 }
