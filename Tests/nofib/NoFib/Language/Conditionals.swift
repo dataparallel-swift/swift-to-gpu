@@ -41,12 +41,11 @@ import Testing
                 return 0
             }
             property("if") <-
-              forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
-              forAllNoShrink([Int].arbitrary) { (ys: [Int]) in
+              forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
                 let expected = zip(xs, ys).map { x, y in if_(x, y) }
                 let actual = zipWith(xs, ys) { x, y in if_(x, y) }
                 return try? #require(actual == expected)
-              }}
+              }
         }
 
         @Test func test_ternary_operator() {
@@ -54,12 +53,11 @@ import Testing
                 x ? y : 0
             }
             property("ternary") <-
-              forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
-              forAllNoShrink([Int].arbitrary) { (ys: [Int]) in
+              forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
                 let expected = zip(xs, ys).map { x, y in ternary(x, y) }
                 let actual = zipWith(xs, ys) { x, y in ternary(x, y) }
                 return try? #require(actual == expected)
-              }}
+              }
         }
 
         @Test func test_if_else1() {
@@ -72,12 +70,11 @@ import Testing
                 }
             }
             property("if_else") <-
-              forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
-              forAllNoShrink([Int].arbitrary) { (ys: [Int]) in
+              forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
                 let expected = zip(xs, ys).map { x, y in if_else(x, y) }
                 let actual = zipWith(xs, ys, if_else)
                 return try? #require(actual == expected)
-              }}
+              }
         }
 
         @Test func test_if_else2() {
@@ -93,13 +90,11 @@ import Testing
                 }
             }
             property("if_else2") <-
-              forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
-              forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
-              forAllNoShrink(Int.arbitrary) { (x: Int) in
+              forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { (b1s: [Bool], b2s: [Bool], x: Int) in
                 let expected = zip(b1s, b2s).map { b1, b2 in if_else2(b1, b2, x) }
                 let actual = zipWith(b1s, b2s) { b1, b2 in if_else2(b1, b2, x) }
                 return try? #require(actual == expected)
-              }}}
+              }
         }
 
         @Test func test_if_else3() {
@@ -118,14 +113,16 @@ import Testing
                 }
             }
             property("if_else3") <-
-              forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
-              forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
-              forAllNoShrink(Bool.arbitrary) { (b3: Bool) in
-              forAllNoShrink(Int.arbitrary) { (x: Int) in
+              forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Bool.arbitrary, Int.arbitrary) { (
+                  b1s: [Bool],
+                  b2s: [Bool],
+                  b3: Bool,
+                  x: Int,
+              ) in
                 let expected = zip(b1s, b2s).map { b1, b2 in if_else3(b1, b2, b3, x) }
                 let actual = zipWith(b1s, b2s) { b1, b2 in if_else3(b1, b2, b3, x) }
                 return try? #require(actual == expected)
-              }}}}
+              }
         }
 
         @Test func test_nested_if() {
@@ -139,13 +136,11 @@ import Testing
                 return 1
             }
             property("nested_if") <-
-              forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
-              forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
-              forAllNoShrink(Int.arbitrary) { (x: Int) in
+              forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { (b1s: [Bool], b2s: [Bool], x: Int) in
                 let expected = zip(b1s, b2s).map { b1, b2 in nested_if(b1, b2, x) }
                 let actual = zipWith(b1s, b2s) { b1, b2 in nested_if(b1, b2, x) }
                 return try? #require(actual == expected)
-              }}}
+              }
         }
     }
 
@@ -182,12 +177,11 @@ import Testing
                 return y
             }
             property("guard1") <-
-              forAllNoShrink([Bool].arbitrary) { (xs: [Bool]) in
-              forAllNoShrink([Int].arbitrary) { (ys: [Int]) in
+              forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
                 let expected = zip(xs, ys).map { x, y in guard1(x, y) }
                 let actual = zipWith(xs, ys, guard1)
                 return try? #require(actual == expected)
-              }}
+              }
         }
 
         @Test func test_guard2() {
@@ -201,13 +195,12 @@ import Testing
                 return x
             }
             property("guard2") <-
-              forAllNoShrink([Bool].arbitrary) { (b1s: [Bool]) in
-              forAllNoShrink([Bool].arbitrary) { (b2s: [Bool]) in
+              forAllNoShrink([Bool].arbitrary, [Bool].arbitrary) { (b1s: [Bool], b2s: [Bool]) in
                 let x = 42
                 let expected = zip(b1s, b2s).map { b1, b2 in guard2(b1, b2, x) }
                 let actual = zipWith(b1s, b2s) { b1, b2 in guard2(b1, b2, x) }
                 return try? #require(actual == expected)
-              }}
+              }
         }
     }
 

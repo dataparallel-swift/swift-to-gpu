@@ -159,12 +159,11 @@ private func prop_for_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property("for_loop_break." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink(gen) { (k: Int) in
+      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
         let expected = xs.map { x in for_loop_break(x, k) }
         let actual = map(xs) { x in for_loop_break(x, k) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_for_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -183,12 +182,11 @@ private func prop_for_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type)
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property("for_loop_continue." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink(gen) { (k: Int) in
+      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
         let expected = xs.map { x in for_loop_continue(x, k) }
         let actual = map(xs) { x in for_loop_continue(x, k) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_nested_for_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -206,12 +204,11 @@ private func prop_nested_for_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
         return result
     }
     property("nested_for_loops." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_for_loops(x, y) }
         let actual = zipWith(xs, ys) { x, y in nested_for_loops(x, y) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_nested_for_loops_break_inner<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -233,12 +230,11 @@ private func prop_nested_for_loops_break_inner<T: Arbitrary & FixedWidthInteger>
         return result
     }
     property("nested_for_loops_break_inner." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_for_loops_break_inner(x, y) }
         let actual = zipWith(xs, ys) { x, y in nested_for_loops_break_inner(x, y) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_nested_for_loops_break_outer<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -259,12 +255,11 @@ private func prop_nested_for_loops_break_outer<T: Arbitrary & FixedWidthInteger>
         return result
     }
     property("nested_for_loops_break_outer." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_for_loops_break_outer(x, y) }
         let actual = zipWith(xs, ys) { x, y in nested_for_loops_break_outer(x, y) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_simple_while_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -304,12 +299,11 @@ private func prop_while_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property("while_loop_break." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink(gen) { (k: Int) in
+      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
         let expected = xs.map { x in while_loop_break(x, k) }
         let actual = map(xs) { x in while_loop_break(x, k) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -331,12 +325,11 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Typ
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property("while_loop_continue." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink(gen) { (k: Int) in
+      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
         let expected = xs.map { x in while_loop_continue(x, k) }
         let actual = map(xs) { x in while_loop_continue(x, k) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_nested_while_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -358,12 +351,11 @@ private func prop_nested_while_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type
         return result
     }
     property("nested_while_loops." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_while_loops(x, y) }
         let actual = zipWith(xs, ys) { x, y in nested_while_loops(x, y) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_nested_while_loops_break_inner<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -389,12 +381,11 @@ private func prop_nested_while_loops_break_inner<T: Arbitrary & FixedWidthIntege
         return result
     }
     property("nested_while_loops_break_inner." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_while_loops_break_inner(x, y) }
         let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_inner(x, y) }
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_nested_while_loops_break_outer<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -419,10 +410,9 @@ private func prop_nested_while_loops_break_outer<T: Arbitrary & FixedWidthIntege
         return result
     }
     property("nested_while_loops_break_outer." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
         let expected = zip(xs, ys).map { x, y in nested_while_loops_break_outer(x, y) }
         let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_outer(x, y) }
         return try? #require(expected == actual)
-      }}
+      }
 }

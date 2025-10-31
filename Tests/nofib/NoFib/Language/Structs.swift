@@ -589,12 +589,11 @@ private func prop_struct1_property_set<T: Arbitrary & Equatable>(_: T.Type) {
         return y
     }
     property(String(describing: S1<T>.self) + ".property_set") <-
-      forAllNoShrink([S1<T>].arbitrary) { (xs: [S1<T>]) in
-      forAllNoShrink([T].arbitrary) { (vs: [T]) in
+      forAllNoShrink([S1<T>].arbitrary, [T].arbitrary) { (xs: [S1<T>], vs: [T]) in
         let expected = zip(xs, vs).map { x, member in s1_property_set(x, member) }
         let actual = zipWith(xs, vs, s1_property_set)
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_struct1_property_set_inout<T: Arbitrary & Equatable>(_: T.Type) {
@@ -607,8 +606,7 @@ private func prop_struct1_property_set_inout<T: Arbitrary & Equatable>(_: T.Type
         return x
     }
     property(String(describing: S1<T>.self) + ".property_set_inout") <-
-      forAllNoShrink([S1<T>].arbitrary) { (xs: [S1<T>]) in
-      forAllNoShrink([T].arbitrary) { (vs: [T]) in
+      forAllNoShrink([S1<T>].arbitrary, [T].arbitrary) { (xs: [S1<T>], vs: [T]) in
         let expected = zip(xs, vs).map { x, member in s1_property_set(x, member) }
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
@@ -617,7 +615,7 @@ private func prop_struct1_property_set_inout<T: Arbitrary & Equatable>(_: T.Type
           s1_property_set_inout(&actual[i], vs[i])
         }.sync()
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 struct S2<T1: Arbitrary & Equatable, T2: Arbitrary & Equatable>: Arbitrary, Equatable {
@@ -665,13 +663,11 @@ private func prop_struct2_property_set<T1: Arbitrary & Equatable, T2: Arbitrary 
     }
 
     property(String(describing: S2<T1, T2>.self) + "property_get") <-
-      forAllNoShrink([S2<T1, T2>].arbitrary) { (xs: [S2<T1, T2>]) in
-      forAllNoShrink(T1.arbitrary) { (member1: T1) in
-      forAllNoShrink(T2.arbitrary) { (member2: T2) in
+      forAllNoShrink([S2<T1, T2>].arbitrary, T1.arbitrary, T2.arbitrary) { (xs: [S2<T1, T2>], member1: T1, member2: T2) in
         let expected = xs.map { s2_property_set($0, member1, member2) }
         let actual = map(xs) { s2_property_set($0, member1, member2) }
         return try? #require(expected == actual)
-      }}}
+      }
 }
 
 private func prop_struct2_property_set_inout<T1: Arbitrary & Equatable, T2: Arbitrary & Equatable>(_: T1.Type, _: T2.Type) {
@@ -687,9 +683,7 @@ private func prop_struct2_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
     }
 
     property(String(describing: S2<T1, T2>.self) + ".property_set_inout") <-
-      forAllNoShrink([S2<T1, T2>].arbitrary) { (xs: [S2<T1, T2>]) in
-      forAllNoShrink(T1.arbitrary) { (member1: T1) in
-      forAllNoShrink(T2.arbitrary) { (member2: T2) in
+      forAllNoShrink([S2<T1, T2>].arbitrary, T1.arbitrary, T2.arbitrary) { (xs: [S2<T1, T2>], member1: T1, member2: T2) in
         let expected = xs.map { s2_property_set($0, member1, member2) }
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
@@ -698,7 +692,7 @@ private func prop_struct2_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
             s2_property_set_inout(&actual[i], member1, member2)
         }.sync()
         return try? #require(expected == actual)
-      }}}
+      }
 }
 
 struct S3<T1: Arbitrary & Equatable, T2: Arbitrary & Equatable, T3: Arbitrary & Equatable>: Arbitrary, Equatable {
@@ -782,14 +776,11 @@ private func prop_struct3_property_set<T1: Arbitrary & Equatable, T2: Arbitrary 
     }
 
     property(String(describing: S3<T1, T2, T3>.self) + ".property_set") <-
-      forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in
-      forAllNoShrink(T1.arbitrary) { (member1: T1) in
-      forAllNoShrink(T2.arbitrary) { (member2: T2) in
-      forAllNoShrink(T3.arbitrary) { (member3: T3) in
+      forAllNoShrink([S3<T1, T2, T3>].arbitrary, T1.arbitrary, T2.arbitrary, T3.arbitrary) { (xs: [S3<T1, T2, T3>], member1: T1, member2: T2, member3: T3) in
         let expected = xs.map { s3_property_set($0, member1, member2, member3) }
         let actual = map(xs) { s3_property_set($0, member1, member2, member3) }
         return try? #require(expected == actual)
-      }}}}
+      }
 }
 
 private func prop_struct3_property_set_inout<T1: Arbitrary & Equatable, T2: Arbitrary & Equatable, T3: Arbitrary & Equatable>(
@@ -810,10 +801,7 @@ private func prop_struct3_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
     }
 
     property(String(describing: S3<T1, T2, T3>.self) + ".property_set_inout") <-
-      forAllNoShrink([S3<T1, T2, T3>].arbitrary) { (xs: [S3<T1, T2, T3>]) in
-      forAllNoShrink(T1.arbitrary) { (member1: T1) in
-      forAllNoShrink(T2.arbitrary) { (member2: T2) in
-      forAllNoShrink(T3.arbitrary) { (member3: T3) in
+      forAllNoShrink([S3<T1, T2, T3>].arbitrary, T1.arbitrary, T2.arbitrary, T3.arbitrary) { (xs: [S3<T1, T2, T3>], member1: T1, member2: T2, member3: T3) in
         let expected = xs.map { s3_property_set($0, member1, member2, member3) }
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
@@ -822,7 +810,7 @@ private func prop_struct3_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
           s3_property_set_inout(&actual[i], member1, member2, member3)
         }.sync()
         return try? #require(expected == actual)
-      }}}}
+      }
 }
 
 // MARK: structs with default initializers

@@ -129,12 +129,11 @@ private func prop_binary<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & Fixe
         (x1.nonzeroBitCount & x2.nonzeroBitCount) >> 1
     }
     property("binary." + String(describing: (T1, T2).self)) <-
-      forAllNoShrink([T1].arbitrary) { (xs: [T1]) in
-      forAllNoShrink([T2].arbitrary) { (ys: [T2]) in
+      forAllNoShrink([T1].arbitrary, [T2].arbitrary) { (xs: [T1], ys: [T2]) in
         let expected = zip(xs, ys).map { x, y in binary(x, y) }
         let actual = zipWith(xs, ys, binary)
         return try? #require(expected == actual)
-      }}
+      }
 }
 
 private func prop_binary<T1: Arbitrary & Similar & BinaryFloatingPoint, T2: Arbitrary & Similar & BinaryFloatingPoint>(_: T1.Type, _: T2.Type) {
@@ -144,12 +143,11 @@ private func prop_binary<T1: Arbitrary & Similar & BinaryFloatingPoint, T2: Arbi
         return d1 + d2 * (d1 * d2)
     }
     property("binary." + String(describing: (T1, T2).self)) <-
-      forAllNoShrink([T1].arbitrary) { (xs: [T1]) in
-      forAllNoShrink([T2].arbitrary) { (ys: [T2]) in
+      forAllNoShrink([T1].arbitrary, [T2].arbitrary) { (xs: [T1], ys: [T2]) in
         let expected = zip(xs, ys).map { x, y in binary(x, y) }
         let actual = zipWith(xs, ys, binary)
         return try? #require(expected ~~~ actual)
-      }}
+      }
 }
 
 // TODO: tests for multi-arity functions with heterogeneous types, i.e.
@@ -159,14 +157,12 @@ private func prop_ternary<T: Arbitrary & Similar & Comparable>(_: T.Type) {
     func ternary(_ x1: T, _ x2: T, _ x3: T) -> T { min(max(x1, x2), x3) }
 
     property("ternary." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
-      forAllNoShrink([T].arbitrary) { (zs: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T], zs: [T]) in
         let size = min(min(xs.count, ys.count), zs.count)
         let expected = (0 ..< size).map { i in ternary(xs[i], ys[i], zs[i]) }
         let actual = generate(count: size) { i in ternary(xs[i], ys[i], zs[i]) }
         return try? #require(expected ~~~ actual)
-      }}}
+      }
 }
 
 private func prop_unary_noinline<T: Arbitrary & Similar & Numeric>(_: T.Type) {
@@ -186,12 +182,11 @@ private func prop_binary_noinline<T1: Arbitrary & FixedWidthInteger, T2: Arbitra
         (x1.nonzeroBitCount & x2.nonzeroBitCount) >> 1
     }
     property("binary." + String(describing: (T1, T2).self)) <-
-      forAllNoShrink([T1].arbitrary) { (xs: [T1]) in
-      forAllNoShrink([T2].arbitrary) { (ys: [T2]) in
+      forAllNoShrink([T1].arbitrary, [T2].arbitrary) { (xs: [T1], ys: [T2]) in
         let expected = zip(xs, ys).map { x, y in binary(x, y) }
         let actual = zipWith(xs, ys, binary)
         return try? #require(expected ~~~ actual)
-      }}
+      }
 }
 
 private func prop_binary_noinline<T1: Arbitrary & Similar & BinaryFloatingPoint, T2: Arbitrary & Similar & BinaryFloatingPoint>(_: T1.Type, _: T2.Type) {
@@ -201,26 +196,23 @@ private func prop_binary_noinline<T1: Arbitrary & Similar & BinaryFloatingPoint,
         return d1 + d2 * (d1 * d2)
     }
     property("binary." + String(describing: (T1, T2).self)) <-
-      forAllNoShrink([T1].arbitrary) { (xs: [T1]) in
-      forAllNoShrink([T2].arbitrary) { (ys: [T2]) in
+      forAllNoShrink([T1].arbitrary, [T2].arbitrary) { (xs: [T1], ys: [T2]) in
         let expected = zip(xs, ys).map { x, y in binary(x, y) }
         let actual = zipWith(xs, ys, binary)
         return try? #require(expected ~~~ actual)
-      }}
+      }
 }
 
 private func prop_ternary_noinline<T: Arbitrary & Similar & Comparable>(_: T.Type) {
     @inline(never)
     func ternary(_ x1: T, _ x2: T, _ x3: T) -> T { min(max(x1, x2), x3) }
     property("ternary_noinline." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink([T].arbitrary) { (ys: [T]) in
-      forAllNoShrink([T].arbitrary) { (zs: [T]) in
+      forAllNoShrink([T].arbitrary, [T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T], zs: [T]) in
         let size = min(min(xs.count, ys.count), zs.count)
         let expected = (0 ..< size).map { i in ternary(xs[i], ys[i], zs[i]) }
         let actual = generate(count: size) { i in ternary(xs[i], ys[i], zs[i]) }
         return try? #require(expected ~~~ actual)
-      }}}
+      }
 }
 
 private func prop_unary_inout<T: Arbitrary & Similar & ExpressibleByIntegerLiteral>(_: T.Type) {
@@ -245,8 +237,7 @@ private func prop_binary_inout<T: Arbitrary & Similar & ExpressibleByIntegerLite
         x = y
     }
     property("binary_inout." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-      forAllNoShrink(T.arbitrary) { (y: T) in
+      forAllNoShrink([T].arbitrary, T.arbitrary) { (xs: [T], y: T) in
         let expected = fill(count: xs.count, with: y)
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
@@ -255,7 +246,7 @@ private func prop_binary_inout<T: Arbitrary & Similar & ExpressibleByIntegerLite
             binary_inout(&actual[i], y)
         }.sync()
         return try? #require(expected ~~~ actual)
-      }}
+      }
 }
 
 // MARK: recursive functions
