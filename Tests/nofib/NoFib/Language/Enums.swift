@@ -9,10 +9,118 @@ import Testing
 
 @Suite("Enums") struct Enums {
     @Suite("EnumsWithoutPayloads") struct EnumsWithoutPayloadsTests {
-        @Test func test_enum_switch1() { prop_enum_switch1() }
-        @Test func test_enum_switch2() { prop_enum_switch2() }
-        @Test func test_enum_switch3() { prop_enum_switch3() }
-        @Test func test_enum_switch4() { prop_enum_switch4() }
+        enum E1: Arbitrary {
+            case opt1
+
+            static var arbitrary: Gen<Self> {
+                Bool.arbitrary.map { _ in Self.opt1 }
+            }
+        }
+
+        @Test func test_enum_switch1() {
+            func enum_switch1(_ value: E1) -> Int32 {
+                switch value {
+                    case .opt1: 0
+                }
+            }
+            property(String(describing: E1.self) + ".enum_switch1") <-
+              forAllNoShrink([E1].arbitrary) { (xs: [E1]) in
+                let expected = xs.map(enum_switch1)
+                let actual = map(xs, enum_switch1)
+                return try? #require(expected == actual)
+              }
+        }
+
+        enum E2: Arbitrary {
+            case opt1
+            case opt2
+
+            static var arbitrary: Gen<Self> {
+                Bool.arbitrary.map { $0 ? Self.opt1 : Self.opt2 }
+            }
+        }
+
+        @Test func test_enum_switch2() {
+            func enum_switch2(_ value: E2) -> Int32 {
+                switch value {
+                    case .opt1: 0
+                    case .opt2: 1
+                }
+            }
+            property(String(describing: E2.self) + ".enum_switch2") <-
+              forAllNoShrink([E2].arbitrary) { (xs: [E2]) in
+                let expected = xs.map(enum_switch2)
+                let actual = map(xs, enum_switch2)
+                return try? #require(expected == actual)
+              }
+        }
+
+        enum E3: Arbitrary, Equatable {
+            case opt1
+            case opt2
+            case opt3
+
+            static var arbitrary: Gen<Self> {
+                UInt8.arbitrary.map {
+                    switch $0 % 3 {
+                        case 0: Self.opt1
+                        case 1: Self.opt2
+                        default: Self.opt3
+                    }
+                }
+            }
+        }
+
+        @Test func test_enum_switch3() {
+            func enum_switch3(_ value: E3) -> Int32 {
+                switch value {
+                    case .opt1: 0
+                    case .opt2: 1
+                    case .opt3: 2
+                }
+            }
+            property(String(describing: E3.self) + ".enum_switch3") <-
+              forAllNoShrink([E3].arbitrary) { (xs: [E3]) in
+                let expected = xs.map(enum_switch3)
+                let actual = map(xs, enum_switch3)
+                return try? #require(expected == actual)
+              }
+        }
+
+        enum E4: Arbitrary {
+            case opt1
+            case opt2
+            case opt3
+            case opt4
+
+            static var arbitrary: Gen<Self> {
+                UInt8.arbitrary.map {
+                    switch $0 % 4 {
+                        case 0: Self.opt1
+                        case 1: Self.opt2
+                        case 2: Self.opt3
+                        default: Self.opt4
+                    }
+                }
+            }
+        }
+
+        @Test func test_enum_switch4() {
+            func enum_switch4(_ value: E4) -> Int32 {
+                switch value {
+                    case .opt1: 0
+                    case .opt2: 1
+                    case .opt3: 2
+                    case .opt4: 3
+                }
+            }
+            property(String(describing: E4.self) + ".enum_switch4") <-
+              forAllNoShrink([E4].arbitrary) { (xs: [E4]) in
+                let expected = xs.map(enum_switch4)
+                let actual = map(xs, enum_switch4)
+                return try? #require(expected == actual)
+              }
+        }
     }
 
     // Enums With Payloads
@@ -102,121 +210,6 @@ import Testing
         @Test("enum_switch_payload4.Int32,UInt32") func test_enum_switch_payload4_i32_9() { prop_enum_switch_payload4(Int8.self, UInt32.self) }
         @Test("enum_switch_payload4.Int32,UInt64") func test_enum_switch_payload4_i32_10() { prop_enum_switch_payload4(Int8.self, UInt64.self) }
     }
-}
-
-// MARK: enums without payloads
-
-enum E1: Arbitrary {
-    case opt1
-
-    static var arbitrary: Gen<Self> {
-        Bool.arbitrary.map { _ in Self.opt1 }
-    }
-}
-
-private func prop_enum_switch1() {
-    func enum_switch1(_ value: E1) -> Int32 {
-        switch value {
-            case .opt1: 0
-        }
-    }
-    property(String(describing: E1.self) + ".enum_switch1") <-
-      forAllNoShrink([E1].arbitrary) { (xs: [E1]) in
-        let expected = xs.map(enum_switch1)
-        let actual = map(xs, enum_switch1)
-        return try? #require(expected == actual)
-      }
-}
-
-enum E2: Arbitrary {
-    case opt1
-    case opt2
-
-    static var arbitrary: Gen<Self> {
-        Bool.arbitrary.map { $0 ? Self.opt1 : Self.opt2 }
-    }
-}
-
-private func prop_enum_switch2() {
-    func enum_switch2(_ value: E2) -> Int32 {
-        switch value {
-            case .opt1: 0
-            case .opt2: 1
-        }
-    }
-    property(String(describing: E2.self) + ".enum_switch2") <-
-      forAllNoShrink([E2].arbitrary) { (xs: [E2]) in
-        let expected = xs.map(enum_switch2)
-        let actual = map(xs, enum_switch2)
-        return try? #require(expected == actual)
-      }
-}
-
-enum E3: Arbitrary, Equatable {
-    case opt1
-    case opt2
-    case opt3
-
-    static var arbitrary: Gen<Self> {
-        UInt8.arbitrary.map {
-            switch $0 % 3 {
-                case 0: Self.opt1
-                case 1: Self.opt2
-                default: Self.opt3
-            }
-        }
-    }
-}
-
-private func prop_enum_switch3() {
-    func enum_switch3(_ value: E3) -> Int32 {
-        switch value {
-            case .opt1: 0
-            case .opt2: 1
-            case .opt3: 2
-        }
-    }
-    property(String(describing: E3.self) + ".enum_switch3") <-
-      forAllNoShrink([E3].arbitrary) { (xs: [E3]) in
-        let expected = xs.map(enum_switch3)
-        let actual = map(xs, enum_switch3)
-        return try? #require(expected == actual)
-      }
-}
-
-enum E4: Arbitrary {
-    case opt1
-    case opt2
-    case opt3
-    case opt4
-
-    static var arbitrary: Gen<Self> {
-        UInt8.arbitrary.map {
-            switch $0 % 4 {
-                case 0: Self.opt1
-                case 1: Self.opt2
-                case 2: Self.opt3
-                default: Self.opt4
-            }
-        }
-    }
-}
-
-private func prop_enum_switch4() {
-    func enum_switch4(_ value: E4) -> Int32 {
-        switch value {
-            case .opt1: 0
-            case .opt2: 1
-            case .opt3: 2
-            case .opt4: 3
-        }
-    }
-    property(String(describing: E4.self) + ".enum_switch4") <-
-      forAllNoShrink([E4].arbitrary) { (xs: [E4]) in
-        let expected = xs.map(enum_switch4)
-        let actual = map(xs, enum_switch4)
-        return try? #require(expected == actual)
-      }
 }
 
 // MARK: enums with primitive payloads

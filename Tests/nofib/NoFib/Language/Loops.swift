@@ -97,7 +97,30 @@ import Testing
         @Test("nested_while_loops_break_outer.UInt64") func test_nested_while_loops_break_outer_6() { prop_nested_while_loops_break_outer(UInt64.self) }
 
         // non-range based loops, i.e. ones that defy transliteration to range-based for loops for
-        @Test("while_loop_collatz") func test_while_loop_collatz() { prop_while_loop_collatz() }
+        @Test("while_loop_collatz") func test_while_loop_collatz() {
+            func while_loop_collatz(_ n: Int) -> Int {
+                var iterations = 0
+                var n = n
+                while n != 1 {
+                    iterations += 1
+                    if n % 2 == 0 {
+                        n >>= 1
+                    }
+                    else {
+                        n = 3 * n + 1
+                    }
+                }
+                return iterations
+            }
+            // Collatz conjecture's iterations complete successfully without intermediate overflows in this range
+            let gen = Int.arbitrary.suchThat { $0 > 0 && $0 < 100000 }
+            property("while_loop_collatz") <-
+              forAllNoShrink(gen.proliferate) { (xs: [Int]) in
+                let expected = xs.map(while_loop_collatz)
+                let actual = map(xs, while_loop_collatz)
+                return try? #require(expected == actual)
+              }
+        }
     }
 }
 
@@ -402,29 +425,4 @@ private func prop_nested_while_loops_break_outer<T: Arbitrary & FixedWidthIntege
         let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_outer(x, y) }
         return try? #require(expected == actual)
       }}
-}
-
-private func prop_while_loop_collatz() {
-    func while_loop_collatz(_ n: Int) -> Int {
-        var iterations = 0
-        var n = n
-        while n != 1 {
-            iterations += 1
-            if n % 2 == 0 {
-                n >>= 1
-            }
-            else {
-                n = 3 * n + 1
-            }
-        }
-        return iterations
-    }
-    // Collatz conjecture's iterations complete successfully without intermediate overflows in this range
-    let gen = Int.arbitrary.suchThat { $0 > 0 && $0 < 100000 }
-    property("while_loop_collatz") <-
-      forAllNoShrink(gen.proliferate) { (xs: [Int]) in
-        let expected = xs.map(while_loop_collatz)
-        let actual = map(xs, while_loop_collatz)
-        return try? #require(expected == actual)
-      }
 }
