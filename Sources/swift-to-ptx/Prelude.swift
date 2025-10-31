@@ -35,6 +35,7 @@ import Atomics
 @inline(__always)
 @_alwaysEmitIntoClient
 public func generate<A, Err: Error>(count: Int, stream s: Stream = streamPerThread, _ f: (Int) throws(Err) -> A) throws(Err) -> Array<A> {
+    // SEE: [Array initialiser with typed throws]
     var xs = Array<A>(unsafeUninitializedCapacity: count)
     try generate(into: &xs, stream: s, f)
     return xs
@@ -100,6 +101,7 @@ public func imap<A, B, Err: Error>(
     stream s: Stream = streamPerThread,
     _ f: (Int, A) throws(Err) -> B
 ) throws(Err) -> Array<B> {
+    // SEE: [Array initialiser with typed throws]
     var ys = Array<B>(unsafeUninitializedCapacity: xs.count)
     try imap(xs, into: &ys, stream: s, f)
     return ys
@@ -165,6 +167,7 @@ public func izipWith<A, B, C, Err: Error>(
     _ f: (Int, A, B) throws(Err) -> C
 ) throws(Err) -> Array<C> {
     let n  = min(xs.count, ys.count)
+    // SEE: [Array initialiser with typed throws]
     var zs = Array<C>(unsafeUninitializedCapacity: n)
     try izipWith(xs, ys, into: &zs, stream: s, f)
     return zs
@@ -293,6 +296,7 @@ public func permute<A, Err: Error>(from: Array<A>, into: inout Array<A>, _ p: (I
 @inline(__always)
 @_alwaysEmitIntoClient
 public func backpermute<A, Err: Error>(from: Array<A>, count: Int, _ p: (Int) throws(Err) -> Int) throws(Err) -> Array<A> {
+    // SEE: [Array initialiser with typed throws]
     var into = Array<A>(unsafeUninitializedCapacity: count)
     try backpermute(from: from, into: &into, p)
     return into
@@ -315,6 +319,7 @@ public func backpermute<A, Err: Error>(from: Array<A>, into: inout Array<A>, _ p
 @inline(__always)
 @_alwaysEmitIntoClient
 public func backpermute<A, Err: Error>(from: Array<A>, count: Int, _ p: (Int) throws(Err) -> Either<Int, A>) throws(Err) -> Array<A> {
+    // SEE: [Array initialiser with typed throws]
     var into = Array<A>(unsafeUninitializedCapacity: count)
     try backpermute(from: from, into: &into, p)
     return into
