@@ -360,7 +360,6 @@ public func backpermute<A, Err: Error>(from: Array<A>, into: inout Array<A>, _ p
 // Running the corresponding llvm optimisation plugin on code that calls this
 // function will result in the 'body' closure being translated into a CUDA
 // kernel such that all `iterations` are executed at once in data-parallel.
-@discardableResult
 //
 // TODO: We have a bunch of force-try in other parts of the code because we need
 // to work out how to return multiple static types from the parallel_for (and
@@ -379,24 +378,12 @@ public func parallel_for<E: Error>
     stream: Stream = streamPerThread,
     _ body: (Int) throws(E) -> Void
 ) throws(E) -> Event {
-    // Initialise and use the logger directly inline in order to avoid needing
-    // to mark it as usableFromInline, as that causes conflicts with the loggers
-    // defined in other modules (and which are actually used).
-    let logger = Logger(label: "")
-    logger.warning("""
-    *** WARNING *** parallel_for loop executing on the host!
-    Compile in release mode to enable PTX translation. Failing that, please submit a bug to: https://gitlab.com/PassiveLogic/compiler/swift-to-ptx/-/issues
+    // swiftlint:disable:next no_fatalerror
+    fatalError("""
+    Swift-to-PTX translation failed.
+    Compile in release mode to enable PTX translation. Failing that, please submit a bug to:
+    https://gitlab.com/PassiveLogic/compiler/swift-to-ptx/-/issues
     """)
-
-    dontLetTheCompilerOptimizeThisAway(context)
-    dontLetTheCompilerOptimizeThisAway(allocator)
-    dontLetTheCompilerOptimizeThisAway(stream)
-
-    for i in 0 ..< iterations {
-        try body(i)
-    }
-
-    return Event()
 }
 
 // This will be replaced by an nvvm intrinsic
