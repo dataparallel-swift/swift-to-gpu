@@ -8,7 +8,7 @@ import Testing
 // swiftformat:disable blankLinesBetweenScopes trailingCommas wrap wrapArguments
 
 @Suite("Enums") struct Enums {
-    @Suite("EnumsWithoutPayloads") struct EnumsWithoutPayloadsTests {
+    @Suite("EnumsWithoutAssociatedValues") struct EnumsWithoutAssociatedValuesTests {
         enum E1: Arbitrary {
             case opt1
 
@@ -123,92 +123,92 @@ import Testing
         }
     }
 
-    // Enums With Payloads
-    // The types of the payloads are parameterized. The size and alignment of the enum will depend
-    // on the sizes and alignment requirements of the payload types and how they are organized therein.
-    // The purpose of the "EnumsWithPayloads" suite is to explore whether the GPU codegen is able to handle
+    // Enums With Associated Values
+    // The types of the associated values are parameterized. The size and alignment of the enum will depend
+    // on the sizes and alignment requirements of the types of associated values and how they are organized therein.
+    // The purpose of the "EnumsWithAssociatedValues" suite is to explore whether the GPU codegen is able to handle
     // varying layouts requirements.
 
-    @Suite("EnumsWithPayloads") struct EnumsWithPayloadsTests {
-        @Test("enum_switch_payload1.Int") func test_enum_switch_payload1_1() { prop_enum_switch_payload1(Int.self) }
-        @Test("enum_switch_payload1.Int8") func test_enum_switch_payload1_2() { prop_enum_switch_payload1(Int8.self) }
-        @Test("enum_switch_payload1.Int16") func test_enum_switch_payload1_3() { prop_enum_switch_payload1(Int16.self) }
-        @Test("enum_switch_payload1.Int32") func test_enum_switch_payload1_4() { prop_enum_switch_payload1(Int32.self) }
-        @Test("enum_switch_payload1.Int64") func test_enum_switch_payload1_5() { prop_enum_switch_payload1(Int64.self) }
-        @Test("enum_switch_payload1.UInt") func test_enum_switch_payload1_6() { prop_enum_switch_payload1(UInt.self) }
-        @Test("enum_switch_payload1.UInt8") func test_enum_switch_payload1_7() { prop_enum_switch_payload1(UInt8.self) }
-        @Test("enum_switch_payload1.UInt16") func test_enum_switch_payload1_8() { prop_enum_switch_payload1(UInt16.self) }
-        @Test("enum_switch_payload1.UInt32") func test_enum_switch_payload1_9() { prop_enum_switch_payload1(UInt32.self) }
-        @Test("enum_switch_payload1.UInt64") func test_enum_switch_payload1_10() { prop_enum_switch_payload1(UInt64.self) }
+    @Suite("EnumsWithAssociatedValues") struct EnumsWithAssociatedValuesTests {
+        @Test("enum_switch_associated_value1.Int") func test_enum_switch_associated_value1_1() { prop_enum_switch_associated_value1(Int.self) }
+        @Test("enum_switch_associated_value1.Int8") func test_enum_switch_associated_value1_2() { prop_enum_switch_associated_value1(Int8.self) }
+        @Test("enum_switch_associated_value1.Int16") func test_enum_switch_associated_value1_3() { prop_enum_switch_associated_value1(Int16.self) }
+        @Test("enum_switch_associated_value1.Int32") func test_enum_switch_associated_value1_4() { prop_enum_switch_associated_value1(Int32.self) }
+        @Test("enum_switch_associated_value1.Int64") func test_enum_switch_associated_value1_5() { prop_enum_switch_associated_value1(Int64.self) }
+        @Test("enum_switch_associated_value1.UInt") func test_enum_switch_associated_value1_6() { prop_enum_switch_associated_value1(UInt.self) }
+        @Test("enum_switch_associated_value1.UInt8") func test_enum_switch_associated_value1_7() { prop_enum_switch_associated_value1(UInt8.self) }
+        @Test("enum_switch_associated_value1.UInt16") func test_enum_switch_associated_value1_8() { prop_enum_switch_associated_value1(UInt16.self) }
+        @Test("enum_switch_associated_value1.UInt32") func test_enum_switch_associated_value1_9() { prop_enum_switch_associated_value1(UInt32.self) }
+        @Test("enum_switch_associated_value1.UInt64") func test_enum_switch_associated_value1_10() { prop_enum_switch_associated_value1(UInt64.self) }
 
         // T1 = Int8
-        @Test("enum_switch_payload2.Int8,Int") func test_enum_switch_payload2_i8_1() { prop_enum_switch_payload2(Int8.self, Int.self) }
-        @Test("enum_switch_payload2.Int8,Int8") func test_enum_switch_payload2_i8_2() { prop_enum_switch_payload2(Int8.self, Int8.self) }
-        @Test("enum_switch_payload2.Int8,Int16") func test_enum_switch_payload2_i8_3() { prop_enum_switch_payload2(Int8.self, Int16.self) }
-        @Test("enum_switch_payload2.Int8,Int32") func test_enum_switch_payload2_i8_4() { prop_enum_switch_payload2(Int8.self, Int32.self) }
-        @Test("enum_switch_payload2.Int8,Int64") func test_enum_switch_payload2_i8_5() { prop_enum_switch_payload2(Int8.self, Int64.self) }
-        @Test("enum_switch_payload2.Int8,UInt") func test_enum_switch_payload2_i8_6() { prop_enum_switch_payload2(Int8.self, UInt.self) }
-        @Test("enum_switch_payload2.Int8,UInt8") func test_enum_switch_payload2_i8_7() { prop_enum_switch_payload2(Int8.self, UInt8.self) }
-        @Test("enum_switch_payload2.Int8,UInt16") func test_enum_switch_payload2_i8_8() { prop_enum_switch_payload2(Int8.self, UInt16.self) }
-        @Test("enum_switch_payload2.Int8,UInt32") func test_enum_switch_payload2_i8_9() { prop_enum_switch_payload2(Int8.self, UInt32.self) }
-        @Test("enum_switch_payload2.Int8,UInt64") func test_enum_switch_payload2_i8_10() { prop_enum_switch_payload2(Int8.self, UInt64.self) }
+        @Test("enum_switch_associated_value2.Int8,Int") func test_enum_switch_associated_value2_i8_1() { prop_enum_switch_associated_value2(Int8.self, Int.self) }
+        @Test("enum_switch_associated_value2.Int8,Int8") func test_enum_switch_associated_value2_i8_2() { prop_enum_switch_associated_value2(Int8.self, Int8.self) }
+        @Test("enum_switch_associated_value2.Int8,Int16") func test_enum_switch_associated_value2_i8_3() { prop_enum_switch_associated_value2(Int8.self, Int16.self) }
+        @Test("enum_switch_associated_value2.Int8,Int32") func test_enum_switch_associated_value2_i8_4() { prop_enum_switch_associated_value2(Int8.self, Int32.self) }
+        @Test("enum_switch_associated_value2.Int8,Int64") func test_enum_switch_associated_value2_i8_5() { prop_enum_switch_associated_value2(Int8.self, Int64.self) }
+        @Test("enum_switch_associated_value2.Int8,UInt") func test_enum_switch_associated_value2_i8_6() { prop_enum_switch_associated_value2(Int8.self, UInt.self) }
+        @Test("enum_switch_associated_value2.Int8,UInt8") func test_enum_switch_associated_value2_i8_7() { prop_enum_switch_associated_value2(Int8.self, UInt8.self) }
+        @Test("enum_switch_associated_value2.Int8,UInt16") func test_enum_switch_associated_value2_i8_8() { prop_enum_switch_associated_value2(Int8.self, UInt16.self) }
+        @Test("enum_switch_associated_value2.Int8,UInt32") func test_enum_switch_associated_value2_i8_9() { prop_enum_switch_associated_value2(Int8.self, UInt32.self) }
+        @Test("enum_switch_associated_value2.Int8,UInt64") func test_enum_switch_associated_value2_i8_10() { prop_enum_switch_associated_value2(Int8.self, UInt64.self) }
         // T1 = Int32
-        @Test("enum_switch_payload2.Int32,Int") func test_enum_switch_payload2_i32_1() { prop_enum_switch_payload2(Int8.self, Int.self) }
-        @Test("enum_switch_payload2.Int32,Int8") func test_enum_switch_payload2_i32_2() { prop_enum_switch_payload2(Int8.self, Int8.self) }
-        @Test("enum_switch_payload2.Int32,Int16") func test_enum_switch_payload2_i32_3() { prop_enum_switch_payload2(Int8.self, Int16.self) }
-        @Test("enum_switch_payload2.Int32,Int32") func test_enum_switch_payload2_i32_4() { prop_enum_switch_payload2(Int8.self, Int32.self) }
-        @Test("enum_switch_payload2.Int32,Int64") func test_enum_switch_payload2_i32_5() { prop_enum_switch_payload2(Int8.self, Int64.self) }
-        @Test("enum_switch_payload2.Int32,UInt") func test_enum_switch_payload2_i32_6() { prop_enum_switch_payload2(Int8.self, UInt.self) }
-        @Test("enum_switch_payload2.Int32,UInt8") func test_enum_switch_payload2_i32_7() { prop_enum_switch_payload2(Int8.self, UInt8.self) }
-        @Test("enum_switch_payload2.Int32,UInt16") func test_enum_switch_payload2_i32_8() { prop_enum_switch_payload2(Int8.self, UInt16.self) }
-        @Test("enum_switch_payload2.Int32,UInt32") func test_enum_switch_payload2_i32_9() { prop_enum_switch_payload2(Int8.self, UInt32.self) }
-        @Test("enum_switch_payload2.Int32,UInt64") func test_enum_switch_payload2_i32_10() { prop_enum_switch_payload2(Int8.self, UInt64.self) }
+        @Test("enum_switch_associated_value2.Int32,Int") func test_enum_switch_associated_value2_i32_1() { prop_enum_switch_associated_value2(Int8.self, Int.self) }
+        @Test("enum_switch_associated_value2.Int32,Int8") func test_enum_switch_associated_value2_i32_2() { prop_enum_switch_associated_value2(Int8.self, Int8.self) }
+        @Test("enum_switch_associated_value2.Int32,Int16") func test_enum_switch_associated_value2_i32_3() { prop_enum_switch_associated_value2(Int8.self, Int16.self) }
+        @Test("enum_switch_associated_value2.Int32,Int32") func test_enum_switch_associated_value2_i32_4() { prop_enum_switch_associated_value2(Int8.self, Int32.self) }
+        @Test("enum_switch_associated_value2.Int32,Int64") func test_enum_switch_associated_value2_i32_5() { prop_enum_switch_associated_value2(Int8.self, Int64.self) }
+        @Test("enum_switch_associated_value2.Int32,UInt") func test_enum_switch_associated_value2_i32_6() { prop_enum_switch_associated_value2(Int8.self, UInt.self) }
+        @Test("enum_switch_associated_value2.Int32,UInt8") func test_enum_switch_associated_value2_i32_7() { prop_enum_switch_associated_value2(Int8.self, UInt8.self) }
+        @Test("enum_switch_associated_value2.Int32,UInt16") func test_enum_switch_associated_value2_i32_8() { prop_enum_switch_associated_value2(Int8.self, UInt16.self) }
+        @Test("enum_switch_associated_value2.Int32,UInt32") func test_enum_switch_associated_value2_i32_9() { prop_enum_switch_associated_value2(Int8.self, UInt32.self) }
+        @Test("enum_switch_associated_value2.Int32,UInt64") func test_enum_switch_associated_value2_i32_10() { prop_enum_switch_associated_value2(Int8.self, UInt64.self) }
 
         // T1 = Int8
-        @Test("enum_switch_payload3.Int8,Int") func test_enum_switch_payload3_i8_1() { prop_enum_switch_payload3(Int8.self, Int.self) }
-        @Test("enum_switch_payload3.Int8,Int8") func test_enum_switch_payload3_i8_2() { prop_enum_switch_payload3(Int8.self, Int8.self) }
-        @Test("enum_switch_payload3.Int8,Int16") func test_enum_switch_payload3_i8_3() { prop_enum_switch_payload3(Int8.self, Int16.self) }
-        @Test("enum_switch_payload3.Int8,Int32") func test_enum_switch_payload3_i8_4() { prop_enum_switch_payload3(Int8.self, Int32.self) }
-        @Test("enum_switch_payload3.Int8,Int64") func test_enum_switch_payload3_i8_5() { prop_enum_switch_payload3(Int8.self, Int64.self) }
-        @Test("enum_switch_payload3.Int8,UInt") func test_enum_switch_payload3_i8_6() { prop_enum_switch_payload3(Int8.self, UInt.self) }
-        @Test("enum_switch_payload3.Int8,UInt8") func test_enum_switch_payload3_i8_7() { prop_enum_switch_payload3(Int8.self, UInt8.self) }
-        @Test("enum_switch_payload3.Int8,UInt16") func test_enum_switch_payload3_i8_8() { prop_enum_switch_payload3(Int8.self, UInt16.self) }
-        @Test("enum_switch_payload3.Int8,UInt32") func test_enum_switch_payload3_i8_9() { prop_enum_switch_payload3(Int8.self, UInt32.self) }
-        @Test("enum_switch_payload3.Int8,UInt64") func test_enum_switch_payload3_i8_10() { prop_enum_switch_payload3(Int8.self, UInt64.self) }
+        @Test("enum_switch_associated_value3.Int8,Int") func test_enum_switch_associated_value3_i8_1() { prop_enum_switch_associated_value3(Int8.self, Int.self) }
+        @Test("enum_switch_associated_value3.Int8,Int8") func test_enum_switch_associated_value3_i8_2() { prop_enum_switch_associated_value3(Int8.self, Int8.self) }
+        @Test("enum_switch_associated_value3.Int8,Int16") func test_enum_switch_associated_value3_i8_3() { prop_enum_switch_associated_value3(Int8.self, Int16.self) }
+        @Test("enum_switch_associated_value3.Int8,Int32") func test_enum_switch_associated_value3_i8_4() { prop_enum_switch_associated_value3(Int8.self, Int32.self) }
+        @Test("enum_switch_associated_value3.Int8,Int64") func test_enum_switch_associated_value3_i8_5() { prop_enum_switch_associated_value3(Int8.self, Int64.self) }
+        @Test("enum_switch_associated_value3.Int8,UInt") func test_enum_switch_associated_value3_i8_6() { prop_enum_switch_associated_value3(Int8.self, UInt.self) }
+        @Test("enum_switch_associated_value3.Int8,UInt8") func test_enum_switch_associated_value3_i8_7() { prop_enum_switch_associated_value3(Int8.self, UInt8.self) }
+        @Test("enum_switch_associated_value3.Int8,UInt16") func test_enum_switch_associated_value3_i8_8() { prop_enum_switch_associated_value3(Int8.self, UInt16.self) }
+        @Test("enum_switch_associated_value3.Int8,UInt32") func test_enum_switch_associated_value3_i8_9() { prop_enum_switch_associated_value3(Int8.self, UInt32.self) }
+        @Test("enum_switch_associated_value3.Int8,UInt64") func test_enum_switch_associated_value3_i8_10() { prop_enum_switch_associated_value3(Int8.self, UInt64.self) }
         // T1 = Int32
-        @Test("enum_switch_payload3.Int32,Int") func test_enum_switch_payload3_i32_1() { prop_enum_switch_payload3(Int8.self, Int.self) }
-        @Test("enum_switch_payload3.Int32,Int8") func test_enum_switch_payload3_i32_2() { prop_enum_switch_payload3(Int8.self, Int8.self) }
-        @Test("enum_switch_payload3.Int32,Int16") func test_enum_switch_payload3_i32_3() { prop_enum_switch_payload3(Int8.self, Int16.self) }
-        @Test("enum_switch_payload3.Int32,Int32") func test_enum_switch_payload3_i32_4() { prop_enum_switch_payload3(Int8.self, Int32.self) }
-        @Test("enum_switch_payload3.Int32,Int64") func test_enum_switch_payload3_i32_5() { prop_enum_switch_payload3(Int8.self, Int64.self) }
-        @Test("enum_switch_payload3.Int32,UInt") func test_enum_switch_payload3_i32_6() { prop_enum_switch_payload3(Int8.self, UInt.self) }
-        @Test("enum_switch_payload3.Int32,UInt8") func test_enum_switch_payload3_i32_7() { prop_enum_switch_payload3(Int8.self, UInt8.self) }
-        @Test("enum_switch_payload3.Int32,UInt16") func test_enum_switch_payload3_i32_8() { prop_enum_switch_payload3(Int8.self, UInt16.self) }
-        @Test("enum_switch_payload3.Int32,UInt32") func test_enum_switch_payload3_i32_9() { prop_enum_switch_payload3(Int8.self, UInt32.self) }
-        @Test("enum_switch_payload3.Int32,UInt64") func test_enum_switch_payload3_i32_10() { prop_enum_switch_payload3(Int8.self, UInt64.self) }
+        @Test("enum_switch_associated_value3.Int32,Int") func test_enum_switch_associated_value3_i32_1() { prop_enum_switch_associated_value3(Int8.self, Int.self) }
+        @Test("enum_switch_associated_value3.Int32,Int8") func test_enum_switch_associated_value3_i32_2() { prop_enum_switch_associated_value3(Int8.self, Int8.self) }
+        @Test("enum_switch_associated_value3.Int32,Int16") func test_enum_switch_associated_value3_i32_3() { prop_enum_switch_associated_value3(Int8.self, Int16.self) }
+        @Test("enum_switch_associated_value3.Int32,Int32") func test_enum_switch_associated_value3_i32_4() { prop_enum_switch_associated_value3(Int8.self, Int32.self) }
+        @Test("enum_switch_associated_value3.Int32,Int64") func test_enum_switch_associated_value3_i32_5() { prop_enum_switch_associated_value3(Int8.self, Int64.self) }
+        @Test("enum_switch_associated_value3.Int32,UInt") func test_enum_switch_associated_value3_i32_6() { prop_enum_switch_associated_value3(Int8.self, UInt.self) }
+        @Test("enum_switch_associated_value3.Int32,UInt8") func test_enum_switch_associated_value3_i32_7() { prop_enum_switch_associated_value3(Int8.self, UInt8.self) }
+        @Test("enum_switch_associated_value3.Int32,UInt16") func test_enum_switch_associated_value3_i32_8() { prop_enum_switch_associated_value3(Int8.self, UInt16.self) }
+        @Test("enum_switch_associated_value3.Int32,UInt32") func test_enum_switch_associated_value3_i32_9() { prop_enum_switch_associated_value3(Int8.self, UInt32.self) }
+        @Test("enum_switch_associated_value3.Int32,UInt64") func test_enum_switch_associated_value3_i32_10() { prop_enum_switch_associated_value3(Int8.self, UInt64.self) }
 
         // T1 = Int8
-        @Test("enum_switch_payload4.Int8,Int") func test_enum_switch_payload4_i8_1() { prop_enum_switch_payload4(Int8.self, Int.self) }
-        @Test("enum_switch_payload4.Int8,Int8") func test_enum_switch_payload4_i8_2() { prop_enum_switch_payload4(Int8.self, Int8.self) }
-        @Test("enum_switch_payload4.Int8,Int16") func test_enum_switch_payload4_i8_3() { prop_enum_switch_payload4(Int8.self, Int16.self) }
-        @Test("enum_switch_payload4.Int8,Int32") func test_enum_switch_payload4_i8_4() { prop_enum_switch_payload4(Int8.self, Int32.self) }
-        @Test("enum_switch_payload4.Int8,Int64") func test_enum_switch_payload4_i8_5() { prop_enum_switch_payload4(Int8.self, Int64.self) }
-        @Test("enum_switch_payload4.Int8,UInt") func test_enum_switch_payload4_i8_6() { prop_enum_switch_payload4(Int8.self, UInt.self) }
-        @Test("enum_switch_payload4.Int8,UInt8") func test_enum_switch_payload4_i8_7() { prop_enum_switch_payload4(Int8.self, UInt8.self) }
-        @Test("enum_switch_payload4.Int8,UInt16") func test_enum_switch_payload4_i8_8() { prop_enum_switch_payload4(Int8.self, UInt16.self) }
-        @Test("enum_switch_payload4.Int8,UInt32") func test_enum_switch_payload4_i8_9() { prop_enum_switch_payload4(Int8.self, UInt32.self) }
-        @Test("enum_switch_payload4.Int8,UInt64") func test_enum_switch_payload4_i8_10() { prop_enum_switch_payload4(Int8.self, UInt64.self) }
+        @Test("enum_switch_associated_value4.Int8,Int") func test_enum_switch_associated_value4_i8_1() { prop_enum_switch_associated_value4(Int8.self, Int.self) }
+        @Test("enum_switch_associated_value4.Int8,Int8") func test_enum_switch_associated_value4_i8_2() { prop_enum_switch_associated_value4(Int8.self, Int8.self) }
+        @Test("enum_switch_associated_value4.Int8,Int16") func test_enum_switch_associated_value4_i8_3() { prop_enum_switch_associated_value4(Int8.self, Int16.self) }
+        @Test("enum_switch_associated_value4.Int8,Int32") func test_enum_switch_associated_value4_i8_4() { prop_enum_switch_associated_value4(Int8.self, Int32.self) }
+        @Test("enum_switch_associated_value4.Int8,Int64") func test_enum_switch_associated_value4_i8_5() { prop_enum_switch_associated_value4(Int8.self, Int64.self) }
+        @Test("enum_switch_associated_value4.Int8,UInt") func test_enum_switch_associated_value4_i8_6() { prop_enum_switch_associated_value4(Int8.self, UInt.self) }
+        @Test("enum_switch_associated_value4.Int8,UInt8") func test_enum_switch_associated_value4_i8_7() { prop_enum_switch_associated_value4(Int8.self, UInt8.self) }
+        @Test("enum_switch_associated_value4.Int8,UInt16") func test_enum_switch_associated_value4_i8_8() { prop_enum_switch_associated_value4(Int8.self, UInt16.self) }
+        @Test("enum_switch_associated_value4.Int8,UInt32") func test_enum_switch_associated_value4_i8_9() { prop_enum_switch_associated_value4(Int8.self, UInt32.self) }
+        @Test("enum_switch_associated_value4.Int8,UInt64") func test_enum_switch_associated_value4_i8_10() { prop_enum_switch_associated_value4(Int8.self, UInt64.self) }
         // T1 = Int32
-        @Test("enum_switch_payload4.Int32,Int") func test_enum_switch_payload4_i32_1() { prop_enum_switch_payload4(Int8.self, Int.self) }
-        @Test("enum_switch_payload4.Int32,Int8") func test_enum_switch_payload4_i32_2() { prop_enum_switch_payload4(Int8.self, Int8.self) }
-        @Test("enum_switch_payload4.Int32,Int16") func test_enum_switch_payload4_i32_3() { prop_enum_switch_payload4(Int8.self, Int16.self) }
-        @Test("enum_switch_payload4.Int32,Int32") func test_enum_switch_payload4_i32_4() { prop_enum_switch_payload4(Int8.self, Int32.self) }
-        @Test("enum_switch_payload4.Int32,Int64") func test_enum_switch_payload4_i32_5() { prop_enum_switch_payload4(Int8.self, Int64.self) }
-        @Test("enum_switch_payload4.Int32,UInt") func test_enum_switch_payload4_i32_6() { prop_enum_switch_payload4(Int8.self, UInt.self) }
-        @Test("enum_switch_payload4.Int32,UInt8") func test_enum_switch_payload4_i32_7() { prop_enum_switch_payload4(Int8.self, UInt8.self) }
-        @Test("enum_switch_payload4.Int32,UInt16") func test_enum_switch_payload4_i32_8() { prop_enum_switch_payload4(Int8.self, UInt16.self) }
-        @Test("enum_switch_payload4.Int32,UInt32") func test_enum_switch_payload4_i32_9() { prop_enum_switch_payload4(Int8.self, UInt32.self) }
-        @Test("enum_switch_payload4.Int32,UInt64") func test_enum_switch_payload4_i32_10() { prop_enum_switch_payload4(Int8.self, UInt64.self) }
+        @Test("enum_switch_associated_value4.Int32,Int") func test_enum_switch_associated_value4_i32_1() { prop_enum_switch_associated_value4(Int8.self, Int.self) }
+        @Test("enum_switch_associated_value4.Int32,Int8") func test_enum_switch_associated_value4_i32_2() { prop_enum_switch_associated_value4(Int8.self, Int8.self) }
+        @Test("enum_switch_associated_value4.Int32,Int16") func test_enum_switch_associated_value4_i32_3() { prop_enum_switch_associated_value4(Int8.self, Int16.self) }
+        @Test("enum_switch_associated_value4.Int32,Int32") func test_enum_switch_associated_value4_i32_4() { prop_enum_switch_associated_value4(Int8.self, Int32.self) }
+        @Test("enum_switch_associated_value4.Int32,Int64") func test_enum_switch_associated_value4_i32_5() { prop_enum_switch_associated_value4(Int8.self, Int64.self) }
+        @Test("enum_switch_associated_value4.Int32,UInt") func test_enum_switch_associated_value4_i32_6() { prop_enum_switch_associated_value4(Int8.self, UInt.self) }
+        @Test("enum_switch_associated_value4.Int32,UInt8") func test_enum_switch_associated_value4_i32_7() { prop_enum_switch_associated_value4(Int8.self, UInt8.self) }
+        @Test("enum_switch_associated_value4.Int32,UInt16") func test_enum_switch_associated_value4_i32_8() { prop_enum_switch_associated_value4(Int8.self, UInt16.self) }
+        @Test("enum_switch_associated_value4.Int32,UInt32") func test_enum_switch_associated_value4_i32_9() { prop_enum_switch_associated_value4(Int8.self, UInt32.self) }
+        @Test("enum_switch_associated_value4.Int32,UInt64") func test_enum_switch_associated_value4_i32_10() { prop_enum_switch_associated_value4(Int8.self, UInt64.self) }
     }
 }
 
@@ -222,16 +222,16 @@ enum E1P<T: Arbitrary>: Arbitrary {
     }
 }
 
-private func prop_enum_switch_payload1<T: Arbitrary & Equatable>(_: T.Type) {
-    func enum_switch_payload1(_ value: E1P<T>) -> T {
+private func prop_enum_switch_associated_value1<T: Arbitrary & Equatable>(_: T.Type) {
+    func enum_switch_associated_value1(_ value: E1P<T>) -> T {
         switch value {
             case let .opt1(payload): payload
         }
     }
-    property(String(describing: E1P<T>.self) + ".enum_switch_payload1") <-
+    property(String(describing: E1P<T>.self) + ".enum_switch_associated_value1") <-
       forAllNoShrink([E1P<T>].arbitrary) { (xs: [E1P<T>]) in
-        let expected = xs.map(enum_switch_payload1)
-        let actual = map(xs, enum_switch_payload1)
+        let expected = xs.map(enum_switch_associated_value1)
+        let actual = map(xs, enum_switch_associated_value1)
         return try? #require(expected == actual)
       }
 }
@@ -249,17 +249,17 @@ enum E2P<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>: 
 }
 
 // swiftformat:disable:next wrapArguments
-private func prop_enum_switch_payload2<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
-    func enum_switch_payload2(_ value: E2P<T1, T2>) -> Float64 {
+private func prop_enum_switch_associated_value2<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
+    func enum_switch_associated_value2(_ value: E2P<T1, T2>) -> Float64 {
         switch value {
             case let .opt1(payload): Float64(payload)
             case let .opt2(payload): Float64(payload)
         }
     }
-    property(String(describing: E2P<T1, T2>.self) + ".enum_switch_payload2") <-
+    property(String(describing: E2P<T1, T2>.self) + ".enum_switch_associated_value2") <-
       forAllNoShrink([E2P<T1, T2>].arbitrary) { (xs: [E2P<T1, T2>]) in
-        let expected = xs.map(enum_switch_payload2)
-        let actual = map(xs, enum_switch_payload2)
+        let expected = xs.map(enum_switch_associated_value2)
+        let actual = map(xs, enum_switch_associated_value2)
         return try? #require(expected == actual)
       }
 }
@@ -282,18 +282,18 @@ enum E3P<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>: 
 }
 
 // swiftformat:disable:next wrapArguments
-private func prop_enum_switch_payload3<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
-    func enum_switch_payload3(_ value: E3P<T1, T2>) -> Float64 {
+private func prop_enum_switch_associated_value3<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
+    func enum_switch_associated_value3(_ value: E3P<T1, T2>) -> Float64 {
         switch value {
             case let .opt1(payload): Float64(payload)
             case let .opt2(payload): Float64(payload)
             case let .opt3(payload1, payload2): Float64(payload1) + Float64(payload2)
         }
     }
-    property(String(describing: E3P<T1, T2>.self) + ".enum_switch_payload3") <-
+    property(String(describing: E3P<T1, T2>.self) + ".enum_switch_associated_value3") <-
       forAllNoShrink([E3P<T1, T2>].arbitrary) { (xs: [E3P<T1, T2>]) in
-        let expected = xs.map(enum_switch_payload3)
-        let actual = map(xs, enum_switch_payload3)
+        let expected = xs.map(enum_switch_associated_value3)
+        let actual = map(xs, enum_switch_associated_value3)
         return try? #require(expected == actual)
       }
 }
@@ -318,8 +318,8 @@ enum E4P<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>: 
 }
 
 // swiftformat:disable:next wrapArguments
-private func prop_enum_switch_payload4<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
-    func enum_switch_payload4(_ value: E4P<T1, T2>) -> Float64 {
+private func prop_enum_switch_associated_value4<T1: Arbitrary & FixedWidthInteger, T2: Arbitrary & FixedWidthInteger>(_: T1.Type, _: T2.Type) {
+    func enum_switch_associated_value4(_ value: E4P<T1, T2>) -> Float64 {
         switch value {
             case let .opt1(payload): Double(payload)
             case let .opt2(payload): Double(payload)
@@ -327,10 +327,10 @@ private func prop_enum_switch_payload4<T1: Arbitrary & FixedWidthInteger, T2: Ar
             case .opt4: 0
         }
     }
-    property(String(describing: E4P<T1, T2>.self) + ".enum_switch_payload4") <-
+    property(String(describing: E4P<T1, T2>.self) + ".enum_switch_associated_value4") <-
       forAllNoShrink([E4P<T1, T2>].arbitrary) { (xs: [E4P<T1, T2>]) in
-        let expected = xs.map(enum_switch_payload4)
-        let actual = map(xs, enum_switch_payload4)
+        let expected = xs.map(enum_switch_associated_value4)
+        let actual = map(xs, enum_switch_associated_value4)
         return try? #require(expected == actual)
       }
 }

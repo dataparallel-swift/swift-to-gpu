@@ -5,6 +5,8 @@ import SwiftCheck
 import SwiftToPTX
 import Testing
 
+// swiftformat:disable trailingCommas
+
 @Suite("Conditionals") struct Conditionals {
     @Suite("if-else") struct IfElseTests {
         @Test func test_if_true() {
