@@ -611,7 +611,7 @@ private func prop_struct1_property_set_inout<T: Arbitrary & Equatable>(_: T.Type
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
         // i.e. modify accessor instead of subscript set
-        parallel_for(iterations: min(xs.count, vs.count)) { i in
+        try parallel_for(iterations: min(xs.count, vs.count)) { i in
           s1_property_set_inout(&actual[i], vs[i])
         }.sync()
         return try? #require(expected == actual)
@@ -688,7 +688,7 @@ private func prop_struct2_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
         // i.e. modify accessor instead of subscript set
-        parallel_for(iterations: xs.count) { i in
+        try parallel_for(iterations: xs.count) { i in
             s2_property_set_inout(&actual[i], member1, member2)
         }.sync()
         return try? #require(expected == actual)
@@ -806,7 +806,7 @@ private func prop_struct3_property_set_inout<T1: Arbitrary & Equatable, T2: Arbi
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
         // i.e. modify accessor instead of subscript set
-        parallel_for(iterations: xs.count) { i in
+        try parallel_for(iterations: xs.count) { i in
           s3_property_set_inout(&actual[i], member1, member2, member3)
         }.sync()
         return try? #require(expected == actual)

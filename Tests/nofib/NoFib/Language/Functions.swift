@@ -225,7 +225,7 @@ private func prop_unary_inout<T: Arbitrary & Similar & ExpressibleByIntegerLiter
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
         // i.e. modify accessor instead of subscript set
-        parallel_for(iterations: xs.count) { i in
+        try parallel_for(iterations: xs.count) { i in
             unary_inout(&actual[i])
         }.sync()
         return try? #require(expected ~~~ actual)
@@ -242,7 +242,7 @@ private func prop_binary_inout<T: Arbitrary & Similar & ExpressibleByIntegerLite
         var actual = xs
         // NOTE: `parallel_for` required here because of in-place mutation,
         // i.e. modify accessor instead of subscript set
-        parallel_for(iterations: actual.count) { i in
+        try parallel_for(iterations: actual.count) { i in
             binary_inout(&actual[i], y)
         }.sync()
         return try? #require(expected ~~~ actual)
