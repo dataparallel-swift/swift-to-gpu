@@ -1,0 +1,5 @@
+module BenchmarkFunctionsC {
+  header "include/benchmark-functions.h"
+  requires cplusplus11
+  export *
+}

@@ -3,7 +3,7 @@ import SwiftCheck
 
 @inline(never)
 // TODO: ↑ This is required otherwise we will get the error:
-// .../swift-to-ptx-cbits.cpp:107 CUDA call failed with error CUDA_ERROR_ILLEGAL_ADDRESS (700): an illegal memory access was encountered
+// .../ptx-backend.cpp:107 CUDA call failed with error CUDA_ERROR_ILLEGAL_ADDRESS (700): an illegal memory access was encountered
 //
 // We still need to diagnose this and find a fix. ---TLM 2024-10-10
 func test16(_ xs: Array<Float>) -> (Array<Float>, Array<Float>)

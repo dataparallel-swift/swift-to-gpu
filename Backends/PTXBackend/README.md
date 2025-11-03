@@ -17,7 +17,7 @@ Add to your `Package.swift`:
 In a module containing a loop(s) that you wish to hoist to the GPU:
 
 ```swift
-import SwiftToPTX
+import SwiftToGPU
 ```
 
 and replace `for` loops with the provided `parallel_for` construct. Example:

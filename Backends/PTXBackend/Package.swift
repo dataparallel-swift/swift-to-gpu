@@ -24,11 +24,11 @@ if enableTracy {
 }
 
 let package = Package(
-    name: "swift-to-ptx",
-    platforms: [.macOS(.v10_15)],
+    name: "swift-ptx-backend",
+    platforms: [.macOS("13.3")],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(name: "SwiftToPTX", type: libraryType, targets: ["SwiftToPTX"]),
+        .library(name: "PTXBackend", type: libraryType, targets: ["PTXBackend"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
@@ -46,44 +46,41 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "SwiftToPTX_cbits",
+            name: "PTXBackendC",
             dependencies: [
                 .product(name: "TracyC", package: "swift-tracy"),
                 .product(name: "swift-mimalloc", package: "swift-mimalloc"),
             ],
-            path: "Sources/swift-to-ptx-cbits",
             publicHeadersPath: ".",
             cSettings: _cSettings
         ),
         .target(
-            name: "SwiftToPTX",
+            name: "PTXBackend",
             dependencies: [
-                "SwiftToPTX_cbits",
+                "PTXBackendC",
                 .product(name: "CUDA", package: "swift-cuda"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
-            ],
-            path: "Sources/swift-to-ptx"
+            ]
         ),
 
         // Tests
         .testTarget(
-            name: "swift-to-ptx-nofib",
+            name: "PTXBackendTests",
             dependencies: [
                 "SwiftCheck",
-                "SwiftToPTX",
+                "PTXBackend",
                 .product(name: "Numerics", package: "swift-numerics"),
             ],
-            path: "Tests/nofib",
             exclude: [
-                "NoFib/Imaginary/README.md",
-                "NoFib/Issues/README.md",
-                "NoFib/Language/README.md",
-                "NoFib/Prelude/README.md",
-                "NoFib/Real/README.md",
-                "NoFib/Spectral/README.md",
+                "Imaginary/README.md",
+                "Issues/README.md",
+                "Language/README.md",
+                "Prelude/README.md",
+                "Real/README.md",
+                "Spectral/README.md",
             ],
             swiftSettings: [
                 .unsafeFlags([
@@ -106,11 +103,11 @@ let package = Package(
         .target(
             name: "BenchmarkFunctions",
             dependencies: [
-                "SwiftToPTX",
-                "BenchmarkFunctions_cbits",
+                "PTXBackend",
+                "BenchmarkFunctionsC",
                 .product(name: "Numerics", package: "swift-numerics"),
             ],
-            path: "Benchmarks/benchmark-functions",
+            path: "Benchmarks/BenchmarkFunctions",
             swiftSettings: [
                 .unsafeFlags([
                     "-O",
@@ -121,21 +118,21 @@ let package = Package(
             ]
         ),
         .target(
-            name: "BenchmarkFunctions_cbits",
+            name: "BenchmarkFunctionsC",
             dependencies: [
-                "SwiftToPTX_cbits",
+                "PTXBackendC",
                 .product(name: "CUDA", package: "swift-cuda"),
             ],
-            path: "Benchmarks/benchmark-functions-cbits"
+            path: "Benchmarks/BenchmarkFunctionsC"
         ),
         .executableTarget(
-            name: "bench-saxpy",
+            name: "SaxpyBenchmark",
             dependencies: [
                 "Randy",
                 "BenchmarkFunctions",
                 .product(name: "Benchmark", package: "package-benchmark"),
             ],
-            path: "Benchmarks/saxpy",
+            path: "Benchmarks/SaxpyBenchmark",
             swiftSettings: [
                 .unsafeFlags([
                     // "-Rpass-missed=specialize"
@@ -146,13 +143,13 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "bench-blackscholes",
+            name: "BlackScholesBenchmark",
             dependencies: [
                 "Randy",
                 "BenchmarkFunctions",
                 .product(name: "Benchmark", package: "package-benchmark"),
             ],
-            path: "Benchmarks/black-scholes",
+            path: "Benchmarks/BlackScholesBenchmark",
             swiftSettings: [
                 .unsafeFlags([
                     // "-Rpass-missed=specialize"
