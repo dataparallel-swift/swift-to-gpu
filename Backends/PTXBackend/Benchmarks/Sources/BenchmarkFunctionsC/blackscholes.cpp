@@ -7,8 +7,6 @@
 // bin2c --static --const --name blackscholes_image_data blackscholes.cubin > include/blackscholes_image.h
 #include "blackscholes_image.h"
 
-#include "ptx-backend.h"
-
 static CUmodule blackscholes_module = nullptr;
 static CUfunction blackscholes_f32 = nullptr;
 

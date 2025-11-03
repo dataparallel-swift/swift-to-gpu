@@ -8,8 +8,6 @@
 // bin2c --static --const --name saxpy_image_data saxpy.cubin > include/saxpy_image.h
 #include "saxpy_image.h"
 
-#include "ptx-backend.h"
-
 static CUmodule saxpy_module = nullptr;
 static CUfunction saxpy_f16 = nullptr;
 static CUfunction saxpy_f32 = nullptr;
