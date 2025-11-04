@@ -383,6 +383,11 @@ public func parallel_for<E: Error>
     stream: Stream = streamPerThread,
     _ body: (Int) throws(E) -> Void
 ) throws(E) -> Event {
+    dontLetTheCompilerOptimizeThisAway(iterations)
+    dontLetTheCompilerOptimizeThisAway(context)
+    dontLetTheCompilerOptimizeThisAway(allocator)
+    dontLetTheCompilerOptimizeThisAway(stream)
+
     // swiftlint:disable:next no_fatalerror
     fatalError("""
     Swift-to-PTX translation failed.
