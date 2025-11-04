@@ -30,8 +30,8 @@ public struct PTXContext: ContextProtocol {
     /// Initialise (retain) the primary context on the given GPU ordinal
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__PRIMARY__CTX.html#group__CUDA__PRIMARY__CTX_1g9051f2d5c31501997a6cb0530290a300
     public init(deviceID: Int = 0) throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         var rawDevice: CUdevice = 0
         var rawContext: CUcontext? = nil

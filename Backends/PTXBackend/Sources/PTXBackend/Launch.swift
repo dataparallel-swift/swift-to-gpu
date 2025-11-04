@@ -43,8 +43,8 @@ public func launch_parallel_for
     swifterror: UnsafeMutableRawPointer,
     thrownerror: UnsafeMutableRawPointer
 ) -> PTXEvent {
-    let __zone = #Zone
-    defer { __zone.end() }
+    let zone = #Zone
+    defer { zone.end() }
 
     try! context.push()
 
@@ -134,19 +134,19 @@ public func launch_parallel_for
         // dynamically-resizable array on the heap. This is perhaps one of those cases where
         // the Swift/C++ interop is a bit sharp, but the extra effort is worth it.
         //
-        var _iterations = iterations
-        var _env = env
-        var _swifterror = swifterror
-        var _thrownerror = thrownerror
+        var iterations = iterations
+        var env = env
+        var swifterror = swifterror
+        var thrownerror = thrownerror
         withUnsafeTemporaryAllocation(of: UnsafeMutableRawPointer?.self, capacity: 4, { buffer in
-        withUnsafeMutablePointer(to: &_iterations, { p_iterations in
-        withUnsafeMutablePointer(to: &_env, { p_env in
-        withUnsafeMutablePointer(to: &_swifterror, { p_swifterror in
-        withUnsafeMutablePointer(to: &_thrownerror, { p_thrownerror in
-            buffer[0] = UnsafeMutableRawPointer(p_iterations)
-            buffer[1] = UnsafeMutableRawPointer(p_env)
-            buffer[2] = UnsafeMutableRawPointer(p_swifterror)
-            buffer[3] = UnsafeMutableRawPointer(p_thrownerror)
+        withUnsafeMutablePointer(to: &iterations, { iterationsPointer in
+        withUnsafeMutablePointer(to: &env, { envPointer in
+        withUnsafeMutablePointer(to: &swifterror, { swifterrorPointer in
+        withUnsafeMutablePointer(to: &thrownerror, { thrownerrorPointer in
+            buffer[0] = UnsafeMutableRawPointer(iterationsPointer)
+            buffer[1] = UnsafeMutableRawPointer(envPointer)
+            buffer[2] = UnsafeMutableRawPointer(swifterrorPointer)
+            buffer[3] = UnsafeMutableRawPointer(thrownerrorPointer)
             // swiftlint:disable line_length
             // swiftformat:disable:next wrap wrapArguments
             try! cuda_safe_call { cuLaunchKernel(kernel.function, UInt32(gridSize), 1, 1, UInt32(blockSize), 1, 1, 0, stream.rawStream, buffer.baseAddress, nil) }
