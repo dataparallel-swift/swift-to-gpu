@@ -9,7 +9,7 @@ private let logger = Logger(label: "CachingHostAllocator")
 
 struct BlockDescriptor: Hashable, Equatable {
     let ptr: UnsafeMutableRawPointer
-    let ready_event: Event
+    let ready_event: PTXEvent
 
     @inlinable
     func hash(into hasher: inout Hasher) {
@@ -173,7 +173,7 @@ public struct CachingHostAllocator {
     /// Free a live allocation, returning it to the bin-cache. Once freed, the
     /// allocation becomes available for reuse once the given `ready_event` is
     /// complete.
-    public func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: Event) {
+    public func free(_ ptr: UnsafeMutableRawPointer, _ ready_event: PTXEvent) {
         let __zone = #Zone
         defer { __zone.end() }
 

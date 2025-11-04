@@ -1,15 +1,12 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
+import BackendInterface
 import CUDA
 import Logging
 import PTXBackendC
 import Tracy
 
-private let logger = Logger(label: "Stream")
-
-// TLM: As with Event, this should probably be an interface (protocol?), that we
-// can instantiate for either the CPU or GPU with appropriate (associated?)
-// types.
+private let logger = Logger(label: "PTXStream")
 
 // TLM: This should probably be a final class, so that we can deinit it
 // correctly.
@@ -21,8 +18,11 @@ private let logger = Logger(label: "Stream")
 ///
 /// Use 'Event's to synchronise operations between streams.
 ///
-public struct Stream {
+public struct PTXStream: StreamProtocol {
+        
     internal let rawStream: CUstream
+    
+    public static let defaultStream: PTXStream = streamPerThread
 
     /// Create a new execution stream with the given flags
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1ga581f0c5833e21ded8b5a56594e243f4
@@ -69,11 +69,11 @@ public struct Stream {
     /// calls to 'Event.complete' and 'Stream.waitOn' will examine or wait for
     /// completion of the work that was captured.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html#group__CUDA__EVENT_1g95424d3be52c4eb95d83861b70fb89d1
-    public func record() throws(CUDAError) -> Event {
+    public func record() throws(CUDAError) -> PTXEvent {
         let __zone = #Zone
         defer { __zone.end() }
 
-        let event = try Event()
+        let event = try PTXEvent()
         logger.trace(".record() in \(self.rawStream) -> \(event.rawEvent)")
         try cuda_safe_call { cuEventRecord(event.rawEvent, self.rawStream) }
 
@@ -84,7 +84,7 @@ public struct Stream {
     /// complete before continuing. The synchronisation will be performed
     /// efficiently on the device, where possible.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g6a898b652dfc6aa1d5c8d97062618b2f
-    public func waitOn(event: Event) throws(CUDAError) {
+    public func waitOn(event: PTXEvent) throws(CUDAError) {
         let __zone = #Zone
         defer { __zone.end() }
 
@@ -112,7 +112,7 @@ public struct Stream {
 /// The default stream, used by APIs that operate on a stream implicitly, and
 /// can be configured to have either legacy or per-thread synchronisation
 /// behaviour.
-public let streamDefault = unsafeBitCast(0x0, to: Stream.self)
+public let streamDefault = unsafeBitCast(0x0, to: PTXStream.self)
 
 /// The legacy default stream is an implicit stream which synchronizes with all
 /// other streams in the same 'Context', except for non-blocking streams. When
@@ -120,11 +120,11 @@ public let streamDefault = unsafeBitCast(0x0, to: Stream.self)
 /// the legacy stream first waits on all blocking streams, the action is queued
 /// in the legacy stream, and then all blocking streams wait on the legacy
 /// stream.
-public let streamLegacy = unsafeBitCast(0x1, to: Stream.self)
+public let streamLegacy = unsafeBitCast(0x1, to: PTXStream.self)
 
 /// The per-thread default stream is an implicit stream local to both the thread
 /// and the 'Context', and which does not synchronize with other streams (just
 /// like explicitly created streams). The per-thread default stream is not a
 /// non-blocking stream and will synchronize with the legacy default stream if
 /// both are used in a program.
-public let streamPerThread = unsafeBitCast(0x2, to: Stream.self)
+public let streamPerThread = unsafeBitCast(0x2, to: PTXStream.self)

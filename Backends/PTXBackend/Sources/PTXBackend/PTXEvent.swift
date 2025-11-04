@@ -1,17 +1,18 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
+import BackendInterface
 import CUDA
 import Logging
 import PTXBackendC
 import Tracy
 
-private let logger = Logger(label: "Event")
+private let logger = Logger(label: "PTXEvent")
 
 /// An event is a marker that can be inserted into the current execution stream
 /// and later queried. For example, it is can be used to signal when a kernel
 /// launch completes or takes place.
 ///
-public final class Event {
+public final class PTXEvent: EventProtocol {
     internal let rawEvent: CUevent
     // TODO: we should probably keep track of which context this event is
     // associated with; there doesn't seem a way to query this via the CUDA API.
@@ -22,7 +23,7 @@ public final class Event {
         let __zone = #Zone
         defer { __zone.end() }
 
-        // See note in Stream.init()
+        // See note in PTXStream.init()
         var tmp: CUevent? = nil
 
         // Assumes we have an active context

@@ -36,13 +36,13 @@ public struct ParallelForKernel {
 public func launch_parallel_for
 (
     iterations: Int,
-    context: Context,
-    stream: Stream,
+    context: PTXContext,
+    stream: PTXStream,
     kernel: inout ParallelForKernel,
     env: UnsafeMutableRawPointer,
     swifterror: UnsafeMutableRawPointer,
     thrownerror: UnsafeMutableRawPointer
-) -> Event {
+) -> PTXEvent {
     let __zone = #Zone
     defer { __zone.end() }
 

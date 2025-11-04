@@ -31,6 +31,7 @@ let package = Package(
         .library(name: "PTXBackend", type: libraryType, targets: ["PTXBackend"]),
     ],
     dependencies: [
+        .package(path: "../BackendInterface"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
@@ -57,6 +58,7 @@ let package = Package(
             name: "PTXBackend",
             dependencies: [
                 "PTXBackendC",
+                .product(name: "BackendInterface", package: "BackendInterface"),
                 .product(name: "CUDA", package: "swift-cuda"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Logging", package: "swift-log"),

@@ -1,15 +1,16 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
+import BackendInterface
 import CUDA
 import Logging
 import PTXBackendC
 import Tracy
 
-private let logger = Logger(label: "Context")
+private let logger = Logger(label: "PTXContext")
 
 /// A context handle tied to a specific GPU. All operations on the GPU are tied
 /// to a specific execution context.
-public struct Context {
+public struct PTXContext: ContextProtocol {
     internal let rawContext: CUcontext  // opaque pointer
     internal let rawDevice: CUdevice    // int32_t => context first for better alignment & packing (!)
     internal let multiProcessorCount: Int32
@@ -128,4 +129,4 @@ public struct Context {
 /// The default context to use for swift-to-ptx lifted operations. This
 /// corresponds to the primary context of the first device, which is the same
 /// context implicitly used by the CUDA Runtime API.
-public let defaultContext = try! Context() // swiftlint:disable:this force_try
+public let defaultContext = try! PTXContext() // swiftlint:disable:this force_try
