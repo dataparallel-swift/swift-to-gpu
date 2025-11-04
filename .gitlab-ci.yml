@@ -29,7 +29,6 @@ include:
         - passivelogic-linux-small-arm64
   - component: gitlab.com/PassiveLogic/ci/swift-test@4.17  # TODO: update to @4 once swift-image 6.2 is usable
     inputs:
-      swift-package-path: Backends/PTXBackend
       swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
       enable-code-coverage: false
       additional-setup:

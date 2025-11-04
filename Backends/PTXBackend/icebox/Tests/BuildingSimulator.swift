@@ -65,6 +65,7 @@ class BuildingSimulator : XCTestCase {
     }
 }
 
+// this should be replaced by the shared one (see comment there that this method is unsafe)
 fileprivate extension Array {
     init(unsafeUninitializedCapacity count: Int) {
         precondition(count >= 0, "arrays must have non-negative sizes")

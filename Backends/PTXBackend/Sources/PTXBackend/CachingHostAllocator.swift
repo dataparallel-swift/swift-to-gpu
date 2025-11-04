@@ -45,13 +45,21 @@ struct BlockDescriptor: Hashable, Equatable {
  *     `max_cached_bytes`, allocations are freed when they are deallocated
  *     rather than being returned to their bin-cache.
  */
-public struct CachingHostAllocator {
+struct CachingHostAllocator {
     // Because NIOLockedValueBox has reference semantics, we can actually make
     // this a struct (rather than a class) and its fields/member functions
     // non-mutating, and still have the cache shared between users.
     let bin_size_bytes: Array<Int>
     let cached_blocks:  Array<NIOLockedValueBox<Set<BlockDescriptor>>>               // swiftlint:disable:this colon
     let live_blocks:    NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>> // swiftlint:disable:this colon
+
+    /// The default allocator used by the swift-to-ptx compiler pass, biased towards
+    /// small block sizes as that is what we encounter most often when lifting the
+    /// closure environment for execution on the GPU.
+    static let smallBlockAllocator = CachingHostAllocator(using: [4, 8, 12, 16, 24, 32, 64, 128, 192, 256])
+    // XXX: ↑ I have noticed @swift_retain and @swift_release calls in the generated
+    // LLVM, but we don't want this to ever to be deallocated once initialised; need
+    // to check this. ---TLM 2024-04-22
 
     /// Initialise the allocator using the given bin sizes, in bytes. The sizes
     /// must be monotonically increasing.
@@ -282,11 +290,3 @@ private func pow(_ base: Int, _ exp: Int) -> Int {
     return r
     // swiftlint:enable identifier_name shorthand_operator
 }
-
-/// The default allocator used by the swift-to-ptx compiler pass, biased towards
-/// small block sizes as that is what we encounter most often when lifting the
-/// closure environment for execution on the GPU.
-public let smallBlockAllocator = CachingHostAllocator(using: [4, 8, 12, 16, 24, 32, 64, 128, 192, 256])
-// XXX: ↑ I have noticed @swift_retain and @swift_release calls in the generated
-// LLVM, but we don't want this to ever to be deallocated once initialised; need
-// to check this. ---TLM 2024-04-22

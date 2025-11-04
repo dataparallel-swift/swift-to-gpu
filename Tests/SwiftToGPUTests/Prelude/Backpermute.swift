@@ -1,8 +1,8 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
-import PTXBackend
 import SwiftCheck
+import SwiftToGPU
 import Testing
 
-// @Suite("Map") struct Map {
+// @Suite("Backpermute") struct Backpermute {
 // }

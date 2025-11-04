@@ -19,9 +19,8 @@ private let logger = Logger(label: "PTXStream")
 /// Use 'Event's to synchronise operations between streams.
 ///
 public struct PTXStream: StreamProtocol {
-        
     internal let rawStream: CUstream
-    
+
     public static let defaultStream: PTXStream = streamPerThread
 
     /// Create a new execution stream with the given flags

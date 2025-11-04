@@ -1,14 +1,10 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
-public protocol BackendProtocol {
-    associatedtype Context: ContextProtocol
-    associatedtype Stream: StreamProtocol
-}
-
+// TODO: not sure if this is still necessary as we can hide the Stream as an implementation detail per backend (This means Event below also becomes an implementation detail once we move to an async based function for parallel_for)
 public protocol StreamProtocol {
     associatedtype Event: EventProtocol
     associatedtype E: Error
-    
+
     static var defaultStream: Self { get }
 
     func sync() throws(E)

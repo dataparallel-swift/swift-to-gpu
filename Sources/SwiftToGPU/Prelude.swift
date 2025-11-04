@@ -28,6 +28,13 @@
 
 import Atomics
 
+#if CPU
+import CPUBackend
+#endif
+#if PTX
+import PTXBackend
+#endif
+
 /// # Construction
 /// ## Initialisation
 
@@ -36,12 +43,11 @@ import Atomics
 @_alwaysEmitIntoClient
 public func generate<A, E: Error>(
     count: Int,
-    stream s: PTXStream = streamPerThread,
     _ f: (Int) throws(E) -> A
 ) throws(E) -> Array<A> {
     // SEE: [Array initialiser with typed throws]
     var xs = Array<A>(unsafeUninitializedCapacity: count)
-    try generate(into: &xs, stream: s, f)
+    try generate(into: &xs, f)
     return xs
 }
 
@@ -50,10 +56,9 @@ public func generate<A, E: Error>(
 @_alwaysEmitIntoClient
 public func generate<A, E: Error>(
     into xs: inout Array<A>,
-    stream s: PTXStream = streamPerThread,
     _ f: (Int) throws(E) -> A
 ) throws(E) {
-    let event = try parallel_for(iterations: xs.count, stream: s) { i throws(E) in
+    let event = try parallel_for(iterations: xs.count) { i throws(E) in
         xs[i] = try f(i)
     }
     try! event.sync()
@@ -62,15 +67,15 @@ public func generate<A, E: Error>(
 /// Construct a new array where all elements have the same element
 @inline(__always)
 @_alwaysEmitIntoClient
-public func fill<A>(count: Int, with x: A, stream s: PTXStream = streamPerThread) -> Array<A> {
-    generate(count: count, stream: s) { _ in x }
+public func fill<A>(count: Int, with x: A) -> Array<A> {
+    generate(count: count) { _ in x }
 }
 
 /// Set all elements of an array to the given value
 @inline(__always)
 @_alwaysEmitIntoClient
-public func fill<A>(into xs: inout Array<A>, with x: A, stream s: PTXStream = streamPerThread) {
-    generate(into: &xs, stream: s) { _ in x }
+public func fill<A>(into xs: inout Array<A>, with x: A) {
+    generate(into: &xs) { _ in x }
 }
 
 /// ## Element-wise operations
@@ -84,10 +89,9 @@ public func fill<A>(into xs: inout Array<A>, with x: A, stream s: PTXStream = st
 @_alwaysEmitIntoClient
 public func map<A, B, E: Error>(
     _ xs: Array<A>,
-    stream s: PTXStream = streamPerThread,
     _ f: (A) throws(E) -> B
 ) throws(E) -> Array<B> {
-    try imap(xs, stream: s) { _, x throws(E) in try f(x) }
+    try imap(xs) { _, x throws(E) in try f(x) }
 }
 
 /// Update an array by applying a function `f` element-wise to each value of the
@@ -98,10 +102,9 @@ public func map<A, B, E: Error>(
 public func map<A, B, E: Error>(
     _ xs: Array<A>,
     into ys: inout Array<B>,
-    stream s: PTXStream = streamPerThread,
     _ f: (A) throws(E) -> B
 ) throws(E) {
-    try imap(xs, into: &ys, stream: s) { _, x throws(E) in try f(x) }
+    try imap(xs, into: &ys) { _, x throws(E) in try f(x) }
 }
 
 /// Construct a new array by applying a function `f` to every element of an
@@ -110,12 +113,11 @@ public func map<A, B, E: Error>(
 @_alwaysEmitIntoClient
 public func imap<A, B, E: Error>(
     _ xs: Array<A>,
-    stream s: PTXStream = streamPerThread,
     _ f: (Int, A) throws(E) -> B
 ) throws(E) -> Array<B> {
     // SEE: [Array initialiser with typed throws]
     var ys = Array<B>(unsafeUninitializedCapacity: xs.count)
-    try imap(xs, into: &ys, stream: s, f)
+    try imap(xs, into: &ys, f)
     return ys
 }
 
@@ -127,12 +129,11 @@ public func imap<A, B, E: Error>(
 public func imap<A, B, E: Error>(
     _ xs: Array<A>,
     into ys: inout Array<B>,
-    stream s: PTXStream = streamPerThread,
     _ f: (Int, A) throws(E) -> B
 ) throws(E) {
     let n = min(xs.count, ys.count)
 
-    let event = try parallel_for(iterations: n, stream: s) { i throws(E) in
+    let event = try parallel_for(iterations: n) { i throws(E) in
         ys[i] = try f(i, xs[i])
     }
 
@@ -147,10 +148,9 @@ public func imap<A, B, E: Error>(
 public func zipWith<A, B, C, E: Error>(
     _ xs: Array<A>,
     _ ys: Array<B>,
-    stream s: PTXStream = streamPerThread,
     _ f: (A, B) throws(E) -> C
 ) throws(E) -> Array<C> {
-    try izipWith(xs, ys, stream: s) { _, x, y throws(E) in try f(x, y) }
+    try izipWith(xs, ys) { _, x, y throws(E) in try f(x, y) }
 }
 
 /// Update an array by applying the binary function element-wise from the two
@@ -161,10 +161,9 @@ public func zipWith<A, B, C, E: Error>(
     _ xs: Array<A>,
     _ ys: Array<B>,
     into zs: inout Array<C>,
-    stream s: PTXStream = streamPerThread,
     _ f: (A, B) throws(E) -> C
 ) throws(E) {
-    try izipWith(xs, ys, into: &zs, stream: s) { _, x, y throws(E) in try f(x, y) }
+    try izipWith(xs, ys, into: &zs) { _, x, y throws(E) in try f(x, y) }
 }
 
 /// Construct a new array by applying the given binary function element-wise to
@@ -175,13 +174,12 @@ public func zipWith<A, B, C, E: Error>(
 public func izipWith<A, B, C, E: Error>(
     _ xs: Array<A>,
     _ ys: Array<B>,
-    stream s: PTXStream = streamPerThread,
     _ f: (Int, A, B) throws(E) -> C
 ) throws(E) -> Array<C> {
     let n  = min(xs.count, ys.count)
     // SEE: [Array initialiser with typed throws]
     var zs = Array<C>(unsafeUninitializedCapacity: n)
-    try izipWith(xs, ys, into: &zs, stream: s, f)
+    try izipWith(xs, ys, into: &zs, f)
     return zs
 }
 
@@ -194,12 +192,11 @@ public func izipWith<A, B, C, E: Error>(
     _ xs: Array<A>,
     _ ys: Array<B>,
     into zs: inout Array<C>,
-    stream s: PTXStream = streamPerThread,
     _ f: (Int, A, B) throws(E) -> C
 ) throws(E) {
     let n = min(xs.count, min(ys.count, zs.count))
 
-    let event = try parallel_for(iterations: n, stream: s) { i throws(E) in
+    let event = try parallel_for(iterations: n) { i throws(E) in
         zs[i] = try f(i, xs[i], ys[i])
     }
     try! event.sync()
@@ -374,38 +371,6 @@ public func backpermute<A, E: Error>(from: Array<A>, into: inout Array<A>, _ p: 
 // Internals
 // --------------------------------------------------------------------------------
 
-// Running the corresponding llvm optimisation plugin on code that calls this
-// function will result in the 'body' closure being translated into a CUDA
-// kernel such that all `iterations` are executed at once in data-parallel.
-//
-// TODO: We have a bunch of force-try in other parts of the code because we need
-// to work out how to return multiple static types from the parallel_for (and
-// have the compiler pass understand and use it).
-//
-// ↓ disabled until we tackle generic specialisation ---TLM 2025-02-26
-// @_alwaysEmitIntoClient  // make sure the body can be specialised at the call site...
-@inline(never)          // ...but don't actually inline it; we still need to look for this symbol from the llvm-plugin
-// Internal function
-// swiftlint:disable:next missing_docs
-public func parallel_for<E: Error>(
-    iterations: Int,
-    context: PTXContext = defaultContext,
-    allocator: CachingHostAllocator = smallBlockAllocator,
-    stream: PTXStream = streamPerThread,
-    _ body: (Int) throws(E) -> Void
-) throws(E) -> PTXEvent {
-    dontLetTheCompilerOptimizeThisAway(iterations)
-    dontLetTheCompilerOptimizeThisAway(context)
-    dontLetTheCompilerOptimizeThisAway(allocator)
-    dontLetTheCompilerOptimizeThisAway(stream)
-    // swiftlint:disable:next no_fatalerror
-    fatalError("""
-    Swift-to-PTX translation failed.
-    Compile in release mode to enable PTX translation. Failing that, please submit a bug to:
-    https://gitlab.com/PassiveLogic/compiler/swift-to-ptx/-/issues
-    """)
-}
-
 // This will be replaced by an nvvm intrinsic
 @inline(never)
 @usableFromInline
@@ -419,4 +384,4 @@ func dontLetTheCompilerOptimizeThisAway<T>(_ it: T) {
     blackhole = it
 }
 
-private var blackhole: Any?
+private nonisolated(unsafe) var blackhole: Any?

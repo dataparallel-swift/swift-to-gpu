@@ -1,7 +1,7 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
-import PTXBackend
 import SwiftCheck
+import SwiftToGPU
 import Testing
 
 // swiftlint:disable file_length type_body_length

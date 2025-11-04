@@ -1,15 +1,20 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
 import Numerics
-import PTXBackend
 import SwiftCheck
+import SwiftToGPU
 import Testing
 
 // swiftlint:disable identifier_name
 
 @Suite("BlackScholes") struct BlackScholes {
     @Test("Float16") func test_float16() { prop_blackscholes(Float16.self) }
+    #if PTX
     @Test("Float32", .bug(id: "86b6an9y0")) func test_float32() { withKnownIssue { prop_blackscholes(Float32.self) } }
+    #endif
+    #if CPU
+    @Test("Float32") func test_float32() { prop_blackscholes(Float32.self) }
+    #endif
     @Test("Float64") func test_float64() { prop_blackscholes(Float64.self) }
 }
 

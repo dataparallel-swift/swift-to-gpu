@@ -17,6 +17,11 @@ public struct PTXContext: ContextProtocol {
     internal let maxThreadsPerMultiprocessor: Int32
     internal let maxBlocksPerMultiprocessor: Int32
 
+    /// The default context to use for swift-to-ptx lifted operations. This
+    /// corresponds to the primary context of the first device, which is the same
+    /// context implicitly used by the CUDA Runtime API.
+    static let defaultContext = try! PTXContext() // swiftlint:disable:this force_try
+
     @inline(__always)
     internal var warpSize: Int32 {
         return 32
@@ -125,8 +130,3 @@ public struct PTXContext: ContextProtocol {
         try cuda_safe_call { cuDevicePrimaryCtxRelease_v2(self.rawDevice) }
     }
 }
-
-/// The default context to use for swift-to-ptx lifted operations. This
-/// corresponds to the primary context of the first device, which is the same
-/// context implicitly used by the CUDA Runtime API.
-public let defaultContext = try! PTXContext() // swiftlint:disable:this force_try

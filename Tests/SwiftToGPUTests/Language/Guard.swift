@@ -1,8 +1,8 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
 import Foundation
-import PTXBackend
 import SwiftCheck
+import SwiftToGPU
 import Testing
 
 @Suite("guard-statements") struct GuardStatements {

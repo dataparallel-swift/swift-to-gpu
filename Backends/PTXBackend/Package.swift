@@ -32,10 +32,8 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../BackendInterface"),
-        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
-        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
         .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
@@ -60,45 +58,11 @@ let package = Package(
                 "PTXBackendC",
                 .product(name: "BackendInterface", package: "BackendInterface"),
                 .product(name: "CUDA", package: "swift-cuda"),
-                .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
             ],
             swiftSettings: [.swiftLanguageMode(.v5)]
-        ),
-
-        // Tests
-        .testTarget(
-            name: "PTXBackendTests",
-            dependencies: [
-                "SwiftCheck",
-                "PTXBackend",
-                .product(name: "Numerics", package: "swift-numerics"),
-            ],
-            exclude: [
-                "Imaginary/README.md",
-                "Issues/README.md",
-                "Language/README.md",
-                "Prelude/README.md",
-                "Real/README.md",
-                "Spectral/README.md",
-            ],
-            swiftSettings: [
-                .unsafeFlags([
-                    "-O",
-                    "-Xllvm", "--swift-to-ptx-verbose",
-                    // Disable unsafe floating point optimisations which may
-                    // give different numerical results in tests
-                    "-Xllvm", "--swift-to-ptx-allow-fp-arcp=false",
-                    "-Xllvm", "--swift-to-ptx-allow-fp-contract=false",
-                    "-Xllvm", "--swift-to-ptx-allow-fp-afn=false",
-                    "-Xllvm", "--swift-to-ptx-allow-fp-reassoc=false",
-                    // "-num-threads", "1",
-                    // "-Xllvm", "-time-passes"     // https://app.clickup.com/t/86b4gq4x2
-                    // "-Ounchecked",               // https://app.clickup.com/t/86b4gq63t
-                ]),
-            ]
         ),
     ]
 )
