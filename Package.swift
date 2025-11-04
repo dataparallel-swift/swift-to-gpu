@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "SwiftToGPU", targets: ["SwiftToGPU"]),
     ],
     traits: [
+        .default(enabledTraits: ["PTX"]),
         "CPU",
         "PTX",
     ],
