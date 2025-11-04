@@ -64,7 +64,8 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Tracy", package: "swift-tracy"),
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
-            ]
+            ],
+            swiftSettings: [.swiftLanguageMode(.v5)]
         ),
 
         // Tests
