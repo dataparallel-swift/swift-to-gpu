@@ -7,7 +7,6 @@ let package = Package(
     name: "swift-ptx-backend-benchmarks",
     platforms: [.macOS("15")],
     traits: [
-        .default(enabledTraits: ["PTX"]),
         "CPU",
         "PTX",
     ],

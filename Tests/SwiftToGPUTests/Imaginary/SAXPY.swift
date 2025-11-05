@@ -5,7 +5,9 @@ import SwiftToGPU
 import Testing
 
 @Suite("SAXPY") struct SAXPY {
+    #if arch(arm64)
     @Test("Float16") func test_float16() { prop_saxpy(Float16.self) }
+    #endif
     @Test("Float32") func test_float32() { prop_saxpy(Float32.self) }
     @Test("Float64") func test_float64() { prop_saxpy(Float64.self) }
 }

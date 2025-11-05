@@ -8,7 +8,9 @@ import Testing
 // swiftlint:disable identifier_name
 
 @Suite("BlackScholes") struct BlackScholes {
+    #if arch(arm64)
     @Test("Float16") func test_float16() { prop_blackscholes(Float16.self) }
+    #endif
     #if PTX
     @Test("Float32", .bug(id: "86b6an9y0")) func test_float32() { withKnownIssue { prop_blackscholes(Float32.self) } }
     #endif
