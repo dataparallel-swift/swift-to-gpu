@@ -12,10 +12,12 @@ public func parallel_for<E: Error>(
     return CPUEvent()
 }
 
-public struct CPUEvent: EventProtocol {
-    public func sync() throws(Never) {}
+public enum CPUError: Error {}
 
-    public func complete() throws(Never) -> Bool {
+public struct CPUEvent: EventProtocol {
+    public func sync() throws(CPUError) {}
+
+    public func complete() throws(CPUError) -> Bool {
         true
     }
 }
