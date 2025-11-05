@@ -24,13 +24,13 @@ include:
   # Test stage
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       runner-tags:
         - passivelogic-linux-small-arm64
 
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       package-traits:
         - PTX
       enable-code-coverage: false
@@ -42,7 +42,7 @@ include:
 
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: passivelogic/swift:6.2-noble
       package-traits:
         - CPU
       additional-setup:
@@ -62,7 +62,7 @@ include:
       job-prefix: 'cpu-x86_64 '
   - component: gitlab.com/PassiveLogic/ci/swift-build@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: passivelogic/swift:6.2-noble
       swift-package-path: Benchmarks
       package-traits:
         - CPU
@@ -82,7 +82,7 @@ include:
         - passivelogic-linux-small-amd64
   - component: gitlab.com/PassiveLogic/ci/swift-build@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       swift-package-path: Benchmarks
       package-traits:
         - PTX
@@ -94,7 +94,7 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swift-benchmarks@4
     inputs:
       benchmark-package-path: Benchmarks
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       additional-setup:
         - apt install -y libcapstone-dev
 
