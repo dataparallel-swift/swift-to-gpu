@@ -2,6 +2,8 @@
 #ifndef __CUTIL_H__
 #define __CUTIL_H__
 
+#if PTX
+
 #include <cuda.h>
 
 #define CUDA_SAFE_CALL(call)                                                   \
@@ -18,6 +20,7 @@
     }                                                                          \
   } while (0)
 
+#endif
 
 #endif // __CUTIL_H__
 

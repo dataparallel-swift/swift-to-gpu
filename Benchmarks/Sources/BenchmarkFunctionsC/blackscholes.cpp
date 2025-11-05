@@ -1,4 +1,6 @@
+#if PTX
 #include <cuda.h>
+
 #include <stdio.h>
 
 #include "cutil.h"
@@ -64,4 +66,4 @@ void blackscholes_cuda_f32(const float32_t riskfree, const float32_t volatility,
 {
   blackscholes_cuda(blackscholes_f32, "blackscholes_f32", riskfree, volatility, price, strike, years, call, put, n);
 }
-
+#endif

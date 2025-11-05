@@ -2,6 +2,8 @@
 #ifndef __SAXPY_H__
 #define __SAXPY_H__
 
+#if PTX
+
 #include <cuda_fp16.h>
 
 #if defined(__CUDA_FP16_TYPES_EXIST__)
@@ -29,6 +31,8 @@ __global__ void saxpy_f64(const float64_t alpha, const float64_t* __restrict__ x
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif // __SAXPY_H__

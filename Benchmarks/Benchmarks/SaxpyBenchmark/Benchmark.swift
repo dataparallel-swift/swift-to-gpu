@@ -64,14 +64,18 @@ let benchmarks: @Sendable () -> Void = {
         // Benchmark("saxpy/cpu_specialised/f16/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float16.self, size) })
         #endif
 
+        #if PTX
         Benchmark("saxpy/cuda/f32/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f32),         setup: { setup(Float32.self, size) })
+        #endif
         Benchmark("saxpy/ptx/f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f32),          setup: { setup(Float32.self, size) })
         Benchmark("saxpy/cpu/f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f32),          setup: { setup(Float32.self, size) })
         // Benchmark("saxpy/cpu_generic/f32/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float32.self, size) })
         Benchmark("saxpy/cpu_generic_safe/f32/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float32.self, size) })
         // Benchmark("saxpy/cpu_specialised/f32/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float32.self, size) })
 
+        #if PTX
         Benchmark("saxpy/cuda/f64/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f64),         setup: { setup(Float64.self, size) })
+        #endif
         Benchmark("saxpy/ptx/f64/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f64),          setup: { setup(Float64.self, size) })
         Benchmark("saxpy/cpu/f64/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f64),          setup: { setup(Float64.self, size) })
         // Benchmark("saxpy/cpu_generic/f64/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float64.self, size) })

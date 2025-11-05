@@ -1,3 +1,4 @@
+#if PTX
 #include <cuda.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -85,3 +86,4 @@ void saxpy_cuda_f64(const float64_t alpha, const float64_t* __restrict__ xs, con
   saxpy_cuda(saxpy_f64, "saxpy_f64", alpha, xs, ys, zs, n);
 }
 
+#endif

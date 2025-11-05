@@ -7,6 +7,7 @@ let package = Package(
     name: "swift-ptx-backend-benchmarks",
     platforms: [.macOS("15")],
     traits: [
+        .default(enabledTraits: ["CPU"]),
         "CPU",
         "PTX",
     ],
@@ -43,7 +44,10 @@ let package = Package(
         .target(
             name: "BenchmarkFunctionsC",
             dependencies: [
-                .product(name: "CUDA", package: "swift-cuda"),
+                .product(name: "CUDA", package: "swift-cuda", condition: .when(traits: ["PTX"])),
+            ],
+            cSettings: [
+                .define("PTX", to: "1", .when(traits: ["PTX"])),
             ]
         ),
         .executableTarget(
