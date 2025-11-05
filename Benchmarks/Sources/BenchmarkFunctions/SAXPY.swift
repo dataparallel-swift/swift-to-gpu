@@ -1,7 +1,9 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
+#if PTX
 import BenchmarkFunctionsC
-import PTXBackend
+#endif
+import SwiftToGPU
 
 // swiftlint:disable missing_docs
 
@@ -128,6 +130,7 @@ public func saxpy_ptx_f64(_ alpha: Float64, _ xs: [Float64], _ ys: [Float64]) ->
 
 // --------------------------------------------------------------------------------
 
+#if PTX
 #if arch(arm64)
 public func saxpy_cuda_f16(_ alpha: Float16, _ xs: [Float16], _ ys: [Float16]) -> [Float16] {
     assert(xs.count == ys.count)
@@ -165,3 +168,4 @@ public func saxpy_cuda_f64(_ alpha: Float64, _ xs: [Float64], _ ys: [Float64]) -
         }
     )
 }
+#endif

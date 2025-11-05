@@ -5,9 +5,20 @@ import PackageDescription
 
 let package = Package(
     name: "swift-ptx-backend-benchmarks",
-    platforms: [.macOS("13.3")],
+    platforms: [.macOS("15")],
+    traits: [
+        .default(enabledTraits: ["PTX"]),
+        "CPU",
+        "PTX",
+    ],
     dependencies: [
-        .package(path: ".."),
+        .package(
+            path: "..",
+            traits: [
+                .trait(name: "CPU", condition: .when(traits: ["CPU"])),
+                .trait(name: "PTX", condition: .when(traits: ["PTX"])),
+            ]
+        ),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
         .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
@@ -17,8 +28,8 @@ let package = Package(
         .target(
             name: "BenchmarkFunctions",
             dependencies: [
-                "BenchmarkFunctionsC",
-                .product(name: "PTXBackend", package: "PTXBackend"),
+                .target(name: "BenchmarkFunctionsC", condition: .when(traits: ["PTX"])),
+                .product(name: "SwiftToGPU", package: "swift-to-ptx"),
                 .product(name: "Numerics", package: "swift-numerics"),
             ],
             swiftSettings: [
@@ -27,7 +38,7 @@ let package = Package(
                     "-num-threads", "1",
                     "-Xllvm", "--swift-to-ptx-verbose",
                     "-Xllvm", "-time-passes",
-                ]),
+                ], .when(traits: ["PTX"])),
             ]
         ),
         .target(

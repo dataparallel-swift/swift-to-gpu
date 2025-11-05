@@ -1,8 +1,10 @@
 // Copyright (c) 2025 PassiveLogic, Inc.
 
+#if PTX
 import BenchmarkFunctionsC
+#endif
 import Numerics
-import PTXBackend
+import SwiftToGPU
 
 // swiftlint:disable identifier_name missing_docs
 
@@ -205,6 +207,8 @@ public func blackscholes_ptx_f64(_ r: Float64, _ v: Float64, _ ps: [Float64], _ 
     }
 }
 
+#if PTX
+
 // MARK: CUDA
 
 // --------------------------------------------------------------------------------
@@ -233,3 +237,4 @@ public func blackscholes_cuda_f32(_ r: Float32, _ v: Float32, _ ps: [Float32], _
 
     return (call, put)
 }
+#endif

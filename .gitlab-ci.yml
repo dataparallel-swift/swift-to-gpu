@@ -35,9 +35,20 @@ include:
         - apt install -y libcapstone-dev
       runner-tags:
         - passivelogic-compiler-orin
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-package-path: Benchmarks
+      enable-code-coverage: false
+      additional-setup:
+        - apt install -y libcapstone-dev
+      job-prefix: 'benchmark '
+      job-stage: test
+      runner-tags:
+        - passivelogic-compiler-orin
+        
   - component: gitlab.com/PassiveLogic/ci/swift-benchmarks@4
     inputs:
-      benchmark-package-path: Backends/PTXBackend/Benchmarks
+      benchmark-package-path: Benchmarks
       swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
       additional-setup:
         - apt install -y libcapstone-dev

@@ -60,7 +60,10 @@ let benchmarks: @Sendable () -> Void = {
         Benchmark("blackscholes/cpu_generic_safe/f16/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float16.self, size) })
         #endif
 
+        #if PTX
         Benchmark("blackscholes/cuda/f32/\(size)",             configuration: config(scaling), closure: bench(blackscholes_cuda_f32),         setup: { setup(Float32.self, size) })
+        #endif
+
         Benchmark("blackscholes/ptx/f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_ptx_f32),          setup: { setup(Float32.self, size) })
         Benchmark("blackscholes/cpu/f32/\(size)",              configuration: config(scaling), closure: bench(blackscholes_cpu_f32),          setup: { setup(Float32.self, size) })
         Benchmark("blackscholes/cpu_generic_safe/f32/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float32.self, size) })
