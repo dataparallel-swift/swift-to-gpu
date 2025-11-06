@@ -1,7 +1,14 @@
 // swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+import Foundation
 import PackageDescription
+
+let disableJemalloc = ProcessInfo.processInfo.environment["BENCHMARK_DISABLE_JEMALLOC"].isSet
+if !disableJemalloc {
+    // swiftlint:disable:next logger_over_print
+    print("Set BENCHMARK_DISABLE_JEMALLOC=true to get accurate data from package-benchmark!")
+}
 
 let package = Package(
     name: "swift-ptx-backend-benchmarks",
@@ -86,3 +93,12 @@ let package = Package(
         ),
     ]
 )
+
+private extension String? {
+  var isSet: Bool {
+    if let value = self {
+      return value.isEmpty || value == "1" || value.lowercased() == "true"
+    }
+    return false
+  }
+}

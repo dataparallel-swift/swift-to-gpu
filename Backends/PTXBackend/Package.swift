@@ -5,13 +5,7 @@ import Foundation
 import PackageDescription
 
 let libraryType     = ProcessInfo.processInfo.environment["BUILD_STATIC_LIBRARIES"].isSet ? Product.Library.LibraryType.static : nil
-let disableJemalloc = ProcessInfo.processInfo.environment["BENCHMARK_DISABLE_JEMALLOC"].isSet
 let enableTracy     = ProcessInfo.processInfo.environment["SWIFT_TRACY_ENABLE"].isSet
-
-if !disableJemalloc {
-    // swiftlint:disable:next logger_over_print
-    print("Set BENCHMARK_DISABLE_JEMALLOC=true to get accurate data from package-benchmark!")
-}
 
 var _cSettings: [CSetting] = []
 
@@ -35,7 +29,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
-        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "60ac56c594ee"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "0.1"),
