@@ -1,9 +1,7 @@
-
 #ifndef __BLACKSCHOLES_H__
 #define __BLACKSCHOLES_H__
 
-#if PTX
-
+#include <stddef.h>
 #include <cuda_fp16.h>
 
 #if defined(__CUDA_FP16_TYPES_EXIST__)
@@ -27,8 +25,6 @@ __global__ void blackscholes_f32(const float32_t riskfree, const float32_t volat
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif
 
 #endif // __BLACKSCHOLES_H__

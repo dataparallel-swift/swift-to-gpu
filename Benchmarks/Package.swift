@@ -54,7 +54,7 @@ let package = Package(
                 .product(name: "CUDA", package: "swift-cuda", condition: .when(traits: ["PTX"])),
             ],
             cSettings: [
-                .define("PTX", to: "1", .when(traits: ["PTX"])),
+                .define("PTX", .when(traits: ["PTX"])),
             ]
         ),
         .executableTarget(

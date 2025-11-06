@@ -1,8 +1,5 @@
-
 #ifndef __CUTIL_H__
 #define __CUTIL_H__
-
-#if PTX
 
 #include <cuda.h>
 
@@ -19,8 +16,6 @@
       exit(1);                                                                 \
     }                                                                          \
   } while (0)
-
-#endif
 
 #endif // __CUTIL_H__
 
