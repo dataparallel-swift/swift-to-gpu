@@ -4,42 +4,43 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// swiftformat:disable blankLinesBetweenScopes
+@Suite("Stencil") struct StencilTests {
+    @Suite("Int32") struct Int32Tests {
+        @Test func finiteDifference() { finiteDifferenceTest(Int32.self) }
+        @Test func adjacentDifference() { adjacentDifferenceTest(Int32.self) }
+        @Test func laplace1D() { laplace1DTest(Int32.self) }
+    }
 
-@Suite("Stencil") struct Stencil {
-    #if arch(arm64)
-    @Test("finite_difference.Float16") func test_finite_difference_1() { prop_finite_difference(Float16.self) }
-    #endif
-    @Test("finite_difference.Float32") func test_finite_difference_2() { prop_finite_difference(Float32.self) }
-    @Test("finite_difference.Float64") func test_finite_difference_3() { prop_finite_difference(Float64.self) }
-    @Test("finite_difference.Int32") func test_finite_difference_4() { prop_finite_difference(Int32.self) }
-    @Test("finite_difference.Int64") func test_finite_difference_5() { prop_finite_difference(Int64.self) }
+    @Suite("Int64") struct Int64Tests {
+        @Test func finiteDifference() { finiteDifferenceTest(Int64.self) }
+        @Test func adjacentDifference() { adjacentDifferenceTest(Int64.self) }
+        @Test func laplace1D() { laplace1DTest(Int64.self) }
+    }
 
-    #if arch(arm64)
-    @Test("adjacent_difference.Float16") func test_adjacent_difference_1() {
-        prop_adjacent_difference(Float16.self) }
-    #endif
-    @Test("adjacent_difference.Float32") func test_adjacent_difference_2() {
-        prop_adjacent_difference(Float32.self) }
-    @Test("adjacent_difference.Float64") func test_adjacent_difference_3() {
-        prop_adjacent_difference(Float64.self) }
-    @Test("adjacent_difference.Int32") func test_adjacent_difference_4() {
-        prop_adjacent_difference(Int32.self) }
-    @Test("adjacent_difference.Int64") func test_adjacent_difference_5() {
-        prop_adjacent_difference(Int64.self) }
+#if arch(arm64)
+    @Suite("Float16") struct Float16Tests {
+        @Test func finiteDifference() { finiteDifferenceTest(Float16.self) }
+        @Test func adjacentDifference() { adjacentDifferenceTest(Float16.self) }
+        @Test func laplace1D() { laplace1DTest(Float16.self) }
+    }
+#endif
 
-    #if arch(arm64)
-    @Test("laplace1D.Float16") func test_laplace1D_1() { prop_laplace1D(Float16.self) }
-    #endif
-    @Test("laplace1D.Float32") func test_laplace1D_2() { prop_laplace1D(Float32.self) }
-    @Test("laplace1D.Float64") func test_laplace1D_3() { prop_laplace1D(Float64.self) }
-    @Test("laplace1D.Int32") func test_laplace1D_4() { prop_laplace1D(Int32.self) }
-    @Test("laplace1D.Int64") func test_laplace1D_5() { prop_laplace1D(Int64.self) }
+    @Suite("Float32") struct Float32Tests {
+        @Test func finiteDifference() { finiteDifferenceTest(Float32.self) }
+        @Test func adjacentDifference() { adjacentDifferenceTest(Float32.self) }
+        @Test func laplace1D() { laplace1DTest(Float32.self) }
+    }
+
+    @Suite("Float64") struct Float64Tests {
+        @Test func finiteDifference() { finiteDifferenceTest(Float64.self) }
+        @Test func adjacentDifference() { adjacentDifferenceTest(Float64.self) }
+        @Test func laplace1D() { laplace1DTest(Float64.self) }
+    }
 }
 
 extension Array where Element: AdditiveArithmetic {
     @inlinable
-    func finite_difference() -> Self {
+    func finiteDifference() -> Self {
         zip(self.indices, self).compactMap { i, x in
             guard i != 0 else {
                 return nil
@@ -49,10 +50,10 @@ extension Array where Element: AdditiveArithmetic {
     }
 }
 
-private func prop_finite_difference<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.Type) {
+private func finiteDifferenceTest<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.Type) {
     // XXX: required because of https://app.clickup.com/t/86b7az9f8
     @inline(never)
-    func finite_difference(_ xs: Array<T>) -> Array<T> {
+    func finiteDifference(_ xs: Array<T>) -> Array<T> {
         // TODO: Cannot early exit because of a bug (ClickUp: 86b6vgvy0)
         // guard xs.count > 1 else {
         //     return []
@@ -63,16 +64,16 @@ private func prop_finite_difference<T: Arbitrary & AdditiveArithmetic & Similar>
         return output
     }
     let gen = [T].arbitrary.suchThat { $0.count > 1 }
-    property("adjacent_difference." + String(describing: [T].self)) <-
+    property(#function) <-
       forAllNoShrink(gen) { (xs: [T]) in
-        let expected = xs.finite_difference()
-        let actual = finite_difference(xs)
+        let expected = xs.finiteDifference()
+        let actual = finiteDifference(xs)
         return try? #require(expected ~~~ actual)
       }
 }
 
 extension Array where Element: AdditiveArithmetic {
-    func adjacent_difference() -> Self {
+    func adjacentDifference() -> Self {
         zip(self.indices, self).map { i, x in
             guard i != 0 else {
                 return x
@@ -82,10 +83,10 @@ extension Array where Element: AdditiveArithmetic {
     }
 }
 
-private func prop_adjacent_difference<T: AdditiveArithmetic & Arbitrary & Similar>(_: T.Type) {
+private func adjacentDifferenceTest<T: AdditiveArithmetic & Arbitrary & Similar>(_: T.Type) {
     // XXX: required because of https://app.clickup.com/t/86b7az9f8
     @inline(never)
-    func adjacent_difference(_ xs: Array<T>) -> Array<T> {
+    func adjacentDifference(_ xs: Array<T>) -> Array<T> {
         imap(xs) { i, x in
             guard i != 0 else {
                 return x
@@ -93,10 +94,10 @@ private func prop_adjacent_difference<T: AdditiveArithmetic & Arbitrary & Simila
             return x - xs[i - 1]
         }
     }
-    property("finite_difference." + String(describing: [T].self)) <-
+    property(#function) <-
       forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.adjacent_difference()
-        let actual = adjacent_difference(xs)
+        let expected = xs.adjacentDifference()
+        let actual = adjacentDifference(xs)
         return try? #require(expected ~~~ actual)
       }
 }
@@ -115,7 +116,7 @@ extension Array where Element: Numeric {
     }
 }
 
-private func prop_laplace1D<T: Numeric & Arbitrary & Similar>(_: T.Type) {
+private func laplace1DTest<T: Numeric & Arbitrary & Similar>(_: T.Type) {
     // XXX: required because of https://app.clickup.com/t/86b7az9f8
     @inline(never)
     func laplace1D(_ xs: Array<T>) -> Array<T> {
@@ -128,7 +129,7 @@ private func prop_laplace1D<T: Numeric & Arbitrary & Similar>(_: T.Type) {
         }
     }
     let gen = [T].arbitrary.suchThat { $0.count > 2 }
-    property("laplace1D." + String(describing: [T].self)) <-
+    property(#function) <-
       forAllNoShrink(gen) { (xs: [T]) in
         let expected = xs.laplace1D()
         let actual = laplace1D(xs)

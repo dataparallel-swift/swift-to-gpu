@@ -4,5 +4,5 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// @Suite("Fold") struct Fold {
+// @Suite("Fold") struct FoldTests {
 // }

@@ -4,5 +4,5 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// @Suite("Backpermute") struct Backpermute {
+// @Suite("Backpermute") struct BackpermuteTests {
 // }

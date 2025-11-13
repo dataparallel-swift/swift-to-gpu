@@ -5,23 +5,23 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("defer") struct DeferSuite {
-    @Test func test_defer1() {
+@Suite("Defer") struct DeferTests {
+    @Test func defer1() {
         func defer1(_ x: Double) -> Double {
             var x = x
             defer { x *= 2 }
             x += 1
             return x
         }
-        property("defer1") <-
-          forAllNoShrink([Double].arbitrary) { (xs: [Double]) in
+        property(#function) <-
+          forAllNoShrink([Double].arbitrary) { xs in
             let expected = xs.map(defer1)
             let actual = map(xs, defer1)
             return try? #require(expected ~~~ actual)
           }
     }
 
-    @Test func test_defer2() {
+    @Test func defer2() {
         func defer2(_ x: Double) -> Double {
             var x = x
             var i = 0
@@ -37,8 +37,8 @@ import Testing
             }
             return x
         }
-        property("defer2") <-
-          forAllNoShrink([Double].arbitrary) { (xs: [Double]) in
+        property(#function) <-
+          forAllNoShrink([Double].arbitrary) { xs in
             let expected = xs.map(defer2)
             let actual = map(xs, defer2)
             return try? #require(expected ~~~ actual)

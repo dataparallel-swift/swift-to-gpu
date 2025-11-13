@@ -5,64 +5,50 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// swiftformat:disable trailingCommas
-
-@Suite("if-else") struct IfElseTests {
-     @Test func test_if_true() {
-         func if_true(_ i: Int) -> Int {
+@Suite("Conditional") struct ConditionalTests {
+     @Test func ifTrue() {
+         func ifTrue(_ i: Int) -> Int {
              if true { return i }
              return 0
          }
-         property("if_true") <-
-           forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
-             let expected = xs.map(if_true)
-             let actual = map(xs, if_true)
+         property(#function) <-
+           forAllNoShrink([Int].arbitrary) { xs in
+             let expected = xs.map(ifTrue)
+             let actual = map(xs, ifTrue)
              return try? #require(actual == expected)
            }
      }
 
-     @Test func test_if_false() {
-         func if_false(_ i: Int) -> Int {
+     @Test func ifFalse() {
+         func ifFalse(_ i: Int) -> Int {
              if false { return i }
              return 0
          }
-         property("if_false") <-
-           forAllNoShrink([Int].arbitrary) { (xs: [Int]) in
-             let expected = xs.map(if_false)
-             let actual = map(xs, if_false)
+         property(#function) <-
+           forAllNoShrink([Int].arbitrary) { xs in
+             let expected = xs.map(ifFalse)
+             let actual = map(xs, ifFalse)
              return try? #require(actual == expected)
            }
      }
 
-     @Test func test_if() {
-         func if_(_ x: Bool, _ y: Int) -> Int {
+     @Test func ifThen() {
+         func ifThen(_ x: Bool, _ y: Int) -> Int {
              if x {
                  return y
              }
              return 0
          }
-         property("if") <-
-           forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
-             let expected = zip(xs, ys).map { x, y in if_(x, y) }
-             let actual = zipWith(xs, ys) { x, y in if_(x, y) }
+         property(#function) <-
+           forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { xs, ys in
+             let expected = zip(xs, ys).map { x, y in ifThen(x, y) }
+             let actual = zipWith(xs, ys) { x, y in ifThen(x, y) }
              return try? #require(actual == expected)
            }
      }
 
-     @Test func test_ternary_operator() {
-         func ternary(_ x: Bool, _ y: Int) -> Int {
-             x ? y : 0
-         }
-         property("ternary") <-
-           forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
-             let expected = zip(xs, ys).map { x, y in ternary(x, y) }
-             let actual = zipWith(xs, ys) { x, y in ternary(x, y) }
-             return try? #require(actual == expected)
-           }
-     }
-
-     @Test func test_if_else1() {
-         func if_else(_ x: Bool, _ y: Int) -> Int {
+     @Test func ifThenElse1() {
+         func ifThenElse1(_ x: Bool, _ y: Int) -> Int {
              if x {
                  return y
              }
@@ -70,76 +56,82 @@ import Testing
                  return 0
              }
          }
-         property("if_else") <-
-           forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { (xs: [Bool], ys: [Int]) in
-             let expected = zip(xs, ys).map { x, y in if_else(x, y) }
-             let actual = zipWith(xs, ys, if_else)
+         property(#function) <-
+           forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { xs, ys in
+             let expected = zip(xs, ys).map { x, y in ifThenElse1(x, y) }
+             let actual = zipWith(xs, ys, ifThenElse1)
              return try? #require(actual == expected)
            }
      }
 
-     @Test func test_if_else2() {
-         func if_else2(_ b1: Bool, _ b2: Bool, _ x: Int) -> Int {
-             if b1 {
-                 return x
+     @Test func ifThenElse2() {
+         func ifThenElse2(_ x: Bool, _ y: Bool, _ z: Int) -> Int {
+             if x {
+                 return z
              }
-             else if b2 {
+             else if y {
                  return 0
              }
              else {
                  return 1
              }
          }
-         property("if_else2") <-
-           forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { (b1s: [Bool], b2s: [Bool], x: Int) in
-             let expected = zip(b1s, b2s).map { b1, b2 in if_else2(b1, b2, x) }
-             let actual = zipWith(b1s, b2s) { b1, b2 in if_else2(b1, b2, x) }
+         property(#function) <-
+           forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { xs, ys, z in
+             let expected = zip(xs, ys).map { x, y in ifThenElse2(x, y, z) }
+             let actual = zipWith(xs, ys) { x, y in ifThenElse2(x, y, z) }
              return try? #require(actual == expected)
            }
      }
 
-     @Test func test_if_else3() {
-         func if_else3(_ b1: Bool, _ b2: Bool, _ b3: Bool, _ x: Int) -> Int {
-             if b1 {
-                 return x
+     @Test func ifThenElse3() {
+         // swiftlint:disable identifier_name
+         func ifThenElse3(_ x: Bool, _ y: Bool, _ z: Bool, _ w: Int) -> Int {
+             if x {
+                 return w
              }
-             else if b2 {
+             else if y {
                  return 0
              }
-             else if b3 {
+             else if z {
                  return 1
              }
              else {
                  return 2
              }
          }
-         property("if_else3") <-
-           forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Bool.arbitrary, Int.arbitrary) { (
-               b1s: [Bool],
-               b2s: [Bool],
-               b3: Bool,
-               x: Int,
-           ) in
-             let expected = zip(b1s, b2s).map { b1, b2 in if_else3(b1, b2, b3, x) }
-             let actual = zipWith(b1s, b2s) { b1, b2 in if_else3(b1, b2, b3, x) }
+         property(#function) <-
+           forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Bool.arbitrary, Int.arbitrary) { xs, ys, z, w in
+             let expected = zip(xs, ys).map { x, y in ifThenElse3(x, y, z, w) }
+             let actual = zipWith(xs, ys) { x, y in ifThenElse3(x, y, z, w) }
              return try? #require(actual == expected)
            }
+         // swiftlint:enable identifier_name
      }
 
-     @Test func test_nested_if() {
-         func nested_if(_ b1: Bool, _ b2: Bool, _ x: Int) -> Int {
-             if b1 {
-                 if b2 {
-                     return x
+     @Test func ifThenElse4() {
+         func ifThenElse4(_ x: Bool, _ y: Bool, _ z: Int) -> Int {
+             if x {
+                 if y {
+                     return z
                  }
                  return 0
              }
              return 1
          }
-         property("nested_if") <-
-           forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { (b1s: [Bool], b2s: [Bool], x: Int) in
-             let expected = zip(b1s, b2s).map { b1, b2 in nested_if(b1, b2, x) }
-             let actual = zipWith(b1s, b2s) { b1, b2 in nested_if(b1, b2, x) }
+         property(#function) <-
+           forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { xs, ys, z in
+             let expected = zip(xs, ys).map { x, y in ifThenElse4(x, y, z) }
+             let actual = zipWith(xs, ys) { x, y in ifThenElse4(x, y, z) }
+             return try? #require(actual == expected)
+           }
+     }
+
+     @Test func infixIfThenElse() {
+         property(#function) <-
+           forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { xs, ys in
+             let expected = zip(xs, ys).map { x, y in x ? y : 0 }
+             let actual = zipWith(xs, ys) { x, y in x ? y : 0 }
              return try? #require(actual == expected)
            }
      }

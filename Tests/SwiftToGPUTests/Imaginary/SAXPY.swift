@@ -4,20 +4,20 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("SAXPY") struct SAXPY {
+@Suite("SAXPY") struct SAXPYTests {
     #if arch(arm64)
-    @Test("Float16") func test_float16() { prop_saxpy(Float16.self) }
+    @Test func saxpy16() { saxpyTest(Float16.self) }
     #endif
-    @Test("Float32") func test_float32() { prop_saxpy(Float32.self) }
-    @Test("Float64") func test_float64() { prop_saxpy(Float64.self) }
+    @Test func saxpy32() { saxpyTest(Float32.self) }
+    @Test func saxpy64() { saxpyTest(Float64.self) }
 }
 
-private func prop_saxpy<T: Arbitrary & Similar & Numeric>(_: T.Type) {
+private func saxpyTest<T: Arbitrary & Similar & Numeric>(_: T.Type) {
     property(String(describing: T.self) + ".saxpy") <-
       forAllNoShrink(Gen<Int>.choose((0, 8192))) { n in
       forAllNoShrink(T.arbitrary) { alpha in
-      forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { (xs: [T]) in
-      forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { (ys: [T]) in
+      forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { xs in
+      forAllNoShrink(T.arbitrary.proliferate(withSize: n)) { ys in
         let expected = zip(xs, ys).map { x, y in alpha * x + y }
 
         // XXX: The following zipWith implementation is currently failing to

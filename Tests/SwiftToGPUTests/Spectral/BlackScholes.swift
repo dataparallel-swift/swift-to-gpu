@@ -7,25 +7,25 @@ import Testing
 
 // swiftlint:disable identifier_name
 
-@Suite("BlackScholes") struct BlackScholes {
+@Suite("BlackScholes") struct BlackScholesTests {
     #if arch(arm64)
-    @Test("Float16") func test_float16() { prop_blackscholes(Float16.self) }
+    @Test func blackscholes16() { blackscholesTest(Float16.self) }
     #endif
     #if PTX
-    @Test("Float32", .bug(id: "86b6an9y0")) func test_float32() { withKnownIssue { prop_blackscholes(Float32.self) } }
+    @Test(.bug(id: "86b6an9y0")) func blackscholes32() { withKnownIssue { blackscholesTest(Float32.self) } }
     #endif
     #if CPU
-    @Test("Float32") func test_float32() { prop_blackscholes(Float32.self) }
+    @Test func blackscholes32() { blackscholesTest(Float32.self) }
     #endif
-    @Test("Float64") func test_float64() { prop_blackscholes(Float64.self) }
+    @Test func blackscholes64() { blackscholesTest(Float64.self) }
 }
 
-private func prop_blackscholes<T: Arbitrary & Similar & RandomType & BinaryFloatingPoint & ElementaryFunctions>(_: T.Type) {
+private func blackscholesTest<T: Arbitrary & Similar & RandomType & BinaryFloatingPoint & ElementaryFunctions>(_: T.Type) {
     let riskfree: T   = 0.02
     let volatility: T = 0.30
     property(String(describing: T.self) + ".blackscholes") <-
       forAllNoShrink(Gen<Int>.choose((1, 4096))) { n in
-      forAllNoShrink(Gen<T>.choose((0, 30)).proliferate(withSize: n)) { (price: [T]) in
+      forAllNoShrink(Gen<T>.choose((0, 30)).proliferate(withSize: n)) { (price: T) in
       forAllNoShrink(Gen<T>.choose((1, 100)).proliferate(withSize: n)) { (strike: [T]) in
       forAllNoShrink(Gen<T>.choose((0.25, 10)).proliferate(withSize: n)) { (years: [T]) in
         let expected = (0 ..< n).map { i in blackscholes(
