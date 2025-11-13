@@ -136,11 +136,11 @@ import Testing
             // Collatz conjecture's iterations complete successfully without intermediate overflows in this range
             let gen = Int.arbitrary.suchThat { $0 > 0 && $0 < 100000 }
             property(#function) <-
-              forAllNoShrink(gen.proliferate) { xs in
-                let expected = xs.map(collatz)
-                let actual = map(xs, collatz)
-                return try? #require(expected == actual)
-              }
+                forAllNoShrink(gen.proliferate) { xs in
+                    let expected = xs.map(collatz)
+                    let actual = map(xs, collatz)
+                    return try? #require(expected == actual)
+                }
         }
     }
 }
@@ -158,11 +158,11 @@ private func forLoopTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(forLoop)
-        let actual = map(xs, forLoop)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(forLoop)
+            let actual = map(xs, forLoop)
+            return try? #require(expected == actual)
+        }
 }
 
 private func forLoopBreakTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -180,11 +180,11 @@ private func forLoopBreakTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in forLoopBreak(x, k) }
-        let actual = map(xs) { x in forLoopBreak(x, k) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in forLoopBreak(x, k) }
+            let actual = map(xs) { x in forLoopBreak(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func forLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -203,11 +203,11 @@ private func forLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in forLoopContinue(x, k) }
-        let actual = map(xs) { x in forLoopContinue(x, k) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in forLoopContinue(x, k) }
+            let actual = map(xs) { x in forLoopContinue(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func forLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -225,11 +225,11 @@ private func forLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in forLoopNest(x, y) }
-        let actual = zipWith(xs, ys) { x, y in forLoopNest(x, y) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in forLoopNest(x, y) }
+            let actual = zipWith(xs, ys) { x, y in forLoopNest(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func forLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -251,11 +251,11 @@ private func forLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Ty
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in forLoopNestBreakInner(x, y) }
-        let actual = zipWith(xs, ys) { x, y in forLoopNestBreakInner(x, y) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in forLoopNestBreakInner(x, y) }
+            let actual = zipWith(xs, ys) { x, y in forLoopNestBreakInner(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func forLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -276,11 +276,11 @@ private func forLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Ty
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in forLoopNestBreakOuter(x, y) }
-        let actual = zipWith(xs, ys) { x, y in forLoopNestBreakOuter(x, y) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in forLoopNestBreakOuter(x, y) }
+            let actual = zipWith(xs, ys) { x, y in forLoopNestBreakOuter(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func whileLoopTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -296,11 +296,11 @@ private func whileLoopTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(whileLoop)
-        let actual = map(xs, whileLoop)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(whileLoop)
+            let actual = map(xs, whileLoop)
+            return try? #require(expected == actual)
+        }
 }
 
 private func whileLoopBreakTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -320,11 +320,11 @@ private func whileLoopBreakTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in whileLoopBreak(x, k) }
-        let actual = map(xs) { x in whileLoopBreak(x, k) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in whileLoopBreak(x, k) }
+            let actual = map(xs) { x in whileLoopBreak(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func whileLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -346,11 +346,11 @@ private func whileLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in whileLoopContinue(x, k) }
-        let actual = map(xs) { x in whileLoopContinue(x, k) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in whileLoopContinue(x, k) }
+            let actual = map(xs) { x in whileLoopContinue(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func whileLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -372,11 +372,11 @@ private func whileLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in whileLoopNest(x, y) }
-        let actual = zipWith(xs, ys) { x, y in whileLoopNest(x, y) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in whileLoopNest(x, y) }
+            let actual = zipWith(xs, ys) { x, y in whileLoopNest(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func whileLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -402,11 +402,11 @@ private func whileLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in whileLoopNestBreakInner(x, y) }
-        let actual = zipWith(xs, ys) { x, y in whileLoopNestBreakInner(x, y) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in whileLoopNestBreakInner(x, y) }
+            let actual = zipWith(xs, ys) { x, y in whileLoopNestBreakInner(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func whileLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -431,9 +431,9 @@ private func whileLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.
         return result
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in whileLoopNestBreakOuter(x, y) }
-        let actual = zipWith(xs, ys) { x, y in whileLoopNestBreakOuter(x, y) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in whileLoopNestBreakOuter(x, y) }
+            let actual = zipWith(xs, ys) { x, y in whileLoopNestBreakOuter(x, y) }
+            return try? #require(expected == actual)
+        }
 }

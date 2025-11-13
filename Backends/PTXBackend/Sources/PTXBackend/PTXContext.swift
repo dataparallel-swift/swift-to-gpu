@@ -92,7 +92,8 @@ public struct PTXContext: ContextProtocol {
 
         var maxBlocksPerMultiprocessor: Int32 = 0
         try cuda_safe_call {
-            cuDeviceGetAttribute(&maxBlocksPerMultiprocessor, CU_DEVICE_ATTRIBUTE_MAX_BLOCKS_PER_MULTIPROCESSOR, rawDevice) }
+            cuDeviceGetAttribute(&maxBlocksPerMultiprocessor, CU_DEVICE_ATTRIBUTE_MAX_BLOCKS_PER_MULTIPROCESSOR, rawDevice)
+        }
 
         var totalGlobalMem: Int = 0
         try cuda_safe_call { cuDeviceTotalMem_v2(&totalGlobalMem, rawDevice) }

@@ -53,8 +53,7 @@ private func blackscholesTest<T: Arbitrary & Similar & RandomType & BinaryFloati
 }
 
 // Polynomial approximation of cumulative normal distribution function
-private func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A
-{
+private func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A {
     let A1: A =  0.319381530
     let A2: A = -0.356563782
     let A3: A =  1.781477937
@@ -88,18 +87,17 @@ private func blackscholes<A: BinaryFloatingPoint & ElementaryFunctions>(
     price s: A,
     strike x: A,
     years t: A
-) -> (call: A, put: A)
-{
-  let v_sqrtT = v * A.sqrt(t)
-  let d1      = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
-  let d2      = d1 - v_sqrtT
-  let cnd_d1  = cnd(d1)
-  let cnd_d2  = cnd(d2)
+) -> (call: A, put: A) {
+    let v_sqrtT = v * A.sqrt(t)
+    let d1      = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
+    let d2      = d1 - v_sqrtT
+    let cnd_d1  = cnd(d1)
+    let cnd_d2  = cnd(d2)
 
-  let x_expRT = x * A.exp(-r * t)
+    let x_expRT = x * A.exp(-r * t)
 
-  return (
-      call: s * cnd_d1 - x_expRT * cnd_d2,
-      put: x_expRT * (1.0 - cnd_d2) - s * (1.0 - cnd_d1)
-  )
+    return (
+        call: s * cnd_d1 - x_expRT * cnd_d2,
+        put: x_expRT * (1.0 - cnd_d2) - s * (1.0 - cnd_d1)
+    )
 }

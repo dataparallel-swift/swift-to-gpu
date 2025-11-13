@@ -22,11 +22,11 @@ import Testing
                 }
             }
             property(#function) <-
-              forAllNoShrink([E1].arbitrary) { xs in
-                let expected = xs.map(switchE1)
-                let actual = map(xs, switchE1)
-                return try? #require(expected == actual)
-              }
+                forAllNoShrink([E1].arbitrary) { xs in
+                    let expected = xs.map(switchE1)
+                    let actual = map(xs, switchE1)
+                    return try? #require(expected == actual)
+                }
         }
 
         enum E2: Arbitrary {
@@ -46,11 +46,11 @@ import Testing
                 }
             }
             property(#function) <-
-              forAllNoShrink([E2].arbitrary) { xs in
-                let expected = xs.map(switchE2)
-                let actual = map(xs, switchE2)
-                return try? #require(expected == actual)
-              }
+                forAllNoShrink([E2].arbitrary) { xs in
+                    let expected = xs.map(switchE2)
+                    let actual = map(xs, switchE2)
+                    return try? #require(expected == actual)
+                }
         }
 
         enum E3: Arbitrary, Equatable {
@@ -78,11 +78,11 @@ import Testing
                 }
             }
             property(#function) <-
-              forAllNoShrink([E3].arbitrary) { xs in
-                let expected = xs.map(switchE3)
-                let actual = map(xs, switchE3)
-                return try? #require(expected == actual)
-              }
+                forAllNoShrink([E3].arbitrary) { xs in
+                    let expected = xs.map(switchE3)
+                    let actual = map(xs, switchE3)
+                    return try? #require(expected == actual)
+                }
         }
 
         enum E4: Arbitrary {
@@ -113,11 +113,11 @@ import Testing
                 }
             }
             property(#function) <-
-              forAllNoShrink([E4].arbitrary) { xs in
-                let expected = xs.map(switchE4)
-                let actual = map(xs, switchE4)
-                return try? #require(expected == actual)
-              }
+                forAllNoShrink([E4].arbitrary) { xs in
+                    let expected = xs.map(switchE4)
+                    let actual = map(xs, switchE4)
+                    return try? #require(expected == actual)
+                }
         }
     }
 
@@ -792,11 +792,11 @@ private func switchEV1Test<T: Arbitrary & Equatable>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([EV1<T>].arbitrary) { xs in
-        let expected = xs.map(switchEV1)
-        let actual = map(xs, switchEV1)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([EV1<T>].arbitrary) { xs in
+            let expected = xs.map(switchEV1)
+            let actual = map(xs, switchEV1)
+            return try? #require(expected == actual)
+        }
 }
 
 enum EV2<A: Arbitrary, B: Arbitrary>: Arbitrary {
@@ -819,11 +819,11 @@ private func switchEV2Test<A: Arbitrary & FixedWidthInteger, B: Arbitrary & Fixe
         }
     }
     property(#function) <-
-      forAllNoShrink([EV2<A, B>].arbitrary) { xs in
-        let expected = xs.map(switchEV2)
-        let actual = map(xs, switchEV2)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([EV2<A, B>].arbitrary) { xs in
+            let expected = xs.map(switchEV2)
+            let actual = map(xs, switchEV2)
+            return try? #require(expected == actual)
+        }
 }
 
 enum EV3<A: Arbitrary, B: Arbitrary>: Arbitrary {
@@ -852,11 +852,11 @@ private func switchEV3Test<A: Arbitrary & BinaryInteger, B: Arbitrary & BinaryIn
         }
     }
     property(#function) <-
-      forAllNoShrink([EV3<A, B>].arbitrary) { xs in
-        let expected = xs.map(switchEV3)
-        let actual = map(xs, switchEV3)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([EV3<A, B>].arbitrary) { xs in
+            let expected = xs.map(switchEV3)
+            let actual = map(xs, switchEV3)
+            return try? #require(expected == actual)
+        }
 }
 
 enum EV4<A: Arbitrary, B: Arbitrary>: Arbitrary {
@@ -888,9 +888,9 @@ private func switchEV4Test<A: Arbitrary & BinaryInteger, B: Arbitrary & BinaryIn
         }
     }
     property(#function) <-
-      forAllNoShrink([EV4<A, B>].arbitrary) { xs in
-        let expected = xs.map(switchEV4)
-        let actual = map(xs, switchEV4)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([EV4<A, B>].arbitrary) { xs in
+            let expected = xs.map(switchEV4)
+            let actual = map(xs, switchEV4)
+            return try? #require(expected == actual)
+        }
 }

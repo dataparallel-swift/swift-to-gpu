@@ -95,10 +95,10 @@ let package = Package(
 )
 
 private extension String? {
-  var isSet: Bool {
-    if let value = self {
-      return value.isEmpty || value == "1" || value.lowercased() == "true"
+    var isSet: Bool {
+        if let value = self {
+            return value.isEmpty || value == "1" || value.lowercased() == "true"
+        }
+        return false
     }
-    return false
-  }
 }

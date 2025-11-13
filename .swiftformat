@@ -7,4 +7,4 @@
 
 [nofib]
 --filter Backends/PTXBackend/Tests/PTXBackendTests/**
---disable indent,braces,wrapAttributes # forAll[NoShrink]
+--disable wrapAttributes # @Test, @Suite

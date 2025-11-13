@@ -515,7 +515,7 @@ import Testing
         @Test("UInt.&>>") func uncheckedShiftR() { uncheckedShiftRTest(UInt.self) }
     }
 
-#if arch(arm64)
+    #if arch(arm64)
     @Suite("Float16") struct Float16Tests {
         // Ordering
         @Test("Float16.==") func eq() { eqTest(Float16.self) }
@@ -585,7 +585,7 @@ import Testing
         @Test("Float16.gamma") func gamma() { gammaTest(Float16.self) }
         @Test("Float16.logGamma") func logGamma() { logGammaTest(Float16.self) }
     }
-#endif
+    #endif
 
     @Suite("Float32") struct Float32Tests {
         // Ordering
@@ -762,21 +762,21 @@ import Testing
 // @inline(never)
 private func eqTest<T: Arbitrary & Equatable>(_: T.Type) {
     property(String(describing: T.self) + ".==") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x == y }
-        let actual   = zipWith(xs, ys, ==)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x == y }
+            let actual   = zipWith(xs, ys, ==)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func neqTest<T: Arbitrary & Equatable>(_: T.Type) {
     property(String(describing: T.self) + ".!=") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x != y }
-        let actual   = zipWith(xs, ys, !=)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x != y }
+            let actual   = zipWith(xs, ys, !=)
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: Comparable
@@ -784,91 +784,91 @@ private func neqTest<T: Arbitrary & Equatable>(_: T.Type) {
 // @inline(never)
 private func lnotTest() {
     property("Bool.lnot") <-
-      forAllNoShrink([Bool].arbitrary) { xs in
-        let expected = xs.map(!)
-        let actual   = map(xs, !)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([Bool].arbitrary) { xs in
+            let expected = xs.map(!)
+            let actual   = map(xs, !)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func lorTest() {
     property("Bool.||") <-
-      forAllNoShrink([Bool].arbitrary, [Bool].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x || y }
-        let actual   = zipWith(xs, ys) { x, y in x || y }
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([Bool].arbitrary, [Bool].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x || y }
+            let actual   = zipWith(xs, ys) { x, y in x || y }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func landTest() {
     property("Bool.&&") <-
-      forAllNoShrink([Bool].arbitrary, [Bool].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x && y }
-        let actual   = zipWith(xs, ys) { x, y in x && y }
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([Bool].arbitrary, [Bool].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x && y }
+            let actual   = zipWith(xs, ys) { x, y in x && y }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func ltTest<T: Arbitrary & Comparable>(_: T.Type) {
     property(String(describing: T.self) + ".<") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x < y }
-        let actual   = zipWith(xs, ys, <)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x < y }
+            let actual   = zipWith(xs, ys, <)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func gtTest<T: Arbitrary & Comparable>(_: T.Type) {
     property(String(describing: T.self) + ".>") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x > y }
-        let actual   = zipWith(xs, ys, >)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x > y }
+            let actual   = zipWith(xs, ys, >)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func lteTest<T: Arbitrary & Comparable>(_: T.Type) {
     property(String(describing: T.self) + ".<=") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x <= y }
-        let actual   = zipWith(xs, ys, <=)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x <= y }
+            let actual   = zipWith(xs, ys, <=)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func gteTest<T: Arbitrary & Comparable>(_: T.Type) {
     property(String(describing: T.self) + ".>=") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x >= y }
-        let actual   = zipWith(xs, ys, >=)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x >= y }
+            let actual   = zipWith(xs, ys, >=)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func minTest<T: Arbitrary & Comparable>(_: T.Type) {
     property(String(describing: T.self) + ".>=") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in min(x, y) }
-        let actual   = zipWith(xs, ys) { x, y in min(x, y) }
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in min(x, y) }
+            let actual   = zipWith(xs, ys) { x, y in min(x, y) }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func maxTest<T: Arbitrary & Comparable>(_: T.Type) {
     property(String(describing: T.self) + ".>=") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in max(x, y) }
-        let actual   = zipWith(xs, ys) { x, y in max(x, y) }
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in max(x, y) }
+            let actual   = zipWith(xs, ys) { x, y in max(x, y) }
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: SignedNumeric
@@ -876,21 +876,21 @@ private func maxTest<T: Arbitrary & Comparable>(_: T.Type) {
 // @inline(never)
 private func negateTest<T: Arbitrary & SignedNumeric>(_: T.Type) {
     property(String(describing: T.self) + ".negate") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { x in -x }
-        let actual   = map(xs) { x in -x }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { x in -x }
+            let actual   = map(xs) { x in -x }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func absTest<T: Arbitrary & Comparable & SignedNumeric>(_: T.Type) {
     property(String(describing: T.self) + ".abs") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { abs($0) }
-        let actual   = map(xs) { abs($0) }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { abs($0) }
+            let actual   = map(xs) { abs($0) }
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: BinaryInteger
@@ -898,11 +898,11 @@ private func absTest<T: Arbitrary & Comparable & SignedNumeric>(_: T.Type) {
 // @inline(never)
 private func signumTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + ".signum") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.signum() }
-        let actual   = map(xs) { $0.signum() }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.signum() }
+            let actual   = map(xs) { $0.signum() }
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: AdditiveArithmetic
@@ -910,11 +910,11 @@ private func signumTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
 // @inline(never)
 private func plusTest<T: Arbitrary & AdditiveArithmetic>(_: T.Type) {
     property(String(describing: T.self) + ".+") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x + y }
-        let actual   = zipWith(xs, ys, +)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x + y }
+            let actual   = zipWith(xs, ys, +)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
@@ -922,21 +922,21 @@ private func plusTest<T: Arbitrary & AdditiveArithmetic>(_: T.Type) {
 private func plusAvoidingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     let gen = T.arbitrary.suchThat { (T.min / 2) <= $0 && $0 <= (T.max / 2) }
     property(String(describing: T.self) + ".avoiding_overflow.+") <-
-      forAllNoShrink(gen.proliferate, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x + y }
-        let actual   = zipWith(xs, ys, +)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink(gen.proliferate, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x + y }
+            let actual   = zipWith(xs, ys, +)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func minusTest<T: Arbitrary & AdditiveArithmetic>(_: T.Type) {
     property(String(describing: T.self) + ".-") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x - y }
-        let actual   = zipWith(xs, ys, -)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x - y }
+            let actual   = zipWith(xs, ys, -)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
@@ -944,11 +944,11 @@ private func minusTest<T: Arbitrary & AdditiveArithmetic>(_: T.Type) {
 private func minusAvoidingUnderflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     let gen = T.arbitrary.suchThat { (T.min / 2) <= $0 && $0 <= (T.max / 2) }
     property(String(describing: T.self) + ".avoiding_underflow.-") <-
-      forAllNoShrink(gen.proliferate, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in if x > y { x - y } else { y - x } }
-        let actual   = zipWith(xs, ys) { x, y in if x > y { x - y } else { y - x } }
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink(gen.proliferate, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in if x > y { x - y } else { y - x } }
+            let actual   = zipWith(xs, ys) { x, y in if x > y { x - y } else { y - x } }
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: Numeric
@@ -956,11 +956,11 @@ private func minusAvoidingUnderflowTest<T: Arbitrary & FixedWidthInteger>(_: T.T
 // @inline(never)
 private func mulTest<T: Arbitrary & Numeric>(_: T.Type) {
     property(String(describing: T.self) + ".*") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x * y }
-        let actual   = zipWith(xs, ys, *)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x * y }
+            let actual   = zipWith(xs, ys, *)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
@@ -969,11 +969,11 @@ private func mulAvoidingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type
     let lim = Double(T.max).squareRoot()
     let gen = T.arbitrary.suchThat { abs(Double($0)) <= lim }
     property(String(describing: T.self) + ".avoiding_overflow.*") <-
-      forAllNoShrink(gen.proliferate, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x * y }
-        let actual   = zipWith(xs, ys, *)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink(gen.proliferate, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x * y }
+            let actual   = zipWith(xs, ys, *)
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: BinaryInteger
@@ -982,117 +982,117 @@ private func mulAvoidingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type
 private func quotTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 == 0) }
     property(String(describing: T.self) + "./") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x / y }
-        let actual   = zipWith(xs, ys, /)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x / y }
+            let actual   = zipWith(xs, ys, /)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func remTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 == 0) }
     property(String(describing: T.self) + "./") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x % y }
-        let actual   = zipWith(xs, ys, %)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x % y }
+            let actual   = zipWith(xs, ys, %)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func quotientAndRemainderTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 == 0) }
     property(String(describing: T.self) + "./") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.quotientAndRemainder(dividingBy: y) }
-        let actual   = zipWith(xs, ys) { x, y in x.quotientAndRemainder(dividingBy: y) }
-        let result1: ()? = try? #require(actual.map { $0.quotient }  == expected.map { $0.quotient })
-        let result2: ()? = try? #require(actual.map { $0.remainder } == expected.map { $0.remainder })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.quotientAndRemainder(dividingBy: y) }
+            let actual   = zipWith(xs, ys) { x, y in x.quotientAndRemainder(dividingBy: y) }
+            let result1: ()? = try? #require(actual.map { $0.quotient }  == expected.map { $0.quotient })
+            let result2: ()? = try? #require(actual.map { $0.remainder } == expected.map { $0.remainder })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func isMultipleTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + "./") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.isMultiple(of: y) }
-        let actual   = zipWith(xs, ys) { x, y in x.isMultiple(of: y) }
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.isMultiple(of: y) }
+            let actual   = zipWith(xs, ys) { x, y in x.isMultiple(of: y) }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func andTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + ".&") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x & y }
-        let actual   = zipWith(xs, ys, &)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x & y }
+            let actual   = zipWith(xs, ys, &)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func orTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + ".&") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x | y }
-        let actual   = zipWith(xs, ys, |)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x | y }
+            let actual   = zipWith(xs, ys, |)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func xorTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + ".&") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x ^ y }
-        let actual   = zipWith(xs, ys, ^)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x ^ y }
+            let actual   = zipWith(xs, ys, ^)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func shiftLTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     let gen = Gen<Int>.choose((-T.zero.bitWidth, T.zero.bitWidth))
     property(String(describing: T.self) + ".<<") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x << y }
-        let actual   = zipWith(xs, ys, <<)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x << y }
+            let actual   = zipWith(xs, ys, <<)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func shiftRTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     let gen = Gen<Int>.choose((-T.zero.bitWidth, T.zero.bitWidth))
     property(String(describing: T.self) + ".>>") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x >> y }
-        let actual   = zipWith(xs, ys, >>)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x >> y }
+            let actual   = zipWith(xs, ys, >>)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func complementTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + ".complement") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { ~$0 }
-        let actual   = map(xs) { ~$0 }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { ~$0 }
+            let actual   = map(xs) { ~$0 }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func trailingZeroBitCountTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
     property(String(describing: T.self) + ".trailingZeroBitCount") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.trailingZeroBitCount }
-        let actual   = map(xs) { $0.trailingZeroBitCount }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.trailingZeroBitCount }
+            let actual   = map(xs) { $0.trailingZeroBitCount }
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: FixedWidthInteger
@@ -1100,199 +1100,199 @@ private func trailingZeroBitCountTest<T: Arbitrary & BinaryInteger>(_: T.Type) {
 // @inline(never)
 private func leadingZeroBitCountTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".leadingZeroBitCount") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.leadingZeroBitCount }
-        let actual   = map(xs) { $0.leadingZeroBitCount }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.leadingZeroBitCount }
+            let actual   = map(xs) { $0.leadingZeroBitCount }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func nonzeroBitCountTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".nonzeroBitCount") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.nonzeroBitCount }
-        let actual   = map(xs) { $0.nonzeroBitCount }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.nonzeroBitCount }
+            let actual   = map(xs) { $0.nonzeroBitCount }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func byteSwappedTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".byteSwapped") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.byteSwapped }
-        let actual   = map(xs) { $0.byteSwapped }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.byteSwapped }
+            let actual   = map(xs) { $0.byteSwapped }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func littleEndianTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".littleEndian") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.littleEndian }
-        let actual   = map(xs) { $0.littleEndian }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.littleEndian }
+            let actual   = map(xs) { $0.littleEndian }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func bigEndianTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".bigEndian") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.bigEndian }
-        let actual   = map(xs) { $0.bigEndian }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.bigEndian }
+            let actual   = map(xs) { $0.bigEndian }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func uncheckedPlusTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".&*") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x &+ y }
-        let actual   = zipWith(xs, ys, &+)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x &+ y }
+            let actual   = zipWith(xs, ys, &+)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func uncheckedMinusTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".&-") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x &+ y }
-        let actual   = zipWith(xs, ys, &+)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x &+ y }
+            let actual   = zipWith(xs, ys, &+)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func uncheckedMulTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".&*") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x &* y }
-        let actual   = zipWith(xs, ys, &*)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x &* y }
+            let actual   = zipWith(xs, ys, &*)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func uncheckedShiftLTest<T: Arbitrary & RandomType & FixedWidthInteger>(_: T.Type) {
     let gen = Gen.choose((0, T(T.zero.bitWidth)))
     property(String(describing: T.self) + ".&<<") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x &<< y }
-        let actual   = zipWith(xs, ys, &<<)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x &<< y }
+            let actual   = zipWith(xs, ys, &<<)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func uncheckedShiftRTest<T: Arbitrary & RandomType & FixedWidthInteger>(_: T.Type) {
     let gen = Gen.choose((0, T(T.zero.bitWidth)))
     property(String(describing: T.self) + ".&>>") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x &>> y }
-        let actual   = zipWith(xs, ys, &>>)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x &>> y }
+            let actual   = zipWith(xs, ys, &>>)
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func addingReportingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".addingReportingOverflow") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.addingReportingOverflow(y) }
-        let actual   = zipWith(xs, ys) { x, y in x.addingReportingOverflow(y) }
-        let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
-        let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.addingReportingOverflow(y) }
+            let actual   = zipWith(xs, ys) { x, y in x.addingReportingOverflow(y) }
+            let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
+            let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func subtractingReportingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".subtractingReportingOverflow") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.subtractingReportingOverflow(y) }
-        let actual   = zipWith(xs, ys) { x, y in x.subtractingReportingOverflow(y) }
-        let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
-        let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.subtractingReportingOverflow(y) }
+            let actual   = zipWith(xs, ys) { x, y in x.subtractingReportingOverflow(y) }
+            let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
+            let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func multipliedReportingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".multipliedReportingOverflow") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.multipliedReportingOverflow(by: y) }
-        let actual   = zipWith(xs, ys) { x, y in x.multipliedReportingOverflow(by: y) }
-        let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
-        let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.multipliedReportingOverflow(by: y) }
+            let actual   = zipWith(xs, ys) { x, y in x.multipliedReportingOverflow(by: y) }
+            let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
+            let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func dividedReportingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".dividedReportingOverflow") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.dividedReportingOverflow(by: y) }
-        let actual   = zipWith(xs, ys) { x, y in x.dividedReportingOverflow(by: y) }
-        let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
-        let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.dividedReportingOverflow(by: y) }
+            let actual   = zipWith(xs, ys) { x, y in x.dividedReportingOverflow(by: y) }
+            let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
+            let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func remainderReportingOverflowTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".remainderReportingOverflow") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.remainderReportingOverflow(dividingBy: y) }
-        let actual   = zipWith(xs, ys) { x, y in x.remainderReportingOverflow(dividingBy: y) }
-        let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
-        let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.remainderReportingOverflow(dividingBy: y) }
+            let actual   = zipWith(xs, ys) { x, y in x.remainderReportingOverflow(dividingBy: y) }
+            let result1: ()? = try? #require(actual.map { $0.partialValue } == expected.map { $0.partialValue })
+            let result2: ()? = try? #require(actual.map { $0.overflow } == expected.map { $0.overflow })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func multipliedFullWidthTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     property(String(describing: T.self) + ".multipliedFullWidth") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x.multipliedFullWidth(by: y) }
-        let actual   = zipWith(xs, ys) { x, y in x.multipliedFullWidth(by: y) }
-        let result1: ()? = try? #require(actual.map { $0.high } == expected.map { $0.high })
-        let result2: ()? = try? #require(actual.map { $0.low } == expected.map { $0.low })
-        return result1 != nil && result2 != nil
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x.multipliedFullWidth(by: y) }
+            let actual   = zipWith(xs, ys) { x, y in x.multipliedFullWidth(by: y) }
+            let result1: ()? = try? #require(actual.map { $0.high } == expected.map { $0.high })
+            let result2: ()? = try? #require(actual.map { $0.low } == expected.map { $0.low })
+            return result1 != nil && result2 != nil
+        }
 }
 
 // @inline(never)
 private func dividingFullWidthTest<T: Arbitrary & FixedWidthInteger>(_: T.Type)
-  where T.Magnitude: Arbitrary
+    where T.Magnitude: Arbitrary
 {
     property(String(describing: T.self) + ".dividingFullWidth") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary, [T.Magnitude].arbitrary) { xs, ys, zs in
-        let expected = zip(xs, zip(ys, zs).map { y, z in (high: y, low: z) })
-                        .map { x, yz in x.dividingFullWidth(yz) } // swiftlint:disable:this identifier_name
+        forAllNoShrink([T].arbitrary, [T].arbitrary, [T.Magnitude].arbitrary) { xs, ys, zs in
+            let expected = zip(xs, zip(ys, zs).map { y, z in (high: y, low: z) })
+                .map { x, yz in x.dividingFullWidth(yz) } // swiftlint:disable:this identifier_name
 
-        // TODO: zipWith3
-        let n        = min(min(xs.count, ys.count), zs.count)
-        let actual   = generate(count: n) { i in
-            let x = xs[i]
-            let y = ys[i]
-            let z = zs[i]
-            return x.dividingFullWidth((high: y, low: z))
+            // TODO: zipWith3
+            let n        = min(min(xs.count, ys.count), zs.count)
+            let actual   = generate(count: n) { i in
+                let x = xs[i]
+                let y = ys[i]
+                let z = zs[i]
+                return x.dividingFullWidth((high: y, low: z))
+            }
+
+            let result1: ()? = try? #require(actual.map { $0.quotient } == expected.map { $0.quotient })
+            let result2: ()? = try? #require(actual.map { $0.remainder } == expected.map { $0.remainder })
+            return result1 != nil && result2 != nil
         }
-
-        let result1: ()? = try? #require(actual.map { $0.quotient } == expected.map { $0.quotient })
-        let result2: ()? = try? #require(actual.map { $0.remainder } == expected.map { $0.remainder })
-        return result1 != nil && result2 != nil
-      }
 }
 
 // MARK: FloatingPoint
@@ -1301,213 +1301,213 @@ private func dividingFullWidthTest<T: Arbitrary & FixedWidthInteger>(_: T.Type)
 private func quotTest<T: Arbitrary & Similar & FloatingPoint>(_: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 ~~~ 0) }
     property(String(describing: T.self) + "./") <-
-      forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in x / y }
-        let actual   = zipWith(xs, ys, /)
-        return try? #require(actual ~~~ expected)
-      }
+        forAllNoShrink([T].arbitrary, gen.proliferate) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in x / y }
+            let actual   = zipWith(xs, ys, /)
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func exponentTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".exponent") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.exponent }
-        let actual   = map(xs) { $0.exponent }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.exponent }
+            let actual   = map(xs) { $0.exponent }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func floatingPointClassTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".floatingPointClass") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.floatingPointClass }
-        let actual   = map(xs) { $0.floatingPointClass }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.floatingPointClass }
+            let actual   = map(xs) { $0.floatingPointClass }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isCanonicalTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isCanonical") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isCanonical }
-        let actual   = map(xs) { $0.isCanonical }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isCanonical }
+            let actual   = map(xs) { $0.isCanonical }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isFiniteTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isFinite") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isFinite }
-        let actual   = map(xs) { $0.isFinite }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isFinite }
+            let actual   = map(xs) { $0.isFinite }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isInfiniteTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isInfinite") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isInfinite }
-        let actual   = map(xs) { $0.isInfinite }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isInfinite }
+            let actual   = map(xs) { $0.isInfinite }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isNaNTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isNaN") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isNaN }
-        let actual   = map(xs) { $0.isNaN }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isNaN }
+            let actual   = map(xs) { $0.isNaN }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isSignalingNaNTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isSignalingNaN") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isSignalingNaN }
-        let actual   = map(xs) { $0.isSignalingNaN }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isSignalingNaN }
+            let actual   = map(xs) { $0.isSignalingNaN }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isNormalTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isNormal") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isNormal }
-        let actual   = map(xs) { $0.isNormal }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isNormal }
+            let actual   = map(xs) { $0.isNormal }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isSubnormalTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isSubnormal") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isSubnormal }
-        let actual   = map(xs) { $0.isSubnormal }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isSubnormal }
+            let actual   = map(xs) { $0.isSubnormal }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func isZeroTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".isZero") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.isZero }
-        let actual   = map(xs) { $0.isZero }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.isZero }
+            let actual   = map(xs) { $0.isZero }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func nextDownTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".nextDown") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.nextDown }
-        let actual   = map(xs) { $0.nextDown }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.nextDown }
+            let actual   = map(xs) { $0.nextDown }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func nextUpTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".nextUp") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.nextUp }
-        let actual   = map(xs) { $0.nextUp }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.nextUp }
+            let actual   = map(xs) { $0.nextUp }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func signTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".sign") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.sign }
-        let actual   = map(xs) { $0.sign }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.sign }
+            let actual   = map(xs) { $0.sign }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func significandTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".significand") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.significand }
-        let actual   = map(xs) { $0.significand }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.significand }
+            let actual   = map(xs) { $0.significand }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func ulpTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     let gen = T.arbitrary.suchThat { !($0.isInfinite) } // Float16
     property(String(describing: T.self) + ".ulp") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { $0.ulp }
-        let actual   = map(xs) { $0.ulp }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { $0.ulp }
+            let actual   = map(xs) { $0.ulp }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func roundedTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".rounded") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.rounded() }
-        let actual   = map(xs) { $0.rounded() }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.rounded() }
+            let actual   = map(xs) { $0.rounded() }
+            return try? #require(actual == expected)
+        }
 }
 
 // Not working ):
 // @inline(never)
 private func roundedWithRoundingRuleTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".roundedWithRoundingRule") <-
-      forAllNoShrink([T].arbitrary, FloatingPointRoundingRule.arbitrary) { xs, rule in
-        let expected = xs.map { $0.rounded(rule) }
-        let actual   = map(xs) { $0.rounded(rule) }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary, FloatingPointRoundingRule.arbitrary) { xs, rule in
+            let expected = xs.map { $0.rounded(rule) }
+            let actual   = map(xs) { $0.rounded(rule) }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func floorTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".floor") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.rounded(.down) }
-        let actual   = map(xs) { $0.rounded(.down) }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.rounded(.down) }
+            let actual   = map(xs) { $0.rounded(.down) }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func ceilingTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".ceiling") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.rounded(.up) }
-        let actual   = map(xs) { $0.rounded(.up) }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.rounded(.up) }
+            let actual   = map(xs) { $0.rounded(.up) }
+            return try? #require(actual == expected)
+        }
 }
 
 // @inline(never)
 private func truncateTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
     property(String(describing: T.self) + ".truncate") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.rounded(.towardZero) }
-        let actual   = map(xs) { $0.rounded(.towardZero) }
-        return try? #require(actual == expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.rounded(.towardZero) }
+            let actual   = map(xs) { $0.rounded(.towardZero) }
+            return try? #require(actual == expected)
+        }
 }
 
 // MARK: swift-numerics
@@ -1515,309 +1515,309 @@ private func truncateTest<T: Arbitrary & FloatingPoint>(_: T.Type) {
 // @inline(never)
 private func powTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + "pow") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in T.pow(x, y) }
-        let actual   = zipWith(xs, ys) { x, y in T.pow(x, y) }
-        return try? #require(actual ~~~ expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in T.pow(x, y) }
+            let actual   = zipWith(xs, ys) { x, y in T.pow(x, y) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func powiTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + "powi") <-
-      forAllNoShrink([T].arbitrary, [Int].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in T.pow(x, y) }
-        let actual   = zipWith(xs, ys) { x, y in T.pow(x, y) }
-        return try? #require(actual ~~~ expected)
-      }
+        forAllNoShrink([T].arbitrary, [Int].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in T.pow(x, y) }
+            let actual   = zipWith(xs, ys) { x, y in T.pow(x, y) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func sqrtTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.sized { size in Gen.choose((0, T(size))) }
     property(String(describing: T.self) + ".sqrt") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.sqrt($0) }
-        let actual   = map(xs) { T.sqrt($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.sqrt($0) }
+            let actual   = map(xs) { T.sqrt($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func reciprocalTest<T: Arbitrary & Similar & RandomType & AlgebraicField>(_: T.Type) {
     property(String(describing: T.self) + ".reciprocal") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { $0.reciprocal }
-        let actual   = map(xs) { $0.reciprocal }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { $0.reciprocal }
+            let actual   = map(xs) { $0.reciprocal }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func expTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".exp") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.exp($0) }
-        let actual   = map(xs) { T.exp($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.exp($0) }
+            let actual   = map(xs) { T.exp($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func exp2Test<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".ex2p") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.exp2($0) }
-        let actual   = map(xs) { T.exp2($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.exp2($0) }
+            let actual   = map(xs) { T.exp2($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func exp10Test<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".exp10") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.exp10($0) }
-        let actual   = map(xs) { T.exp10($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.exp10($0) }
+            let actual   = map(xs) { T.exp10($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func expMinusOneTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".expMinusOne") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.expMinusOne($0) }
-        let actual   = map(xs) { T.expMinusOne($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.expMinusOne($0) }
+            let actual   = map(xs) { T.expMinusOne($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func logTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.sized { size in Gen.choose((T(0).nextUp, T(size))) }
     property(String(describing: T.self) + ".log") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.log($0) }
-        let actual   = map(xs) { T.log($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.log($0) }
+            let actual   = map(xs) { T.log($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func log2Test<T: Arbitrary & Similar & RandomType & FloatingPoint & RealFunctions>(_: T.Type) {
     let gen = Gen.sized { size in Gen.choose((T(0).nextUp, T(size))) }
     property(String(describing: T.self) + ".log2") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.log2($0) }
-        let actual   = map(xs) { T.log2($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.log2($0) }
+            let actual   = map(xs) { T.log2($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func log10Test<T: Arbitrary & Similar & RandomType & FloatingPoint & RealFunctions>(_: T.Type) {
     let gen = Gen.sized { size in Gen.choose((T(0).nextUp, T(size))) }
     property(String(describing: T.self) + ".log10") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.log10($0) }
-        let actual   = map(xs) { T.log10($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.log10($0) }
+            let actual   = map(xs) { T.log10($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func logOnePlusTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.sized { size in Gen.choose((T(-1).nextUp, T(size))) }
     property(String(describing: T.self) + ".logOnePlus") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.log(onePlus: $0) }
-        let actual   = map(xs) { T.log(onePlus: $0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.log(onePlus: $0) }
+            let actual   = map(xs) { T.log(onePlus: $0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func sinTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".sin") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.sin($0) }
-        let actual   = map(xs) { T.sin($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.sin($0) }
+            let actual   = map(xs) { T.sin($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func cosTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".cos") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.cos($0) }
-        let actual   = map(xs) { T.cos($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.cos($0) }
+            let actual   = map(xs) { T.cos($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func tanTest<T: Arbitrary & Similar & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = T.arbitrary.suchThat { !($0 ~~~ 0) }
     property(String(describing: T.self) + ".tan") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.tan($0) }
-        let actual   = map(xs) { T.tan($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.tan($0) }
+            let actual   = map(xs) { T.tan($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func asinTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.choose((T(-1), T(1)))
     property(String(describing: T.self) + ".asin") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.asin($0) }
-        let actual   = map(xs) { T.asin($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.asin($0) }
+            let actual   = map(xs) { T.asin($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func acosTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.choose((T(-1), T(1)))
     property(String(describing: T.self) + ".acos") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.acos($0) }
-        let actual   = map(xs) { T.acos($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.acos($0) }
+            let actual   = map(xs) { T.acos($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func atanTest<T: Arbitrary & Similar & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".atan") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.atan($0) }
-        let actual   = map(xs) { T.atan($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.atan($0) }
+            let actual   = map(xs) { T.atan($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func sinhTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".sinh") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.sinh($0) }
-        let actual   = map(xs) { T.sinh($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.sinh($0) }
+            let actual   = map(xs) { T.sinh($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func coshTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".cosh") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.cosh($0) }
-        let actual   = map(xs) { T.cosh($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.cosh($0) }
+            let actual   = map(xs) { T.cosh($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func tanhTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".tanh") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.tanh($0) }
-        let actual   = map(xs) { T.tanh($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.tanh($0) }
+            let actual   = map(xs) { T.tanh($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func asinhTest<T: Arbitrary & Similar & ElementaryFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".asinh") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.asinh($0) }
-        let actual   = map(xs) { T.asinh($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.asinh($0) }
+            let actual   = map(xs) { T.asinh($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func acoshTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.sized { size in Gen.choose((T(1), T(size))) }
     property(String(describing: T.self) + ".acosh") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.acosh($0) }
-        let actual   = map(xs) { T.acosh($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.acosh($0) }
+            let actual   = map(xs) { T.acosh($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func atanhTest<T: Arbitrary & Similar & RandomType & FloatingPoint & ElementaryFunctions>(_: T.Type) {
     let gen = Gen.choose((T(-1), T(1)))
     property(String(describing: T.self) + ".atanh") <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { T.atanh($0) }
-        let actual   = map(xs) { T.atanh($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { T.atanh($0) }
+            let actual   = map(xs) { T.atanh($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func atan2Test<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + "atan2") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in T.atan2(y: y, x: x) }
-        let actual   = zipWith(xs, ys) { x, y in T.atan2(y: y, x: x) }
-        return try? #require(actual ~~~ expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in T.atan2(y: y, x: x) }
+            let actual   = zipWith(xs, ys) { x, y in T.atan2(y: y, x: x) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func erfTest<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".erf") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.erf($0) }
-        let actual   = map(xs) { T.erf($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.erf($0) }
+            let actual   = map(xs) { T.erf($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func erfcTest<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".erfc") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.erfc($0) }
-        let actual   = map(xs) { T.erfc($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.erfc($0) }
+            let actual   = map(xs) { T.erfc($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func gammaTest<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".gamma") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.gamma($0) }
-        let actual   = map(xs) { T.gamma($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.gamma($0) }
+            let actual   = map(xs) { T.gamma($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func logGammaTest<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + ".logGamma") <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map { T.logGamma($0) }
-        let actual   = map(xs) { T.logGamma($0) }
-        return try? #require(actual ~~~ expected)
-    }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map { T.logGamma($0) }
+            let actual   = map(xs) { T.logGamma($0) }
+            return try? #require(actual ~~~ expected)
+        }
 }
 
 // @inline(never)
 private func hypotTest<T: Arbitrary & Similar & RealFunctions>(_: T.Type) {
     property(String(describing: T.self) + "hypot") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in T.hypot(x, y) }
-        let actual   = zipWith(xs, ys) { x, y in T.hypot(x, y) }
-        return try? #require(actual ~~~ expected)
-      }
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in T.hypot(x, y) }
+            let actual   = zipWith(xs, ys) { x, y in T.hypot(x, y) }
+            return try? #require(actual ~~~ expected)
+        }
 }

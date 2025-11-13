@@ -125,12 +125,12 @@ import Testing
             @Test func id() { idTest(Float32.self) }
             @Test func idNoinline() { idNoinlineTest(Float32.self) }
 
-#if arch(arm64)
+            #if arch(arm64)
             @Suite("Float16") struct Float16Tests {
                 @Test func binary() { binaryTest(Float32.self, Float16.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Float32.self, Float16.self) }
             }
-#endif
+            #endif
 
             @Suite("Float32") struct Float32Tests {
                 @Test func binary() { binaryTest(Float32.self, Float32.self) }
@@ -177,11 +177,11 @@ import Testing
 private func idTest<T: Arbitrary & Equatable>(_: T.Type) {
     func id(_ x: T) -> T { x }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map(id)
-        let actual = map(xs, id)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map(id)
+            let actual = map(xs, id)
+            return try? #require(expected == actual)
+        }
 }
 
 private func binaryTest<A: Arbitrary & FixedWidthInteger, B: Arbitrary & FixedWidthInteger>(_: A.Type, _: B.Type) {
@@ -190,11 +190,11 @@ private func binaryTest<A: Arbitrary & FixedWidthInteger, B: Arbitrary & FixedWi
         (x1.nonzeroBitCount & x2.nonzeroBitCount) >> 1
     }
     property(#function) <-
-      forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in binary(x, y) }
-        let actual = zipWith(xs, ys, binary)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in binary(x, y) }
+            let actual = zipWith(xs, ys, binary)
+            return try? #require(expected == actual)
+        }
 }
 
 private func binaryTest<A: Arbitrary & Similar & BinaryFloatingPoint, B: Arbitrary & Similar & BinaryFloatingPoint>(_: A.Type, _: B.Type) {
@@ -204,22 +204,22 @@ private func binaryTest<A: Arbitrary & Similar & BinaryFloatingPoint, B: Arbitra
         return d1 + d2 * (d1 * d2)
     }
     property(#function) <-
-      forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in binary(x, y) }
-        let actual = zipWith(xs, ys, binary)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in binary(x, y) }
+            let actual = zipWith(xs, ys, binary)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func idNoinlineTest<T: Arbitrary & Equatable>(_: T.Type) {
     @inline(never)
     func id(_ x: T) -> T { x }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected = xs.map(id)
-        let actual = map(xs, id)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected = xs.map(id)
+            let actual = map(xs, id)
+            return try? #require(expected == actual)
+        }
 }
 
 private func binaryNoInlineTest<A: Arbitrary & FixedWidthInteger, B: Arbitrary & FixedWidthInteger>(_: A.Type, _: B.Type) {
@@ -228,11 +228,11 @@ private func binaryNoInlineTest<A: Arbitrary & FixedWidthInteger, B: Arbitrary &
         (x1.nonzeroBitCount & x2.nonzeroBitCount) >> 1
     }
     property(#function) <-
-      forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in binary(x, y) }
-        let actual = zipWith(xs, ys, binary)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in binary(x, y) }
+            let actual = zipWith(xs, ys, binary)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func binaryNoInlineTest<A: Arbitrary & Similar & BinaryFloatingPoint, B: Arbitrary & Similar & BinaryFloatingPoint>(
@@ -245,11 +245,11 @@ private func binaryNoInlineTest<A: Arbitrary & Similar & BinaryFloatingPoint, B:
         return d1 + d2 * (d1 * d2)
     }
     property(#function) <-
-      forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, y in binary(x, y) }
-        let actual = zipWith(xs, ys, binary)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink([A].arbitrary, [B].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, y in binary(x, y) }
+            let actual = zipWith(xs, ys, binary)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func inoutTest1<T: Arbitrary & Similar & ExpressibleByIntegerLiteral>(_: T.Type) {
@@ -257,16 +257,16 @@ private func inoutTest1<T: Arbitrary & Similar & ExpressibleByIntegerLiteral>(_:
         x = 0
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { xs in
-        let expected: [T] = fill(count: xs.count, with: 0)
-        var actual = xs
-        // NOTE: `parallel_for` required here because of in-place mutation,
-        // i.e. modify accessor instead of subscript set
-        try parallel_for(iterations: xs.count) { i in
-            unary_inout(&actual[i])
-        }.sync()
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink([T].arbitrary) { xs in
+            let expected: [T] = fill(count: xs.count, with: 0)
+            var actual = xs
+            // NOTE: `parallel_for` required here because of in-place mutation,
+            // i.e. modify accessor instead of subscript set
+            try parallel_for(iterations: xs.count) { i in
+                unary_inout(&actual[i])
+            }.sync()
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func inoutTest2<T: Arbitrary & Similar & ExpressibleByIntegerLiteral>(_: T.Type) {
@@ -274,16 +274,16 @@ private func inoutTest2<T: Arbitrary & Similar & ExpressibleByIntegerLiteral>(_:
         x = y
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary, T.arbitrary) { xs, y in
-        let expected = fill(count: xs.count, with: y)
-        var actual = xs
-        // NOTE: `parallel_for` required here because of in-place mutation,
-        // i.e. modify accessor instead of subscript set
-        try parallel_for(iterations: actual.count) { i in
-            binary_inout(&actual[i], y)
-        }.sync()
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink([T].arbitrary, T.arbitrary) { xs, y in
+            let expected = fill(count: xs.count, with: y)
+            var actual = xs
+            // NOTE: `parallel_for` required here because of in-place mutation,
+            // i.e. modify accessor instead of subscript set
+            try parallel_for(iterations: actual.count) { i in
+                binary_inout(&actual[i], y)
+            }.sync()
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 // MARK: recursive functions
@@ -295,11 +295,11 @@ private func factorialRecursiveTest<T: RandomType & Similar & BinaryInteger>(_: 
     }
     let gen = Gen<T>.choose((T.zero, 5)) // 5! fits in Int8, 6! does not
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map(factorial)
-        let actual = map(xs, factorial)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map(factorial)
+            let actual = map(xs, factorial)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func factorialTailcallTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -309,11 +309,11 @@ private func factorialTailcallTest<T: RandomType & Similar & BinaryInteger>(_: T
     }
     let gen = Gen<T>.choose((T.zero, 5)) // 5! fits in Int8, 6! does not
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { n in factorial(n) }
-        let actual = map(xs) { n in factorial(n) }
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { n in factorial(n) }
+            let actual = map(xs) { n in factorial(n) }
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func factorialRecursiveNoinlineTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -324,11 +324,11 @@ private func factorialRecursiveNoinlineTest<T: RandomType & Similar & BinaryInte
     }
     let gen = Gen<T>.choose((T.zero, 5)) // 5! fits in Int8, 6! does not
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map(factorial)
-        let actual = map(xs, factorial)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map(factorial)
+            let actual = map(xs, factorial)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func factorialTailcallNoinlineTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -339,11 +339,11 @@ private func factorialTailcallNoinlineTest<T: RandomType & Similar & BinaryInteg
     }
     let gen = Gen<T>.choose((T.zero, 5)) // 5! fits in Int8, 6! does not
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { n in factorial(n) }
-        let actual = map(xs) { n in factorial(n) }
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { n in factorial(n) }
+            let actual = map(xs) { n in factorial(n) }
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func mutuallyRecursiveTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -372,11 +372,11 @@ private func mutuallyRecursiveTest<T: RandomType & Similar & BinaryInteger>(_: T
     }
     let gen = Gen<T>.choose((T.zero, 5))
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { n in mutually_recursive(n) }
-        let actual = map(xs) { n in mutually_recursive(n) }
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { n in mutually_recursive(n) }
+            let actual = map(xs) { n in mutually_recursive(n) }
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func mutuallyRecursiveNoinlineTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -408,11 +408,11 @@ private func mutuallyRecursiveNoinlineTest<T: RandomType & Similar & BinaryInteg
     }
     let gen = Gen<T>.choose((T.zero, 5))
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map { n in mutually_recursive_noinline(n) }
-        let actual = map(xs) { n in mutually_recursive_noinline(n) }
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map { n in mutually_recursive_noinline(n) }
+            let actual = map(xs) { n in mutually_recursive_noinline(n) }
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func fibonacciRecursiveTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -422,11 +422,11 @@ private func fibonacciRecursiveTest<T: RandomType & Similar & BinaryInteger>(_: 
     }
     let gen = Gen<T>.choose((T.zero, 11)) // fibonacci(11) fits in Int8
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map(fibonacci)
-        let actual = map(xs, fibonacci)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map(fibonacci)
+            let actual = map(xs, fibonacci)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 private func fibonacciRecursiveNoinlineTest<T: RandomType & Similar & BinaryInteger>(_: T.Type) {
@@ -437,9 +437,9 @@ private func fibonacciRecursiveNoinlineTest<T: RandomType & Similar & BinaryInte
     }
     let gen = Gen<T>.choose((T.zero, 11)) // fibonacci(11) fits in Int8
     property(#function) <-
-      forAllNoShrink(gen.proliferate) { xs in
-        let expected = xs.map(fibonacci)
-        let actual = map(xs, fibonacci)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen.proliferate) { xs in
+            let expected = xs.map(fibonacci)
+            let actual = map(xs, fibonacci)
+            return try? #require(expected ~~~ actual)
+        }
 }

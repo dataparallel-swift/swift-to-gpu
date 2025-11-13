@@ -85,7 +85,7 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(UInt64.self) }
     }
 
-#if arch(arm64)
+    #if arch(arm64)
     @Suite("Float16") struct Float16Tests {
         @Test func ifLet() { ifLetTest(Float16.self) }
         @Test func guardLet() { guardLetTest(Float16.self) }
@@ -93,7 +93,7 @@ import Testing
         @Test func optionalReturn() { optionalReturnTest(Float16.self) }
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Float16.self) }
     }
-#endif
+    #endif
 
     @Suite("Float32") struct Float32Tests {
         @Test func ifLet() { ifLetTest(Float32.self) }
@@ -120,11 +120,11 @@ private func ifLetTest<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_
         return 0
     }
     property(#function) <-
-      forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
-        let expected = xs.map(ifLet)
-        let actual = map(xs, ifLet)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
+            let expected = xs.map(ifLet)
+            let actual = map(xs, ifLet)
+            return try? #require(expected == actual)
+        }
 }
 
 private func guardLetTest<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_: T.Type) {
@@ -135,11 +135,11 @@ private func guardLetTest<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral
         return unwrapped
     }
     property(#function) <-
-      forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
-        let expected = xs.map(guardLet)
-        let actual = map(xs, guardLet)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
+            let expected = xs.map(guardLet)
+            let actual = map(xs, guardLet)
+            return try? #require(expected == actual)
+        }
 }
 
 private func nilCoalescingTest<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_: T.Type) {
@@ -147,11 +147,11 @@ private func nilCoalescingTest<T: Arbitrary & Equatable & ExpressibleByIntegerLi
         x ?? 0
     }
     property(#function) <-
-      forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
-        let expected = xs.map(nilCoalescing)
-        let actual = map(xs, nilCoalescing)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T?].arbitrary) { (xs: [T?]) in
+            let expected = xs.map(nilCoalescing)
+            let actual = map(xs, nilCoalescing)
+            return try? #require(expected == actual)
+        }
 }
 
 private func optionalReturnTest<T: Arbitrary & Comparable & FloatingPoint>(_: T.Type) {
@@ -163,11 +163,11 @@ private func optionalReturnTest<T: Arbitrary & Comparable & FloatingPoint>(_: T.
         return .some(x)
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(optionalReturn)
-        let actual = map(xs, optionalReturn)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(optionalReturn)
+            let actual = map(xs, optionalReturn)
+            return try? #require(expected == actual)
+        }
 }
 
 private func optionalReturnTest<T: Arbitrary & Comparable & FixedWidthInteger>(_: T.Type) {
@@ -180,11 +180,11 @@ private func optionalReturnTest<T: Arbitrary & Comparable & FixedWidthInteger>(_
         return .some(x)
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(optionalReturn)
-        let actual = map(xs, optionalReturn)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(optionalReturn)
+            let actual = map(xs, optionalReturn)
+            return try? #require(expected == actual)
+        }
 }
 
 private func forceUnwrapNonnilTest<T: Arbitrary & Equatable>(_: T.Type) {
@@ -195,10 +195,10 @@ private func forceUnwrapNonnilTest<T: Arbitrary & Equatable>(_: T.Type) {
         x!
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let ys = xs.map { Optional($0) }
-        let expected = ys.map(forceUnwrapNonnil)
-        let actual = map(ys, forceUnwrapNonnil)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let ys = xs.map { Optional($0) }
+            let expected = ys.map(forceUnwrapNonnil)
+            let actual = map(ys, forceUnwrapNonnil)
+            return try? #require(expected == actual)
+        }
 }

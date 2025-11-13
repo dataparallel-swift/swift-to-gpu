@@ -12,11 +12,11 @@ import Testing
             return i
         }
         property(#function) <-
-          forAllNoShrink([Int].arbitrary) { xs in
-            let expected = xs.map(guardTrue)
-            let actual = map(xs, guardTrue)
-            return try? #require(actual == expected)
-          }
+            forAllNoShrink([Int].arbitrary) { xs in
+                let expected = xs.map(guardTrue)
+                let actual = map(xs, guardTrue)
+                return try? #require(actual == expected)
+            }
     }
 
     @Test func guardFalse() {
@@ -25,11 +25,11 @@ import Testing
             return i
         }
         property(#function) <-
-          forAllNoShrink([Int].arbitrary) { xs in
-            let expected = xs.map(guardFalse)
-            let actual = map(xs, guardFalse)
-            return try? #require(actual == expected)
-          }
+            forAllNoShrink([Int].arbitrary) { xs in
+                let expected = xs.map(guardFalse)
+                let actual = map(xs, guardFalse)
+                return try? #require(actual == expected)
+            }
     }
 
     @Test func guard1() {
@@ -38,11 +38,11 @@ import Testing
             return y
         }
         property(#function) <-
-          forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { xs, ys in
-            let expected = zip(xs, ys).map { x, y in guard1(x, y) }
-            let actual = zipWith(xs, ys, guard1)
-            return try? #require(actual == expected)
-          }
+            forAllNoShrink([Bool].arbitrary, [Int].arbitrary) { xs, ys in
+                let expected = zip(xs, ys).map { x, y in guard1(x, y) }
+                let actual = zipWith(xs, ys, guard1)
+                return try? #require(actual == expected)
+            }
     }
 
     @Test func guard2() {
@@ -56,10 +56,10 @@ import Testing
             return z
         }
         property(#function) <-
-          forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { xs, ys, z in
-            let expected = zip(xs, ys).map { x, y in guard2(x, y, z) }
-            let actual = zipWith(xs, ys) { x, y in guard2(x, y, z) }
-            return try? #require(actual == expected)
-          }
+            forAllNoShrink([Bool].arbitrary, [Bool].arbitrary, Int.arbitrary) { xs, ys, z in
+                let expected = zip(xs, ys).map { x, y in guard2(x, y, z) }
+                let actual = zipWith(xs, ys) { x, y in guard2(x, y, z) }
+                return try? #require(actual == expected)
+            }
     }
 }

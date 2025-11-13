@@ -10,7 +10,7 @@
 //
 // ↓ disabled until we tackle generic specialisation ---TLM 2025-02-26
 // @_alwaysEmitIntoClient  // make sure the body can be specialised at the call site...
-@inline(never)          // ...but don't actually inline it; we still need to look for this symbol from the llvm-plugin
+@inline(never) // ...but don't actually inline it; we still need to look for this symbol from the llvm-plugin
 // Internal function
 // swiftlint:disable:next missing_docs
 public func parallel_for<E: Error>(

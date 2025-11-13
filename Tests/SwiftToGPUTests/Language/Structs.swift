@@ -89,14 +89,14 @@ import Testing
             // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt64.self) }
         }
 
-#if arch(arm64)
+        #if arch(arm64)
         @Suite("Float16") struct Float16Tests {
             @Test func get() { getTest(Float16.self) }
             @Test func set() { setTest(Float16.self) }
             @Test func setInout() { setInoutTest(Float16.self) }
             @Test func defaultInitialiser() { defaultInitialiserTest(Float16.self) }
         }
-#endif
+        #endif
 
         @Suite("Float32") struct Float32Tests {
             @Test func get() { getTest(Float32.self) }
@@ -198,7 +198,7 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int8.self, UInt64.self) }
             }
 
-#if arch(arm64)
+            #if arch(arm64)
             @Suite("Float16") struct Float16Tests {
                 @Test func get1() { get1Test(Int8.self, Float16.self) }
                 @Test func get2() { get2Test(Int8.self, Float16.self) }
@@ -206,7 +206,7 @@ import Testing
                 // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Int8.self, Float16.self) }
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self, Float16.self) }
             }
-#endif
+            #endif
 
             @Suite("Float32") struct Float32Tests {
                 @Test func get1() { get1Test(Int8.self, Float32.self) }
@@ -290,7 +290,7 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self, UInt64.self) }
             }
 
-#if arch(arm64)
+            #if arch(arm64)
             @Suite("Float16") struct Float16Tests {
                 @Test func get1() { get1Test(Int32.self, Float16.self) }
                 @Test func get2() { get2Test(Int32.self, Float16.self) }
@@ -298,7 +298,7 @@ import Testing
                 // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Int32.self, Float16.self) }
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self, Float16.self) }
             }
-#endif
+            #endif
 
             @Suite("Float32") struct Float32Tests {
                 @Test func get1() { get1Test(Int32.self, Float32.self) }
@@ -382,7 +382,7 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt64.self, UInt64.self) }
             }
 
-#if arch(arm64)
+            #if arch(arm64)
             @Suite("Float16") struct Float16Tests {
                 @Test func get1() { get1Test(UInt64.self, Float16.self) }
                 @Test func get2() { get2Test(UInt64.self, Float16.self) }
@@ -390,7 +390,7 @@ import Testing
                 // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(UInt64.self, Float16.self) }
                 @Test func defaultInitialiser() { defaultInitialiserTest(UInt64.self, Float16.self) }
             }
-#endif
+            #endif
 
             @Suite("Float32") struct Float32Tests {
                 @Test func get1() { get1Test(UInt64.self, Float32.self) }
@@ -466,7 +466,7 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Float32.self, UInt64.self) }
             }
 
-#if arch(arm64)
+            #if arch(arm64)
             @Suite("Float16") struct Float16Tests {
                 @Test func get1() { get1Test(Float32.self, Float16.self) }
                 @Test func get2() { get2Test(Float32.self, Float16.self) }
@@ -474,7 +474,7 @@ import Testing
                 // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Float32.self, Float16.self) }
                 @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self, Float16.self) }
             }
-#endif
+            #endif
 
             @Suite("Float32") struct Float32Tests {
                 @Test func get1() { get1Test(Float32.self, Float32.self) }
@@ -587,11 +587,11 @@ private func getTest<T: Arbitrary & Equatable>(_: T.Type) {
         x.member
     }
     property(#function) <-
-      forAllNoShrink([S1].arbitrary) { xs in
-        let expected = xs.map(get)
-        let actual = map(xs, get)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S1].arbitrary) { xs in
+            let expected = xs.map(get)
+            let actual = map(xs, get)
+            return try? #require(expected == actual)
+        }
 }
 
 private func setTest<T: Arbitrary & Equatable>(_: T.Type) {
@@ -601,11 +601,11 @@ private func setTest<T: Arbitrary & Equatable>(_: T.Type) {
         return y
     }
     property(#function) <-
-      forAllNoShrink([S1<T>].arbitrary, [T].arbitrary) { xs, ys in
-        let expected = zip(xs, ys).map { x, member in set(x, member) }
-        let actual = zipWith(xs, ys, set)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S1<T>].arbitrary, [T].arbitrary) { xs, ys in
+            let expected = zip(xs, ys).map { x, member in set(x, member) }
+            let actual = zipWith(xs, ys, set)
+            return try? #require(expected == actual)
+        }
 }
 
 private func setInoutTest<T: Arbitrary & Equatable>(_: T.Type) {
@@ -618,17 +618,17 @@ private func setInoutTest<T: Arbitrary & Equatable>(_: T.Type) {
         return x
     }
     property(#function) <-
-      forAllNoShrink([S1<T>].arbitrary, [T].arbitrary) { xs, ys in
-        let count = min(xs.count, ys.count)
-        let expected = zip(xs, ys).map { x, member in set(x, member) }
-        var actual = Array(xs.prefix(count))
-        // NOTE: `parallel_for` required here because of in-place mutation,
-        // i.e. modify accessor instead of subscript set
-        try parallel_for(iterations: count) { i in
-          setInout(&actual[i], ys[i])
-        }.sync()
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S1<T>].arbitrary, [T].arbitrary) { xs, ys in
+            let count = min(xs.count, ys.count)
+            let expected = zip(xs, ys).map { x, member in set(x, member) }
+            var actual = Array(xs.prefix(count))
+            // NOTE: `parallel_for` required here because of in-place mutation,
+            // i.e. modify accessor instead of subscript set
+            try parallel_for(iterations: count) { i in
+                setInout(&actual[i], ys[i])
+            }.sync()
+            return try? #require(expected == actual)
+        }
 }
 
 struct S2<A: Arbitrary & Equatable, B: Arbitrary & Equatable>: Arbitrary, Equatable {
@@ -655,11 +655,11 @@ private func get1Test<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_: A.T
         x.member1
     }
     property(#function) <-
-      forAllNoShrink([S2<A, B>].arbitrary) { xs in
-        let expected = xs.map(get1)
-        let actual = map(xs, get1)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S2<A, B>].arbitrary) { xs in
+            let expected = xs.map(get1)
+            let actual = map(xs, get1)
+            return try? #require(expected == actual)
+        }
 }
 
 private func get2Test<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_: A.Type, _: B.Type) {
@@ -667,11 +667,11 @@ private func get2Test<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_: A.T
         x.member2
     }
     property(#function) <-
-      forAllNoShrink([S2<A, B>].arbitrary) { xs in
-        let expected = xs.map(get2)
-        let actual = map(xs, get2)
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S2<A, B>].arbitrary) { xs in
+            let expected = xs.map(get2)
+            let actual = map(xs, get2)
+            return try? #require(expected == actual)
+        }
 }
 
 private func setTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_: A.Type, _: B.Type) {
@@ -683,11 +683,11 @@ private func setTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_: A.Ty
     }
 
     property(#function) <-
-      forAllNoShrink([S2<A, B>].arbitrary, A.arbitrary, B.arbitrary) { xs, member1, member2 in
-        let expected = xs.map { set($0, member1, member2) } // TODO: zipWith3
-        let actual = map(xs) { set($0, member1, member2) }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S2<A, B>].arbitrary, A.arbitrary, B.arbitrary) { xs, member1, member2 in
+            let expected = xs.map { set($0, member1, member2) } // TODO: zipWith3
+            let actual = map(xs) { set($0, member1, member2) }
+            return try? #require(expected == actual)
+        }
 }
 
 private func setInoutTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_: A.Type, _: B.Type) {
@@ -703,16 +703,16 @@ private func setInoutTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable>(_:
     }
 
     property(#function) <-
-      forAllNoShrink([S2<A, B>].arbitrary, A.arbitrary, B.arbitrary) { (xs: [S2<A, B>], member1: A, member2: B) in
-        let expected = xs.map { set($0, member1, member2) }
-        var actual = xs
-        // NOTE: `parallel_for` required here because of in-place mutation,
-        // i.e. modify accessor instead of subscript set
-        try parallel_for(iterations: xs.count) { i in
-            setInout(&actual[i], member1, member2)
-        }.sync()
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink([S2<A, B>].arbitrary, A.arbitrary, B.arbitrary) { (xs: [S2<A, B>], member1: A, member2: B) in
+            let expected = xs.map { set($0, member1, member2) }
+            var actual = xs
+            // NOTE: `parallel_for` required here because of in-place mutation,
+            // i.e. modify accessor instead of subscript set
+            try parallel_for(iterations: xs.count) { i in
+                setInout(&actual[i], member1, member2)
+            }.sync()
+            return try? #require(expected == actual)
+        }
 }
 
 struct S3<A: Arbitrary & Equatable, B: Arbitrary & Equatable, C: Arbitrary & Equatable>: Arbitrary, Equatable {
@@ -751,17 +751,18 @@ private func getTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable, C: Arbi
     }
 
     property(#function) <-
-      forAllNoShrink(NonNegative<Int>.arbitrary) { n in
-      forAllNoShrink(
-          S3<A, B, C>.arbitrary.proliferate(withSize: n.getNonNegative),
-          Bool.arbitrary.proliferate(withSize: n.getNonNegative),
-          Bool.arbitrary.proliferate(withSize: n.getNonNegative),
-          Bool.arbitrary.proliferate(withSize: n.getNonNegative)
-      ) { xs, get1s, get2s, get3s in
-          let expected = (0 ..< n.getNonNegative).map { i in get(xs[i], get1s[i], get2s[i], get3s[i]) }
-          let actual = generate(count: n.getNonNegative) { i in get(xs[i], get1s[i], get2s[i], get3s[i]) }
-          return try? #require(expected == actual)
-      }}
+        forAllNoShrink(NonNegative<Int>.arbitrary) { n in
+            forAllNoShrink(
+                S3<A, B, C>.arbitrary.proliferate(withSize: n.getNonNegative),
+                Bool.arbitrary.proliferate(withSize: n.getNonNegative),
+                Bool.arbitrary.proliferate(withSize: n.getNonNegative),
+                Bool.arbitrary.proliferate(withSize: n.getNonNegative)
+            ) { xs, get1s, get2s, get3s in
+                let expected = (0 ..< n.getNonNegative).map { i in get(xs[i], get1s[i], get2s[i], get3s[i]) }
+                let actual = generate(count: n.getNonNegative) { i in get(xs[i], get1s[i], get2s[i], get3s[i]) }
+                return try? #require(expected == actual)
+            }
+        }
 }
 
 private func setTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable, C: Arbitrary & Equatable>(
@@ -784,17 +785,18 @@ private func setTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable, C: Arbi
     }
 
     property(#function) <-
-      forAllNoShrink(NonNegative<Int>.arbitrary) { n in
-      forAllNoShrink(
-          S3<A, B, C>.arbitrary.proliferate(withSize: n.getNonNegative),
-          A?.arbitrary.proliferate(withSize: n.getNonNegative),
-          B?.arbitrary.proliferate(withSize: n.getNonNegative),
-          C?.arbitrary.proliferate(withSize: n.getNonNegative)
-      ) { structs, xs, ys, zs in
-          let expected = (0 ..< n.getNonNegative).map { i in set(structs[i], xs[i], ys[i], zs[i]) }
-          let actual = generate(count: n.getNonNegative) { i in set(structs[i], xs[i], ys[i], zs[i]) }
-          return try? #require(expected == actual)
-      }}
+        forAllNoShrink(NonNegative<Int>.arbitrary) { n in
+            forAllNoShrink(
+                S3<A, B, C>.arbitrary.proliferate(withSize: n.getNonNegative),
+                A?.arbitrary.proliferate(withSize: n.getNonNegative),
+                B?.arbitrary.proliferate(withSize: n.getNonNegative),
+                C?.arbitrary.proliferate(withSize: n.getNonNegative)
+            ) { structs, xs, ys, zs in
+                let expected = (0 ..< n.getNonNegative).map { i in set(structs[i], xs[i], ys[i], zs[i]) }
+                let actual = generate(count: n.getNonNegative) { i in set(structs[i], xs[i], ys[i], zs[i]) }
+                return try? #require(expected == actual)
+            }
+        }
 }
 
 private func setInoutTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable, C: Arbitrary & Equatable>(
@@ -821,24 +823,25 @@ private func setInoutTest<A: Arbitrary & Equatable, B: Arbitrary & Equatable, C:
     }
 
     property(#function) <-
-      forAllNoShrink(NonNegative<Int>.arbitrary) { n in
-      forAllNoShrink(
-          S3<A, B, C>.arbitrary.proliferate(withSize: n.getNonNegative),
-          A?.arbitrary.proliferate(withSize: n.getNonNegative),
-          B?.arbitrary.proliferate(withSize: n.getNonNegative),
-          C?.arbitrary.proliferate(withSize: n.getNonNegative)
-      ) { structs, xs, ys, zs in
-          var actual = structs
-          let expected = (0 ..< n.getNonNegative).map { i in set(structs[i], xs[i], ys[i], zs[i]) }
+        forAllNoShrink(NonNegative<Int>.arbitrary) { n in
+            forAllNoShrink(
+                S3<A, B, C>.arbitrary.proliferate(withSize: n.getNonNegative),
+                A?.arbitrary.proliferate(withSize: n.getNonNegative),
+                B?.arbitrary.proliferate(withSize: n.getNonNegative),
+                C?.arbitrary.proliferate(withSize: n.getNonNegative)
+            ) { structs, xs, ys, zs in
+                var actual = structs
+                let expected = (0 ..< n.getNonNegative).map { i in set(structs[i], xs[i], ys[i], zs[i]) }
 
-          // NOTE: `parallel_for` required here because of in-place mutation,
-          // i.e. modify accessor instead of subscript set
-          try parallel_for(iterations: n.getNonNegative) { i in
-            setInout(&actual[i], xs[i], ys[i], zs[i])
-          }.sync()
+                // NOTE: `parallel_for` required here because of in-place mutation,
+                // i.e. modify accessor instead of subscript set
+                try parallel_for(iterations: n.getNonNegative) { i in
+                    setInout(&actual[i], xs[i], ys[i], zs[i])
+                }.sync()
 
-          return try? #require(expected == actual)
-      }}
+                return try? #require(expected == actual)
+            }
+        }
 }
 
 // MARK: structs with default initializers
@@ -850,11 +853,11 @@ struct S1d<A: ExpressibleByIntegerLiteral & Equatable>: Equatable {
 private func defaultInitialiserTest<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_: T.Type) {
     let gen = Int.arbitrary.suchThat { $0 >= 0 }
     property(#function) <-
-      forAllNoShrink(gen) { (n: Int) in
-        let expected = [S1d<T>](repeating: S1d<T>(), count: n)
-        let actual = generate(count: n) { _ in S1d<T>() }
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink(gen) { (n: Int) in
+            let expected = [S1d<T>](repeating: S1d<T>(), count: n)
+            let actual = generate(count: n) { _ in S1d<T>() }
+            return try? #require(expected == actual)
+        }
 }
 
 struct S2d<
@@ -871,11 +874,11 @@ private func defaultInitialiserTest<
 >(_: A.Type, _: B.Type) {
     let gen = Int.arbitrary.suchThat { $0 >= 0 }
     property(#function) <-
-      forAllNoShrink(gen) { n in
-        let expected = [S2d<A, B>](repeating: .init(), count: n)
-        let actual = fill(count: n, with: S2d<A, B>())
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink(gen) { n in
+            let expected = [S2d<A, B>](repeating: .init(), count: n)
+            let actual = fill(count: n, with: S2d<A, B>())
+            return try? #require(expected == actual)
+        }
 }
 
 struct S3d<
@@ -895,9 +898,9 @@ private func defaultInitialiserTest<
 >(_: A.Type, _: B.Type, _: C.Type) {
     let gen = Int.arbitrary.suchThat { $0 >= 0 }
     property(#function) <-
-      forAllNoShrink(gen) { (n: Int) in
-        let expected = [S3d<A, B, C>](repeating: .init(), count: n)
-        let actual = fill(count: n, with: S3d<A, B, C>())
-        return try? #require(expected == actual)
-      }
+        forAllNoShrink(gen) { (n: Int) in
+            let expected = [S3d<A, B, C>](repeating: .init(), count: n)
+            let actual = fill(count: n, with: S3d<A, B, C>())
+            return try? #require(expected == actual)
+        }
 }

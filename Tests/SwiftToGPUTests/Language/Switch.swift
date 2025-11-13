@@ -105,11 +105,11 @@ private func switch1Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map { x in switch1(x) }
-        let actual = map(xs, switch1)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map { x in switch1(x) }
+            let actual = map(xs, switch1)
+            return try? #require(actual == expected)
+        }
 }
 
 private func switch2Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -121,11 +121,11 @@ private func switch2Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map { x in switch2(x) }
-        let actual = map(xs, switch2)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map { x in switch2(x) }
+            let actual = map(xs, switch2)
+            return try? #require(actual == expected)
+        }
 }
 
 private func switch3Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -139,11 +139,11 @@ private func switch3Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map { x in switch3(x) }
-        let actual = map(xs, switch3)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map { x in switch3(x) }
+            let actual = map(xs, switch3)
+            return try? #require(actual == expected)
+        }
 }
 
 private func switch4Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -157,11 +157,11 @@ private func switch4Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(switch4)
-        let actual = map(xs, switch4)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(switch4)
+            let actual = map(xs, switch4)
+            return try? #require(actual == expected)
+        }
 }
 
 private func switch5Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -176,11 +176,11 @@ private func switch5Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(switch5)
-        let actual = map(xs, switch5)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(switch5)
+            let actual = map(xs, switch5)
+            return try? #require(actual == expected)
+        }
 }
 
 private func switch6Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
@@ -192,9 +192,9 @@ private func switch6Test<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(switch6)
-        let actual = map(xs, switch6)
-        return try? #require(actual == expected)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(switch6)
+            let actual = map(xs, switch6)
+            return try? #require(actual == expected)
+        }
 }

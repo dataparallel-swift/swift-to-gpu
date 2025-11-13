@@ -14,11 +14,11 @@ import Testing
             return x
         }
         property(#function) <-
-          forAllNoShrink([Double].arbitrary) { xs in
-            let expected = xs.map(defer1)
-            let actual = map(xs, defer1)
-            return try? #require(expected ~~~ actual)
-          }
+            forAllNoShrink([Double].arbitrary) { xs in
+                let expected = xs.map(defer1)
+                let actual = map(xs, defer1)
+                return try? #require(expected ~~~ actual)
+            }
     }
 
     @Test func defer2() {
@@ -38,11 +38,11 @@ import Testing
             return x
         }
         property(#function) <-
-          forAllNoShrink([Double].arbitrary) { xs in
-            let expected = xs.map(defer2)
-            let actual = map(xs, defer2)
-            return try? #require(expected ~~~ actual)
-          }
+            forAllNoShrink([Double].arbitrary) { xs in
+                let expected = xs.map(defer2)
+                let actual = map(xs, defer2)
+                return try? #require(expected ~~~ actual)
+            }
     }
 
     // TODO: More tests, defer interacting with for loops, while loops,

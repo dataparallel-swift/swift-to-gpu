@@ -17,13 +17,13 @@ import Testing
         @Test func laplace1D() { laplace1DTest(Int64.self) }
     }
 
-#if arch(arm64)
+    #if arch(arm64)
     @Suite("Float16") struct Float16Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Float16.self) }
         @Test func adjacentDifference() { adjacentDifferenceTest(Float16.self) }
         @Test func laplace1D() { laplace1DTest(Float16.self) }
     }
-#endif
+    #endif
 
     @Suite("Float32") struct Float32Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Float32.self) }
@@ -65,11 +65,11 @@ private func finiteDifferenceTest<T: Arbitrary & AdditiveArithmetic & Similar>(_
     }
     let gen = [T].arbitrary.suchThat { $0.count > 1 }
     property(#function) <-
-      forAllNoShrink(gen) { (xs: [T]) in
-        let expected = xs.finiteDifference()
-        let actual = finiteDifference(xs)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen) { (xs: [T]) in
+            let expected = xs.finiteDifference()
+            let actual = finiteDifference(xs)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 extension Array where Element: AdditiveArithmetic {
@@ -95,11 +95,11 @@ private func adjacentDifferenceTest<T: AdditiveArithmetic & Arbitrary & Similar>
         }
     }
     property(#function) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.adjacentDifference()
-        let actual = adjacentDifference(xs)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.adjacentDifference()
+            let actual = adjacentDifference(xs)
+            return try? #require(expected ~~~ actual)
+        }
 }
 
 extension Array where Element: Numeric {
@@ -130,9 +130,9 @@ private func laplace1DTest<T: Numeric & Arbitrary & Similar>(_: T.Type) {
     }
     let gen = [T].arbitrary.suchThat { $0.count > 2 }
     property(#function) <-
-      forAllNoShrink(gen) { (xs: [T]) in
-        let expected = xs.laplace1D()
-        let actual = laplace1D(xs)
-        return try? #require(expected ~~~ actual)
-      }
+        forAllNoShrink(gen) { (xs: [T]) in
+            let expected = xs.laplace1D()
+            let actual = laplace1D(xs)
+            return try? #require(expected ~~~ actual)
+        }
 }
