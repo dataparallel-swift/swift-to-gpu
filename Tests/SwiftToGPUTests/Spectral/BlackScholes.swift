@@ -24,29 +24,32 @@ private func blackscholesTest<T: Arbitrary & Similar & RandomType & BinaryFloati
     let riskfree: T   = 0.02
     let volatility: T = 0.30
     property(String(describing: T.self) + ".blackscholes") <-
-      forAllNoShrink(Gen<Int>.choose((1, 4096))) { n in
-      forAllNoShrink(Gen<T>.choose((0, 30)).proliferate(withSize: n)) { (price: T) in
-      forAllNoShrink(Gen<T>.choose((1, 100)).proliferate(withSize: n)) { (strike: [T]) in
-      forAllNoShrink(Gen<T>.choose((0.25, 10)).proliferate(withSize: n)) { (years: [T]) in
-        let expected = (0 ..< n).map { i in blackscholes(
-            riskfree: riskfree,
-            volatility: volatility,
-            price: price[i],
-            strike: strike[i],
-            years: years[i]
-        ) }
-        let actual   = generate(count: n) { i in blackscholes(
-            riskfree: riskfree,
-            volatility: volatility,
-            price: price[i],
-            strike: strike[i],
-            years: years[i]
-        ) }
+        forAllNoShrink(Gen<Int>.choose((1, 4096))) { n in
+            forAllNoShrink(
+                Gen<T>.choose((0, 30)).proliferate(withSize: n),
+                Gen<T>.choose((1, 100)).proliferate(withSize: n),
+                Gen<T>.choose((0.25, 10)).proliferate(withSize: n)
+            ) { price, strike, years in
+                let expected = (0 ..< n).map { i in blackscholes(
+                    riskfree: riskfree,
+                    volatility: volatility,
+                    price: price[i],
+                    strike: strike[i],
+                    years: years[i]
+                ) }
+                let actual = generate(count: n) { i in blackscholes(
+                    riskfree: riskfree,
+                    volatility: volatility,
+                    price: price[i],
+                    strike: strike[i],
+                    years: years[i]
+                ) }
 
-        let calls: ()? = try? #require(expected.map { $0.call } ~~~ actual.map { $0.call })
-        let puts: ()?  = try? #require(expected.map { $0.put } ~~~ actual.map { $0.put })
-        return calls != nil && puts != nil
-      }}}}
+                let calls: ()? = try? #require(expected.map { $0.call } ~~~ actual.map { $0.call })
+                let puts: ()?  = try? #require(expected.map { $0.put } ~~~ actual.map { $0.put })
+                return calls != nil && puts != nil
+            }
+        }
 }
 
 // Polynomial approximation of cumulative normal distribution function
