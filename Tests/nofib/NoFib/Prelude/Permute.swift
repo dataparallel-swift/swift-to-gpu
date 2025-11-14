@@ -29,6 +29,7 @@ import Testing
 
     // non-injective index mappings
     // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(Int32.self) }
+    // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(Int32.self) }
     // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(Int32.self) }
 }
 
@@ -217,6 +218,18 @@ private func prop_permute_group_reduce<T: Arbitrary & AdditiveArithmetic & Simil
         permute(from: from, into: &actual, combining: +) { indices[$0] }
         return try? #require(expected ~~~ actual)
       }}
+}
+
+private func prop_permute_histogram<T: Arbitrary & BinaryInteger>(_: T.Type) {
+    let binsCount = 10
+    property("permute_histogram") <-
+      forAllNoShrink([Int].arbitrary) { (source: [Int]) in
+        var expected: [Int] = fill(count: binsCount, with: 0)
+        var actual: [Int] = fill(count: binsCount, with: 0)
+        source.permute(into: &expected) { source[$0] % binsCount }
+        permute(from: source, into: &actual) { source[$0] % binsCount }
+        return try? #require(expected == actual)
+      }
 }
 
 /// ys[i] += |
