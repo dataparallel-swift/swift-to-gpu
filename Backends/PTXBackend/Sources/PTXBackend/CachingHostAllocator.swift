@@ -49,9 +49,9 @@ public struct CachingHostAllocator {
     // Because NIOLockedValueBox has reference semantics, we can actually make
     // this a struct (rather than a class) and its fields/member functions
     // non-mutating, and still have the cache shared between users.
-    let binSizeBytes: Array<Int>
-    let cachedBlocks: Array<NIOLockedValueBox<Set<BlockDescriptor>>>               // swiftlint:disable:this colon
-    let liveBlocks:   NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>> // swiftlint:disable:this colon
+    let binSizesInBytes: Array<Int>
+    let cachedBlocks: Array<NIOLockedValueBox<Set<BlockDescriptor>>>
+    let liveBlocks:   NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
 
     /// The default allocator used by the swift-to-ptx compiler pass, biased towards
     /// small block sizes as that is what we encounter most often when lifting the
@@ -77,7 +77,7 @@ public struct CachingHostAllocator {
         logger.trace(".init(using: \(bins))")
         self.cachedBlocks = .init(count: bins.count, generator: { _ in .init(.init()) })
         self.liveBlocks   = .init(.init())
-        self.binSizeBytes = bins
+        self.binSizesInBytes = bins
     }
 
     /// Initialise the allocator using the given bin parameters. The default
@@ -100,7 +100,7 @@ public struct CachingHostAllocator {
         logger.trace(".init(binMin: \(binMin), binMax: \(binMax), binGrowth: \(binGrowth)) --> \(bins)")
         self.cachedBlocks = .init(count: bins.count, generator: { _ in .init(.init()) })
         self.liveBlocks   = .init(.init())
-        self.binSizeBytes = bins
+        self.binSizesInBytes = bins
     }
 
     func findBin(for value: Int) -> Int? {
@@ -112,9 +112,9 @@ public struct CachingHostAllocator {
         // allocator using geometrically increasing bin sizes--but we assume
         // that the number of bins is relatively small and so doing the dumb
         // thing is actually probably fastest.
-        for i in 0 ..< binSizeBytes.count {
+        for i in 0 ..< binSizesInBytes.count {
             // swiftlint:disable:next for_where
-            if value <= binSizeBytes[i] {
+            if value <= binSizesInBytes[i] {
                 return i
             }
         }
@@ -144,17 +144,17 @@ public struct CachingHostAllocator {
 
             // Otherwise, allocate a new block.
             if ptr == nil {
-                ptr = swift_slowAlloc(binSizeBytes[bin], 0)
+                ptr = swift_slowAlloc(binSizesInBytes[bin], 0)
                 if ptr == nil {
-                    logger.trace("Failed to allocate \(binSizeBytes[bin]) bytes, retrying after freeing cached allocations")
+                    logger.trace("Failed to allocate \(binSizesInBytes[bin]) bytes, retrying after freeing cached allocations")
                     if self.cleanup() {
                         return alloc(bytes)
                     }
                 }
-                logger.trace("Allocated new block at \(String(describing: ptr)) (\(binSizeBytes[bin]) bytes)")
+                logger.trace("Allocated new block at \(String(describing: ptr)) (\(binSizesInBytes[bin]) bytes)")
             }
             else {
-                logger.trace("Reused cached block at \(String(describing: ptr)) (\(binSizeBytes[bin]) bytes)")
+                logger.trace("Reused cached block at \(String(describing: ptr)) (\(binSizesInBytes[bin]) bytes)")
             }
 
             assert(ptr != nil, "expected CUDA allocator to never return null-pointer")
@@ -228,8 +228,8 @@ public struct CachingHostAllocator {
             liveBytes     = blocks.values.reduce(0, { x, y in x + y! }) // swiftlint:disable:this force_unwrapping
         }
 
-        for bin in 0 ..< binSizeBytes.count {
-            let size = binSizeBytes[bin]
+        for bin in 0 ..< binSizesInBytes.count {
+            let size = binSizesInBytes[bin]
             cachedBlocks[bin].withLockedValue { blocks in
                 for block in blocks {
                     if try! block.readyEvent.complete() { // swiftlint:disable:this force_try
@@ -259,10 +259,10 @@ public struct CachingHostAllocator {
         let zone = #Zone
         defer { zone.end() }
 
-        for bin in 0 ..< binSizeBytes.count {
+        for bin in 0 ..< binSizesInBytes.count {
             assert(liveBlocks.withLockedValue { $0.count } == 0, "allocator is still holding onto live memory")
 
-            let size = binSizeBytes[bin]
+            let size = binSizesInBytes[bin]
             cachedBlocks[bin].withLockedValue { blocks in
                 for block in blocks {
                     try! block.readyEvent.sync() // swiftlint:disable:this force_try
