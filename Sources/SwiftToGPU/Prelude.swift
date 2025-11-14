@@ -176,7 +176,7 @@ public func izipWith<A, B, C, E: Error>(
     _ ys: Array<B>,
     _ f: (Int, A, B) throws(E) -> C
 ) throws(E) -> Array<C> {
-    let n  = min(xs.count, ys.count)
+    let n = min(xs.count, ys.count)
     // SEE: [Array initialiser with typed throws]
     var zs = Array<C>(unsafeUninitializedCapacity: n)
     try izipWith(xs, ys, into: &zs, f)

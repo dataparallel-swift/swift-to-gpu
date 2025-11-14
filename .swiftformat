@@ -3,7 +3,6 @@
 
 # rules
 --disable redundantType # clarity
---disable consecutiveSpaces # alignment
 
 [nofib]
 --filter Backends/PTXBackend/Tests/PTXBackendTests/**

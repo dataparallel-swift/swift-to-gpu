@@ -212,7 +212,7 @@ private func forLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
 
 private func forLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     func forLoopNest(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // be comfortable about avoiding overflows
+        var result: Double = 0.0 // be comfortable about avoiding overflows
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(n, 0)
@@ -234,7 +234,7 @@ private func forLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
 
 private func forLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     func forLoopNestBreakInner(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -260,7 +260,7 @@ private func forLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Ty
 
 private func forLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     func forLoopNestBreakOuter(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -355,7 +355,7 @@ private func whileLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
 
 private func whileLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     func whileLoopNest(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // be comfortable about avoiding overflows
+        var result: Double = 0.0 // be comfortable about avoiding overflows
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(n, 0)
@@ -381,7 +381,7 @@ private func whileLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
 
 private func whileLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     func whileLoopNestBreakInner(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -411,7 +411,7 @@ private func whileLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.
 
 private func whileLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
     func whileLoopNestBreakOuter(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)

@@ -51,7 +51,7 @@ public struct CachingHostAllocator {
     // non-mutating, and still have the cache shared between users.
     let binSizesInBytes: Array<Int>
     let cachedBlocks: Array<NIOLockedValueBox<Set<BlockDescriptor>>>
-    let liveBlocks:   NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
+    let liveBlocks: NIOLockedValueBox<Dictionary<UnsafeMutableRawPointer, Int?>>
 
     /// The default allocator used by the swift-to-ptx compiler pass, biased towards
     /// small block sizes as that is what we encounter most often when lifting the
@@ -76,7 +76,7 @@ public struct CachingHostAllocator {
 
         logger.trace(".init(using: \(bins))")
         self.cachedBlocks = .init(count: bins.count, generator: { _ in .init(.init()) })
-        self.liveBlocks   = .init(.init())
+        self.liveBlocks = .init(.init())
         self.binSizesInBytes = bins
     }
 
@@ -90,7 +90,7 @@ public struct CachingHostAllocator {
         defer { zone.end() }
 
         let count = binMax - binMin + 1
-        let bins  = Array(unsafeUninitializedCapacity: count, initializingWith: { buffer, initialisedCount in
+        let bins = Array(unsafeUninitializedCapacity: count, initializingWith: { buffer, initialisedCount in
             for i in 0 ..< count {
                 buffer[i] = pow(binGrowth, binMin + i)
             }
@@ -99,7 +99,7 @@ public struct CachingHostAllocator {
 
         logger.trace(".init(binMin: \(binMin), binMax: \(binMax), binGrowth: \(binGrowth)) --> \(bins)")
         self.cachedBlocks = .init(count: bins.count, generator: { _ in .init(.init()) })
-        self.liveBlocks   = .init(.init())
+        self.liveBlocks = .init(.init())
         self.binSizesInBytes = bins
     }
 
@@ -225,7 +225,7 @@ public struct CachingHostAllocator {
 
         liveBlocks.withLockedValue { blocks in
             numLiveBlocks = blocks.count
-            liveBytes     = blocks.values.reduce(0, { x, y in x + y! }) // swiftlint:disable:this force_unwrapping
+            liveBytes = blocks.values.reduce(0, { x, y in x + y! }) // swiftlint:disable:this force_unwrapping
         }
 
         for bin in 0 ..< binSizesInBytes.count {

@@ -36,8 +36,8 @@ let benchmarks: @Sendable () -> Void = {
     // swiftlint:disable:next large_tuple
     func setup<A: Randomizable>(_: A.Type, _ n: Int) -> (A, [A], [A]) {
         let alpha = A.random(using: &gen)
-        let xs    = Array<A>.random(count: n, using: &gen)
-        let ys    = Array<A>.random(count: n, using: &gen)
+        let xs = Array<A>.random(count: n, using: &gen)
+        let ys = Array<A>.random(count: n, using: &gen)
         return (alpha, xs, ys)
     }
 
@@ -53,34 +53,32 @@ let benchmarks: @Sendable () -> Void = {
     // otherwise the benchmark framework will generate all data before any
     // benchmarking starts (which consumes a lot of memory...)
     for (size, scaling) in configs {
-        // swiftlint:disable comma
         // swiftformat:disable wrap wrapArguments wrapSingleLineComments
         #if arch(arm64)
         // Benchmark("saxpy/cuda/f16/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f16),         setup: { setup(Float16.self, size) })
-        Benchmark("saxpy/ptx/f16/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f16),          setup: { setup(Float16.self, size) })
-        Benchmark("saxpy/cpu/f16/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f16),          setup: { setup(Float16.self, size) })
+        Benchmark("saxpy/ptx/f16/\(size)", configuration: config(scaling), closure: bench(saxpy_ptx_f16), setup: { setup(Float16.self, size) })
+        Benchmark("saxpy/cpu/f16/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_f16), setup: { setup(Float16.self, size) })
         // Benchmark("saxpy/cpu_generic/f16/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float16.self, size) })
         Benchmark("saxpy/cpu_generic_safe/f16/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float16.self, size) })
         // Benchmark("saxpy/cpu_specialised/f16/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float16.self, size) })
         #endif
 
         #if PTX
-        Benchmark("saxpy/cuda/f32/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f32),         setup: { setup(Float32.self, size) })
+        Benchmark("saxpy/cuda/f32/\(size)", configuration: config(scaling), closure: bench(saxpy_cuda_f32), setup: { setup(Float32.self, size) })
         #endif
-        Benchmark("saxpy/ptx/f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f32),          setup: { setup(Float32.self, size) })
-        Benchmark("saxpy/cpu/f32/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f32),          setup: { setup(Float32.self, size) })
+        Benchmark("saxpy/ptx/f32/\(size)", configuration: config(scaling), closure: bench(saxpy_ptx_f32), setup: { setup(Float32.self, size) })
+        Benchmark("saxpy/cpu/f32/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_f32), setup: { setup(Float32.self, size) })
         // Benchmark("saxpy/cpu_generic/f32/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float32.self, size) })
         Benchmark("saxpy/cpu_generic_safe/f32/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float32.self, size) })
         // Benchmark("saxpy/cpu_specialised/f32/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float32.self, size) })
 
         #if PTX
-        Benchmark("saxpy/cuda/f64/\(size)",             configuration: config(scaling), closure: bench(saxpy_cuda_f64),         setup: { setup(Float64.self, size) })
+        Benchmark("saxpy/cuda/f64/\(size)", configuration: config(scaling), closure: bench(saxpy_cuda_f64), setup: { setup(Float64.self, size) })
         #endif
-        Benchmark("saxpy/ptx/f64/\(size)",              configuration: config(scaling), closure: bench(saxpy_ptx_f64),          setup: { setup(Float64.self, size) })
-        Benchmark("saxpy/cpu/f64/\(size)",              configuration: config(scaling), closure: bench(saxpy_cpu_f64),          setup: { setup(Float64.self, size) })
+        Benchmark("saxpy/ptx/f64/\(size)", configuration: config(scaling), closure: bench(saxpy_ptx_f64), setup: { setup(Float64.self, size) })
+        Benchmark("saxpy/cpu/f64/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_f64), setup: { setup(Float64.self, size) })
         // Benchmark("saxpy/cpu_generic/f64/\(size)",      configuration: config(scaling), closure: bench(saxpy_cpu_generic),      setup: { setup(Float64.self, size) })
         Benchmark("saxpy/cpu_generic_safe/f64/\(size)", configuration: config(scaling), closure: bench(saxpy_cpu_generic_safe), setup: { setup(Float64.self, size) })
         // Benchmark("saxpy/cpu_specialised/f64/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float64.self, size) })
-        // swiftlint:enable comma
     }
 }

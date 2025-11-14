@@ -11,8 +11,8 @@ private let logger = Logger(label: "PTXContext")
 /// A context handle tied to a specific GPU. All operations on the GPU are tied
 /// to a specific execution context.
 public struct PTXContext: ContextProtocol {
-    internal let rawContext: CUcontext  // opaque pointer
-    internal let rawDevice: CUdevice    // int32_t => context first for better alignment & packing (!)
+    internal let rawContext: CUcontext // opaque pointer
+    internal let rawDevice: CUdevice // int32_t => context first for better alignment & packing (!)
     internal let multiProcessorCount: Int32
     internal let maxThreadsPerMultiprocessor: Int32
     internal let maxBlocksPerMultiprocessor: Int32
@@ -65,17 +65,15 @@ public struct PTXContext: ContextProtocol {
 
         // Define the GPU architecture types (using the SM version in
         // hexadecimal notation) to determine the number of cores per SM.
-        // swiftlint:disable colon
         let gpuArchCoresPerSM: [Int32: Int32] =
             [
                 0x30: 192, 0x32: 192, 0x35: 192, 0x37: 192,
                 0x50: 128, 0x52: 128, 0x53: 128,
-                0x60:  64, 0x61: 128, 0x62: 128,
-                0x70:  64, 0x72:  64, 0x75:  64,
-                0x80:  64, 0x86: 128, 0x87: 128, 0x89: 128,
+                0x60: 64, 0x61: 128, 0x62: 128,
+                0x70: 64, 0x72: 64, 0x75: 64,
+                0x80: 64, 0x86: 128, 0x87: 128, 0x89: 128,
                 0x90: 128,
             ]
-        // swiftlint:enable colon
         let coresPerMP =
             if let x = gpuArchCoresPerSM[(major << 4) + minor] { x } else {
                 fatalError("Number of cores for SM \(major).\(minor) is undefined") // swiftlint:disable:this no_fatalerror
