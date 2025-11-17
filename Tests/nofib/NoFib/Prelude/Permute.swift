@@ -252,10 +252,18 @@ private func prop_permute_generalized<T: Arbitrary & AdditiveArithmetic & Simila
         }
         return nil
     }
+
+    let maxMultiplier = 3
+    let maxOvershoot = 7
     property("permute_generalized.\(T.self)") <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary, Gen<Int>.choose((1, 3))) { (from: [T], into: [T], overshoot: Int) in
       forAllNoShrink(
-          Array<T>.generateShuffledIndices(upTo: into.count * overshoot, count: from.count)
+        [T].arbitrary,
+        [T].arbitrary,
+        Gen<Int>.choose((1, maxMultiplier)),
+        Gen<Int>.choose((0, maxOvershoot)),
+      ) { (from: [T], into: [T], multiplier: Int, overshoot: Int) in
+      forAllNoShrink(
+        Array<T>.generateShuffledIndices(upTo: into.count * multiplier + overshoot, count: from.count)
       ) { (indices: [Int]) in
         var expected = into
         var actual = into
