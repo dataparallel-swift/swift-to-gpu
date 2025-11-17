@@ -84,7 +84,7 @@ private func prop_permute_circular_shift<T: Arbitrary & ExpressibleByIntegerLite
 private func prop_permute_shuffle<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
     property("permute_shuffle.\(T.self)") <-
       forAllNoShrink([T].arbitrary) { (source: [T]) in
-      forAllNoShrink(generateShuffledIndices(of: source)) { (shuffledIndices: [Int]) in
+      forAllNoShrink(source.generateShuffledIndices()) { (shuffledIndices: [Int]) in
         var expected: [T] = fill(count: source.count, with: 0)
         var actual: [T] = fill(count: source.count, with: 0)
         source.permute(into: &expected) { shuffledIndices[$0] }
@@ -130,11 +130,17 @@ private func prop_permute_strided_write<T: Arbitrary & ExpressibleByIntegerLiter
 /// parallel shuffled write (i -> p(i) where p: from.indices -> into.indices is injective.
 /// Generalization of parallel shuffle. Note that from.indices ⊆ into.indices.)
 private func prop_permute_shuffle_injective<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
+    let maxMultiplier = 3, maxOvershoot = 7
     property("permute_shuffle_generalized") <-
-      forAllNoShrink([T].arbitrary, Gen<Int>.choose((1, 5))) { (source: [T], n: Int) in
-        let intoCount = source.count * n
+      forAllNoShrink(
+        [T].arbitrary,
+        Gen<Int>.choose((1, maxMultiplier)),
+        Gen<Int>.choose((0, maxOvershoot)),
+      ) { (source: [T], multiplier: Int, overshoot: Int) in
+        // into.count >= source.count
+        let intoCount = source.count * multiplier + overshoot
         return forAllNoShrink(
-            generateShuffledIndices(upperBound: intoCount, count: source.count)
+            Array<T>.generateShuffledIndices(upTo: intoCount, count: source.count)
         ) { (shuffledIndices: [Int]) in
           var expected: [T] = fill(count: intoCount, with: 0)
           var actual: [T] = fill(count: intoCount, with: 0)
@@ -166,7 +172,7 @@ private func prop_permute_shuffle_generalized<T: Arbitrary & ExpressibleByIntege
         // permute indices can shoot past destination array bounds
         let upperBound = intoCount * overShoot
         return forAllNoShrink(
-            generateShuffledIndices(upperBound: upperBound, count: source.count)
+            Array<T>.generateShuffledIndices(upTo: upperBound, count: source.count)
         ) { (shuffledIndices: [Int]) in
           var expected: [T] = fill(count: intoCount, with: 0)
           var actual: [T] = fill(count: intoCount, with: 0)
@@ -211,7 +217,7 @@ private func prop_permute_elementwise_min<T: Arbitrary & Comparable & Expressibl
 private func prop_permute_group_reduce<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.Type) {
     property("permute_group_reduce.\(T.self)") <-
       forAllNoShrink([T].arbitrary, [T].arbitrary) { (from: [T], into: [T]) in
-      forAllNoShrink(generateShuffledIndices(of: into, size: from.count)) { (indices: [Int]) in
+      forAllNoShrink(into.generateShuffledIndices(count: from.count)) { (indices: [Int]) in
         var expected = into
         var actual = into
         from.permute(into: &expected, combining: +) { indices[$0] }
@@ -249,7 +255,7 @@ private func prop_permute_generalized<T: Arbitrary & AdditiveArithmetic & Simila
     property("permute_generalized.\(T.self)") <-
       forAllNoShrink([T].arbitrary, [T].arbitrary, Gen<Int>.choose((1, 3))) { (from: [T], into: [T], overshoot: Int) in
       forAllNoShrink(
-          generateShuffledIndices(upperBound: into.count * overshoot, count: from.count)
+          Array<T>.generateShuffledIndices(upTo: into.count * overshoot, count: from.count)
       ) { (indices: [Int]) in
         var expected = into
         var actual = into
