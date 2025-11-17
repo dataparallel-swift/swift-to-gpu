@@ -8,12 +8,8 @@ extension Array {
     }
 
     func generateShuffledIndices(count: Int) -> Gen<[Index]> {
-        // swiftlint:disable:next no_precondition
-        precondition(count <= self.count)
         return Gen.fromShufflingElements(of: self.indices.map(\.self))
-            .map { shuffledIndices in
-                (0 ..< count).map { shuffledIndices[$0] }
-            }
+            .map(take(count))
     }
 
     static func generateShuffledIndices(count: Int) -> Gen<[Index]> {
@@ -21,11 +17,15 @@ extension Array {
     }
 
     static func generateShuffledIndices(upTo: Index, count: Int) -> Gen<[Index]> {
-        // swiftlint:disable:next no_precondition
-        precondition(count <= upTo)
         return Gen.fromShufflingElements(of: (0 ..< upTo).map(\.self))
-            .map { shuffledIndices in
-                (0 ..< count).map { shuffledIndices[$0] }
-            }
+            .map(take(count))
+    }
+}
+
+private func take<T>(_ count: Int) -> (([T]) -> [T]) {
+    return { array in
+        // swiftlint:disable:next no_precondition
+        precondition(count <= array.count)
+        return (0 ..< count).map { array[$0] }
     }
 }
