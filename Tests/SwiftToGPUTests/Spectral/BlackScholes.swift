@@ -5,7 +5,9 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
+// SEE: [blackscholes benchmark]
 // swiftlint:disable identifier_name
+// swiftformat:disable consecutiveSpaces
 
 @Suite("BlackScholes")
 struct BlackScholesTests {
@@ -55,11 +57,11 @@ private func blackscholesTest<T: Arbitrary & Similar & RandomType & BinaryFloati
 
 // Polynomial approximation of cumulative normal distribution function
 private func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A {
-    let A1: A = 0.319381530
+    let A1: A =  0.319381530
     let A2: A = -0.356563782
-    let A3: A = 1.781477937
+    let A3: A =  1.781477937
     let A4: A = -1.821255978
-    let A5: A = 1.330274429
+    let A5: A =  1.330274429
     let RSQRT2PI: A = 0.39894228040143267793994605993438
 
     let K = 1.0 / (1.0 + 0.2316419 * abs(d))
@@ -90,10 +92,10 @@ private func blackscholes<A: BinaryFloatingPoint & ElementaryFunctions>(
     years t: A
 ) -> (call: A, put: A) {
     let v_sqrtT = v * A.sqrt(t)
-    let d1 = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
-    let d2 = d1 - v_sqrtT
-    let cnd_d1 = cnd(d1)
-    let cnd_d2 = cnd(d2)
+    let d1      = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
+    let d2      = d1 - v_sqrtT
+    let cnd_d1  = cnd(d1)
+    let cnd_d2  = cnd(d2)
 
     let x_expRT = x * A.exp(-r * t)
 

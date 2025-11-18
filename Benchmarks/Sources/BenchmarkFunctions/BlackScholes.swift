@@ -6,15 +6,25 @@ import BenchmarkFunctionsC
 import Numerics
 import SwiftToGPU
 
+// NOTE: [blackscholes benchmark]
+//
+// This benchmark is from the NVIDIA cuda-samples repository (BSD3 license)
+// https://github.com/NVIDIA/cuda-samples/tree/master/Samples/5_Domain_Specific/BlackScholes
+//
+// Minimising changes to the source (at the expense of being less swift-y, e.g.
+// snake_case) so that it remains as easy as possible to verify that it is
+// equivalent to the original.
+
 // swiftlint:disable identifier_name missing_docs
+// swiftformat:disable consecutiveSpaces
 
 // Polynomial approximation of cumulative normal distribution function
 func cnd<A: BinaryFloatingPoint & ElementaryFunctions>(_ d: A) -> A {
-    let A1: A = 0.319381530
+    let A1: A =  0.319381530
     let A2: A = -0.356563782
-    let A3: A = 1.781477937
+    let A3: A =  1.781477937
     let A4: A = -1.821255978
-    let A5: A = 1.330274429
+    let A5: A =  1.330274429
     let RSQRT2PI: A = 0.39894228040143267793994605993438
 
     let K = 1.0 / (1.0 + 0.2316419 * abs(d))
@@ -45,10 +55,10 @@ func blackscholes<A: BinaryFloatingPoint & ElementaryFunctions>(
     years t: A
 ) -> (call: A, put: A) {
     let v_sqrtT = v * A.sqrt(t)
-    let d1 = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
-    let d2 = d1 - v_sqrtT
-    let cnd_d1 = cnd(d1)
-    let cnd_d2 = cnd(d2)
+    let d1      = (A.log(s / x) + (r + 0.5 * v * v) * t) / v_sqrtT
+    let d2      = d1 - v_sqrtT
+    let cnd_d1  = cnd(d1)
+    let cnd_d2  = cnd(d2)
 
     let x_expRT = x * A.exp(-r * t)
 
