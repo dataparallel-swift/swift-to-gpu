@@ -7,8 +7,10 @@ import Testing
 
 // swiftlint:disable file_length
 
-@Suite("Primitive") struct PrimitiveTests {
-    @Suite("Bool") struct BoolTests {
+@Suite("Primitive")
+struct PrimitiveTests {
+    @Suite("Bool")
+    struct BoolTests {
         @Test("Bool.==") func eq() { eqTest(Bool.self) }
         @Test("Bool.!=") func neq() { neqTest(Bool.self) }
         @Test("Bool.!") func lnot() { lnotTest() }
@@ -16,7 +18,8 @@ import Testing
         @Test("Bool.&&") func land() { landTest() }
     }
 
-    @Suite("Int8") struct Int8Tests {
+    @Suite("Int8")
+    struct Int8Tests {
         // Ordering
         @Test("Int8.==") func eq() { eqTest(Int8.self) }
         @Test("Int8.!=") func neq() { neqTest(Int8.self) }
@@ -69,7 +72,8 @@ import Testing
         @Test("Int8.&>>") func uncheckedShiftR() { uncheckedShiftRTest(Int8.self) }
     }
 
-    @Suite("Int16") struct Int16Tests {
+    @Suite("Int16")
+    struct Int16Tests {
         // Ordering
         @Test("Int16.==") func eq() { eqTest(Int16.self) }
         @Test("Int16.!=") func neq() { neqTest(Int16.self) }
@@ -119,7 +123,8 @@ import Testing
         @Test("Int16.&>>") func uncheckedShiftR() { uncheckedShiftRTest(Int16.self) }
     }
 
-    @Suite("Int32") struct Int32Tests {
+    @Suite("Int32")
+    struct Int32Tests {
         // Ordering
         @Test("Int32.==") func eq() { eqTest(Int32.self) }
         @Test("Int32.!=") func neq() { neqTest(Int32.self) }
@@ -169,7 +174,8 @@ import Testing
         @Test("Int32.&>>") func uncheckedShiftR() { uncheckedShiftRTest(Int32.self) }
     }
 
-    @Suite("Int64") struct Int64Tests {
+    @Suite("Int64")
+    struct Int64Tests {
         // Ordering
         @Test("Int64.==") func eq() { eqTest(Int64.self) }
         @Test("Int64.!=") func neq() { neqTest(Int64.self) }
@@ -219,7 +225,8 @@ import Testing
         @Test("Int64.&>>") func uncheckedShiftR() { uncheckedShiftRTest(Int64.self) }
     }
 
-    @Suite("Int") struct IntTests {
+    @Suite("Int")
+    struct IntTests {
         // Ordering
         @Test("Int.==") func eq() { eqTest(Int.self) }
         @Test("Int.!=") func neq() { neqTest(Int.self) }
@@ -269,7 +276,8 @@ import Testing
         @Test("Int.&>>") func uncheckedShiftR() { uncheckedShiftRTest(Int.self) }
     }
 
-    @Suite("UInt8") struct UInt8Tests {
+    @Suite("UInt8")
+    struct UInt8Tests {
         // Ordering
         @Test("UInt8.==") func eq() { eqTest(UInt8.self) }
         @Test("UInt8.!=") func neq() { neqTest(UInt8.self) }
@@ -319,7 +327,8 @@ import Testing
         @Test("UInt8.&>>") func uncheckedShiftR() { uncheckedShiftRTest(UInt8.self) }
     }
 
-    @Suite("UInt16") struct UInt16Tests {
+    @Suite("UInt16")
+    struct UInt16Tests {
         // Ordering
         @Test("UInt16.==") func eq() { eqTest(UInt16.self) }
         @Test("UInt16.!=") func neq() { neqTest(UInt16.self) }
@@ -368,7 +377,8 @@ import Testing
         @Test("UInt16.&>>") func uncheckedShiftR() { uncheckedShiftRTest(UInt16.self) }
     }
 
-    @Suite("UInt32") struct UInt32Tests {
+    @Suite("UInt32")
+    struct UInt32Tests {
         // Ordering
         @Test("UInt32.==") func eq() { eqTest(UInt32.self) }
         @Test("UInt32.!=") func neq() { neqTest(UInt32.self) }
@@ -417,7 +427,8 @@ import Testing
         @Test("UInt32.&>>") func uncheckedShiftR() { uncheckedShiftRTest(UInt32.self) }
     }
 
-    @Suite("UInt64") struct UInt64Tests {
+    @Suite("UInt64")
+    struct UInt64Tests {
         // Ordering
         @Test("UInt64.==") func eq() { eqTest(UInt64.self) }
         @Test("UInt64.!=") func neq() { neqTest(UInt64.self) }
@@ -466,7 +477,8 @@ import Testing
         @Test("UInt64.&>>") func uncheckedShiftR() { uncheckedShiftRTest(UInt64.self) }
     }
 
-    @Suite("UInt") struct UIntTests {
+    @Suite("UInt")
+    struct UIntTests {
         // Ordering
         @Test("UInt.==") func eq() { eqTest(UInt.self) }
         @Test("UInt.!=") func neq() { neqTest(UInt.self) }
@@ -516,7 +528,8 @@ import Testing
     }
 
     #if arch(arm64)
-    @Suite("Float16") struct Float16Tests {
+    @Suite("Float16")
+    struct Float16Tests {
         // Ordering
         @Test("Float16.==") func eq() { eqTest(Float16.self) }
         @Test("Float16.!=") func neq() { neqTest(Float16.self) }
@@ -587,7 +600,8 @@ import Testing
     }
     #endif
 
-    @Suite("Float32") struct Float32Tests {
+    @Suite("Float32")
+    struct Float32Tests {
         // Ordering
         @Test("Float32.==") func eq() { eqTest(Float32.self) }
         @Test("Float32.!=") func neq() { neqTest(Float32.self) }
@@ -657,7 +671,8 @@ import Testing
         @Test("Float32.logGamma") func logGamma() { logGammaTest(Float32.self) }
     }
 
-    @Suite("Float64") struct Float64Tests {
+    @Suite("Float64")
+    struct Float64Tests {
         // Ordering
         @Test("Float64.==") func eq() { eqTest(Float64.self) }
         @Test("Float64.!=") func neq() { neqTest(Float64.self) }

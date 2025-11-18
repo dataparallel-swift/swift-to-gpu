@@ -4,7 +4,8 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("SAXPY") struct SAXPYTests {
+@Suite("SAXPY")
+struct SAXPYTests {
     #if arch(arm64)
     @Test func saxpy16() { saxpyTest(Float16.self) }
     #endif

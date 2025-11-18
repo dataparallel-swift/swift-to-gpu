@@ -5,7 +5,8 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Defer") struct DeferTests {
+@Suite("Defer")
+struct DeferTests {
     @Test func defer1() {
         func defer1(_ x: Double) -> Double {
             var x = x

@@ -5,7 +5,8 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Guard") struct GuardTests {
+@Suite("Guard")
+struct GuardTests {
     @Test func guardTrue() {
         func guardTrue(_ i: Int) -> Int {
             guard true else { return 0 }

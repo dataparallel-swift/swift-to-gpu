@@ -10,79 +10,92 @@ import Testing
 // and padding. The purpose of these tests is to check property access for
 // varying layouts.
 //
-@Suite("Structs") struct StructTests {
-    @Suite("WithOneMember") struct S1Tests {
-        @Suite("Bool") struct BoolTests {
+@Suite("Structs")
+struct StructTests {
+    @Suite("WithOneMember")
+    struct S1Tests {
+        @Suite("Bool")
+        struct BoolTests {
             @Test func get() { getTest(Bool.self) }
             @Test func set() { setTest(Bool.self) }
             @Test func setInout() { setInoutTest(Bool.self) }
             // @Test func defaultInitialiser() { defaultInitialiserTest(Bool.self) }
         }
 
-        @Suite("Int") struct IntTests {
+        @Suite("Int")
+        struct IntTests {
             @Test func get() { getTest(Int.self) }
             @Test func set() { setTest(Int.self) }
             @Test func setInout() { setInoutTest(Int.self) }
             @Test func defaultInitialiser() { defaultInitialiserTest(Int.self) }
         }
 
-        @Suite("Int8") struct Int8Tests {
+        @Suite("Int8")
+        struct Int8Tests {
             @Test func get() { getTest(Int8.self) }
             @Test func set() { setTest(Int8.self) }
             @Test func setInout() { setInoutTest(Int8.self) }
             @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self) }
         }
 
-        @Suite("Int16") struct Int16Tests {
+        @Suite("Int16")
+        struct Int16Tests {
             @Test func get() { getTest(Int16.self) }
             @Test func set() { setTest(Int16.self) }
             @Test func setInout() { setInoutTest(Int16.self) }
             @Test func defaultInitialiser() { defaultInitialiserTest(Int16.self) }
         }
 
-        @Suite("Int32") struct Int32Tests {
+        @Suite("Int32")
+        struct Int32Tests {
             @Test func get() { getTest(Int32.self) }
             @Test func set() { setTest(Int32.self) }
             @Test func setInout() { setInoutTest(Int32.self) }
             @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self) }
         }
 
-        @Suite("Int64") struct Int64Tests {
+        @Suite("Int64")
+        struct Int64Tests {
             @Test func get() { getTest(Int64.self) }
             // @Test(.bug(id: "86b70m272")) func set() { setTest(Int64.self) }
             // @Test(.bug(id: "86b70m272")) func setInout() { setInoutTest(Int64.self) }
             // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int64.self) }
         }
 
-        @Suite("UInt") struct UIntTests {
+        @Suite("UInt")
+        struct UIntTests {
             @Test func get() { getTest(UInt.self) }
             // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt.self) }
             // @Test(.bug(id: "86b70m272")) func setInout() { setInoutTest(UInt.self) }
             // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt.self) }
         }
 
-        @Suite("UInt8") struct UInt8Tests {
+        @Suite("UInt8")
+        struct UInt8Tests {
             @Test func get() { getTest(UInt8.self) }
             // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt8.self) }
             // @Test(.bug(id: "86b70m272")) func setInout() { setInoutTest(UInt8.self) }
             // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt8.self) }
         }
 
-        @Suite("UInt16") struct UInt16Tests {
+        @Suite("UInt16")
+        struct UInt16Tests {
             @Test func get() { getTest(UInt16.self) }
             // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt16.self) }
             // @Test(.bug(id: "86b70m272")) func setInout() { setInoutTest(UInt16.self) }
             // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt16.self) }
         }
 
-        @Suite("UInt32") struct UInt32Tests {
+        @Suite("UInt32")
+        struct UInt32Tests {
             @Test func get() { getTest(UInt32.self) }
             // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt32.self) }
             // @Test(.bug(id: "86b70m272")) func setInout() { setInoutTest(UInt32.self) }
             // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt32.self) }
         }
 
-        @Suite("UInt64") struct UInt64Tests {
+        @Suite("UInt64")
+        struct UInt64Tests {
             @Test func get() { getTest(UInt64.self) }
             // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt64.self) }
             // @Test(.bug(id: "86b70m272")) func setInout() { setInoutTest(UInt64.self) }
@@ -90,7 +103,8 @@ import Testing
         }
 
         #if arch(arm64)
-        @Suite("Float16") struct Float16Tests {
+        @Suite("Float16")
+        struct Float16Tests {
             @Test func get() { getTest(Float16.self) }
             @Test func set() { setTest(Float16.self) }
             @Test func setInout() { setInoutTest(Float16.self) }
@@ -98,14 +112,16 @@ import Testing
         }
         #endif
 
-        @Suite("Float32") struct Float32Tests {
+        @Suite("Float32")
+        struct Float32Tests {
             @Test func get() { getTest(Float32.self) }
             @Test func set() { setTest(Float32.self) }
             @Test func setInout() { setInoutTest(Float32.self) }
             @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self) }
         }
 
-        @Suite("Float64") struct Float64Tests {
+        @Suite("Float64")
+        struct Float64Tests {
             @Test func get() { getTest(Float64.self) }
             @Test func set() { setTest(Float64.self) }
             @Test func setInout() { setInoutTest(Float64.self) }
@@ -113,13 +129,15 @@ import Testing
         }
 
         // Throw some non-primitive values into the mix
-        @Suite("S2<Int64, Int8>") struct S2Int64Int8Tests {
+        @Suite("S2<Int64, Int8>")
+        struct S2Int64Int8Tests {
             @Test func get() { getTest(S2<Int64, Int8>.self) }
             @Test func set() { setTest(S2<Int64, Int8>.self) }
             @Test func setInout() { setInoutTest(S2<Int64, Int8>.self) }
         }
 
-        @Suite("S3<Int64, Int8, Float64>") struct S3Int64Int8Float64Tests {
+        @Suite("S3<Int64, Int8, Float64>")
+        struct S3Int64Int8Float64Tests {
             @Test func get() { getTest(S3<Int64, Int8, Float64>.self) }
             @Test func set() { setTest(S3<Int64, Int8, Float64>.self) }
             @Test func setInout() { setInoutTest(S3<Int64, Int8, Float64>.self) }
@@ -132,9 +150,12 @@ import Testing
         // }
     }
 
-    @Suite("WithTwoMembers") struct S2Tests {
-        @Suite("Int8") struct Int8Tests {
-            @Suite("Int8") struct Int8Tests {
+    @Suite("WithTwoMembers")
+    struct S2Tests {
+        @Suite("Int8")
+        struct Int8Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func get1() { get1Test(Int8.self, Int8.self) }
                 @Test func get2() { get2Test(Int8.self, Int8.self) }
                 @Test func set() { setTest(Int8.self, Int8.self) }
@@ -142,7 +163,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int8.self, Int8.self) }
             }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func get1() { get1Test(Int8.self, Int16.self) }
                 @Test func get2() { get2Test(Int8.self, Int16.self) }
                 @Test func set() { setTest(Int8.self, Int16.self) }
@@ -150,7 +172,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func get1() { get1Test(Int8.self, Int32.self) }
                 @Test func get2() { get2Test(Int8.self, Int32.self) }
                 @Test func set() { setTest(Int8.self, Int32.self) }
@@ -158,7 +181,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self, Int32.self) }
             }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func get1() { get1Test(Int8.self, Int64.self) }
                 @Test func get2() { get2Test(Int8.self, Int64.self) }
                 @Test func set() { setTest(Int8.self, Int64.self) }
@@ -166,7 +190,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self, Int64.self) }
             }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func get1() { get1Test(Int8.self, UInt8.self) }
                 @Test func get2() { get2Test(Int8.self, UInt8.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int8.self, UInt8.self) }
@@ -174,7 +199,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self, UInt8.self) }
             }
 
-            @Suite("UInt32") struct UInt32Tests {
+            @Suite("UInt32")
+            struct UInt32Tests {
                 @Test func get1() { get1Test(Int8.self, UInt32.self) }
                 @Test func get2() { get2Test(Int8.self, UInt32.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int8.self, UInt32.self) }
@@ -182,7 +208,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int8.self, UInt32.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func get1() { get1Test(Int8.self, UInt16.self) }
                 @Test func get2() { get2Test(Int8.self, UInt16.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int8.self, UInt16.self) }
@@ -190,7 +217,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int8.self, UInt16.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func get1() { get1Test(Int8.self, UInt64.self) }
                 @Test func get2() { get2Test(Int8.self, UInt64.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int8.self, UInt64.self) }
@@ -199,7 +227,8 @@ import Testing
             }
 
             #if arch(arm64)
-            @Suite("Float16") struct Float16Tests {
+            @Suite("Float16")
+            struct Float16Tests {
                 @Test func get1() { get1Test(Int8.self, Float16.self) }
                 @Test func get2() { get2Test(Int8.self, Float16.self) }
                 @Test func set() { setTest(Int8.self, Float16.self) }
@@ -208,7 +237,8 @@ import Testing
             }
             #endif
 
-            @Suite("Float32") struct Float32Tests {
+            @Suite("Float32")
+            struct Float32Tests {
                 @Test func get1() { get1Test(Int8.self, Float32.self) }
                 @Test func get2() { get2Test(Int8.self, Float32.self) }
                 @Test func set() { setTest(Int8.self, Float32.self) }
@@ -216,7 +246,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int8.self, Float32.self) }
             }
 
-            @Suite("Float64") struct Float64Tests {
+            @Suite("Float64")
+            struct Float64Tests {
                 @Test func get1() { get1Test(Int8.self, Float64.self) }
                 @Test func get2() { get2Test(Int8.self, Float64.self) }
                 @Test func set() { setTest(Int8.self, Float64.self) }
@@ -225,8 +256,10 @@ import Testing
             }
         }
 
-        @Suite("Int32") struct Int32Tests {
-            @Suite("Int8") struct Int8Tests {
+        @Suite("Int32")
+        struct Int32Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func get1() { get1Test(Int32.self, Int8.self) }
                 @Test func get2() { get2Test(Int32.self, Int8.self) }
                 @Test func set() { setTest(Int32.self, Int8.self) }
@@ -234,7 +267,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int32.self, Int8.self) }
             }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func get1() { get1Test(Int32.self, Int16.self) }
                 @Test func get2() { get2Test(Int32.self, Int16.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int32.self, Int16.self) }
@@ -242,7 +276,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int32.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func get1() { get1Test(Int32.self, Int32.self) }
                 @Test func get2() { get2Test(Int32.self, Int32.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int32.self, Int32.self) }
@@ -250,7 +285,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int32.self, Int32.self) }
             }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func get1() { get1Test(Int32.self, Int64.self) }
                 @Test func get2() { get2Test(Int32.self, Int64.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int32.self, Int64.self) }
@@ -258,7 +294,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int32.self, Int64.self) }
             }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func get1() { get1Test(Int32.self, UInt8.self) }
                 @Test func get2() { get2Test(Int32.self, UInt8.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Int32.self, UInt8.self) }
@@ -266,7 +303,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self, UInt8.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func get1() { get1Test(Int32.self, UInt16.self) }
                 @Test func get2() { get2Test(Int32.self, UInt16.self) }
                 @Test func set() { setTest(Int32.self, UInt16.self) }
@@ -274,7 +312,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self, UInt16.self) }
             }
 
-            @Suite("UInt32") struct UInt32Tests {
+            @Suite("UInt32")
+            struct UInt32Tests {
                 @Test func get1() { get1Test(Int32.self, UInt32.self) }
                 @Test func get2() { get2Test(Int32.self, UInt32.self) }
                 @Test func set() { setTest(Int32.self, UInt32.self) }
@@ -282,7 +321,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self, UInt32.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func get1() { get1Test(Int32.self, UInt64.self) }
                 @Test func get2() { get2Test(Int32.self, UInt64.self) }
                 @Test func set() { setTest(Int32.self, UInt64.self) }
@@ -291,7 +331,8 @@ import Testing
             }
 
             #if arch(arm64)
-            @Suite("Float16") struct Float16Tests {
+            @Suite("Float16")
+            struct Float16Tests {
                 @Test func get1() { get1Test(Int32.self, Float16.self) }
                 @Test func get2() { get2Test(Int32.self, Float16.self) }
                 @Test func set() { setTest(Int32.self, Float16.self) }
@@ -300,7 +341,8 @@ import Testing
             }
             #endif
 
-            @Suite("Float32") struct Float32Tests {
+            @Suite("Float32")
+            struct Float32Tests {
                 @Test func get1() { get1Test(Int32.self, Float32.self) }
                 @Test func get2() { get2Test(Int32.self, Float32.self) }
                 @Test func set() { setTest(Int32.self, Float32.self) }
@@ -308,7 +350,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Int32.self, Float32.self) }
             }
 
-            @Suite("Float64") struct Float64Tests {
+            @Suite("Float64")
+            struct Float64Tests {
                 @Test func get1() { get1Test(Int32.self, Float64.self) }
                 @Test func get2() { get2Test(Int32.self, Float64.self) }
                 @Test func set() { setTest(Int32.self, Float64.self) }
@@ -317,8 +360,10 @@ import Testing
             }
         }
 
-        @Suite("UInt64") struct UInt64Tests {
-            @Suite("Int8") struct Int8Tests {
+        @Suite("UInt64")
+        struct UInt64Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func get1() { get1Test(UInt64.self, Int8.self) }
                 @Test func get2() { get2Test(UInt64.self, Int8.self) }
                 @Test func set() { setTest(UInt64.self, Int8.self) }
@@ -326,7 +371,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(UInt64.self, Int8.self) }
             }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func get1() { get1Test(UInt64.self, Int16.self) }
                 @Test func get2() { get2Test(UInt64.self, Int16.self) }
                 @Test func set() { setTest(UInt64.self, Int16.self) }
@@ -334,7 +380,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(UInt64.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func get1() { get1Test(UInt64.self, Int32.self) }
                 @Test func get2() { get2Test(UInt64.self, Int32.self) }
                 @Test func set() { setTest(UInt64.self, Int32.self) }
@@ -342,7 +389,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(UInt64.self, Int32.self) }
             }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func get1() { get1Test(UInt64.self, Int64.self) }
                 @Test func get2() { get2Test(UInt64.self, Int64.self) }
                 @Test func set() { setTest(UInt64.self, Int64.self) }
@@ -350,7 +398,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(UInt64.self, Int64.self) }
             }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func get1() { get1Test(UInt64.self, UInt8.self) }
                 @Test func get2() { get2Test(UInt64.self, UInt8.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt64.self, UInt8.self) }
@@ -358,7 +407,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt64.self, UInt8.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func get1() { get1Test(UInt64.self, UInt16.self) }
                 @Test func get2() { get2Test(UInt64.self, UInt16.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt64.self, UInt16.self) }
@@ -366,7 +416,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt64.self, UInt16.self) }
             }
 
-            @Suite("UInt32") struct UInt32Tests {
+            @Suite("UInt32")
+            struct UInt32Tests {
                 @Test func get1() { get1Test(UInt32.self, UInt32.self) }
                 @Test func get2() { get2Test(UInt32.self, UInt32.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt32.self, UInt32.self) }
@@ -374,7 +425,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt32.self, UInt32.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func get1() { get1Test(UInt64.self, UInt64.self) }
                 @Test func get2() { get2Test(UInt64.self, UInt64.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(UInt64.self, UInt64.self) }
@@ -383,7 +435,8 @@ import Testing
             }
 
             #if arch(arm64)
-            @Suite("Float16") struct Float16Tests {
+            @Suite("Float16")
+            struct Float16Tests {
                 @Test func get1() { get1Test(UInt64.self, Float16.self) }
                 @Test func get2() { get2Test(UInt64.self, Float16.self) }
                 @Test func set() { setTest(UInt64.self, Float16.self) }
@@ -392,7 +445,8 @@ import Testing
             }
             #endif
 
-            @Suite("Float32") struct Float32Tests {
+            @Suite("Float32")
+            struct Float32Tests {
                 @Test func get1() { get1Test(UInt64.self, Float32.self) }
                 @Test func get2() { get2Test(UInt64.self, Float32.self) }
                 @Test func set() { setTest(UInt64.self, Float32.self) }
@@ -400,7 +454,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(UInt64.self, Float32.self) }
             }
 
-            @Suite("Float64") struct Float64Tests {
+            @Suite("Float64")
+            struct Float64Tests {
                 @Test func get1() { get1Test(UInt64.self, Float64.self) }
                 @Test func get2() { get2Test(UInt64.self, Float64.self) }
                 @Test func set() { setTest(UInt64.self, Float64.self) }
@@ -409,8 +464,10 @@ import Testing
             }
         }
 
-        @Suite("Float32") struct Float32Tests {
-            @Suite("Int8") struct Int8Tests {
+        @Suite("Float32")
+        struct Float32Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func get1() { get1Test(Float32.self, Int8.self) }
                 @Test func get2() { get2Test(Float32.self, Int8.self) }
                 @Test func set() { setTest(Float32.self, Int8.self) }
@@ -418,7 +475,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self, Int8.self) }
             }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func get1() { get1Test(Float32.self, Int16.self) }
                 @Test func get2() { get2Test(Float32.self, Int16.self) }
                 @Test func set() { setTest(Float32.self, Int16.self) }
@@ -426,7 +484,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func get1() { get1Test(Float32.self, Int32.self) }
                 @Test func get2() { get2Test(Float32.self, Int32.self) }
                 @Test func set() { setTest(Float32.self, Int32.self) }
@@ -434,7 +493,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self, Int32.self) }
             }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func get1() { get1Test(Float32.self, Int64.self) }
                 @Test func get2() { get2Test(Float32.self, Int64.self) }
                 @Test func set() { setTest(Float32.self, Int64.self) }
@@ -442,7 +502,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self, Int64.self) }
             }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func get1() { get1Test(Float32.self, UInt8.self) }
                 @Test func get2() { get2Test(Float32.self, UInt8.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Float32.self, UInt8.self) }
@@ -450,7 +511,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Float32.self, UInt8.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func get1() { get1Test(Float32.self, UInt16.self) }
                 @Test func get2() { get2Test(Float32.self, UInt16.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Float32.self, UInt16.self) }
@@ -458,7 +520,8 @@ import Testing
                 // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Float32.self, UInt16.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func get1() { get1Test(Float32.self, UInt64.self) }
                 @Test func get2() { get2Test(Float32.self, UInt64.self) }
                 // @Test(.bug(id: "86b70m272")) func set() { setTest(Float32.self, UInt64.self) }
@@ -467,7 +530,8 @@ import Testing
             }
 
             #if arch(arm64)
-            @Suite("Float16") struct Float16Tests {
+            @Suite("Float16")
+            struct Float16Tests {
                 @Test func get1() { get1Test(Float32.self, Float16.self) }
                 @Test func get2() { get2Test(Float32.self, Float16.self) }
                 @Test func set() { setTest(Float32.self, Float16.self) }
@@ -476,7 +540,8 @@ import Testing
             }
             #endif
 
-            @Suite("Float32") struct Float32Tests {
+            @Suite("Float32")
+            struct Float32Tests {
                 @Test func get1() { get1Test(Float32.self, Float32.self) }
                 @Test func get2() { get2Test(Float32.self, Float32.self) }
                 @Test func set() { setTest(Float32.self, Float32.self) }
@@ -484,7 +549,8 @@ import Testing
                 @Test func defaultInitialiser() { defaultInitialiserTest(Float32.self, Float32.self) }
             }
 
-            @Suite("Float64") struct Float64Tests {
+            @Suite("Float64")
+            struct Float64Tests {
                 @Test func get1() { get1Test(Float32.self, Float64.self) }
                 @Test func get2() { get2Test(Float32.self, Float64.self) }
                 @Test func set() { setTest(Float32.self, Float64.self) }
@@ -496,24 +562,30 @@ import Testing
 
     // More of the same, now with even less working. Pick some random types
     // because computing the entire cartesian product is silly.
-    @Suite("WithThreeMembers") struct S3Tests {
-        @Suite("Int8") struct Int8Tests {
-            @Suite("Int8") struct Int8Tests {
-                @Suite("Int8") struct Int8Tests {
+    @Suite("WithThreeMembers")
+    struct S3Tests {
+        @Suite("Int8")
+        struct Int8Tests {
+            @Suite("Int8")
+            struct Int8Tests {
+                @Suite("Int8")
+                struct Int8Tests {
                     @Test func get() { getTest(Int8.self, Int8.self, Int8.self) }
                     @Test func set() { setTest(Int8.self, Int8.self, Int8.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Int8.self, Int8.self, Int8.self) }
                     // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int8.self, Int8.self, Int8.self) }
                 }
 
-                @Suite("UInt64") struct UInt64Tests {
+                @Suite("UInt64")
+                struct UInt64Tests {
                     @Test func get() { getTest(Int8.self, Int8.self, UInt64.self) }
                     @Test func set() { setTest(Int8.self, Int8.self, UInt64.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Int8.self, Int8.self, UInt64.self) }
                     // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Int8.self, Int8.self, UInt64.self) }
                 }
 
-                @Suite("Float32") struct Float32Tests {
+                @Suite("Float32")
+                struct Float32Tests {
                     @Test func get() { getTest(Int8.self, Int8.self, Float32.self) }
                     @Test func set() { setTest(Int8.self, Int8.self, Float32.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Int8.self, Int8.self, Float32.self) }
@@ -522,23 +594,28 @@ import Testing
             }
         }
 
-        @Suite("UInt32") struct UInt32Tests {
-            @Suite("Int64") struct Int64Tests {
-                @Suite("Int16") struct Int16Tests {
+        @Suite("UInt32")
+        struct UInt32Tests {
+            @Suite("Int64")
+            struct Int64Tests {
+                @Suite("Int16")
+                struct Int16Tests {
                     @Test func get() { getTest(UInt32.self, Int64.self, Int16.self) }
                     @Test func set() { setTest(UInt32.self, Int64.self, Int16.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(UInt32.self, Int64.self, Int16.self) }
                     // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt32.self, Int64.self, Int16.self) }
                 }
 
-                @Suite("UInt64") struct UInt64Tests {
+                @Suite("UInt64")
+                struct UInt64Tests {
                     @Test func get() { getTest(UInt32.self, Int64.self, UInt64.self) }
                     @Test func set() { setTest(UInt32.self, Int64.self, UInt64.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(UInt32.self, Int64.self, UInt64.self) }
                     // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(UInt32.self, Int64.self, UInt64.self) }
                 }
 
-                @Suite("Float32") struct Float32Tests {
+                @Suite("Float32")
+                struct Float32Tests {
                     @Test func get() { getTest(UInt32.self, Int64.self, Float32.self) }
                     @Test func set() { setTest(UInt32.self, Int64.self, Float32.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(UInt32.self, Int64.self, Float32.self) }
@@ -547,23 +624,28 @@ import Testing
             }
         }
 
-        @Suite("Float64") struct Float64Tests {
-            @Suite("Int64") struct Int64Tests {
-                @Suite("Int16") struct Int16Tests {
+        @Suite("Float64")
+        struct Float64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
+                @Suite("Int16")
+                struct Int16Tests {
                     @Test func get() { getTest(Float64.self, Int64.self, Int16.self) }
                     @Test func set() { setTest(Float64.self, Int64.self, Int16.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Float64.self, Int64.self, Int16.self) }
                     // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Float64.self, Int64.self, Int16.self) }
                 }
 
-                @Suite("UInt64") struct UInt64Tests {
+                @Suite("UInt64")
+                struct UInt64Tests {
                     @Test func get() { getTest(Float64.self, Int64.self, UInt64.self) }
                     @Test func set() { setTest(Float64.self, Int64.self, UInt64.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Float64.self, Int64.self, UInt64.self) }
                     // @Test(.bug(id: "86b70m272")) func defaultInitialiser() { defaultInitialiserTest(Float64.self, Int64.self, UInt64.self) }
                 }
 
-                @Suite("Float32") struct Float32Tests {
+                @Suite("Float32")
+                struct Float32Tests {
                     @Test func get() { getTest(Float64.self, Int64.self, Float32.self) }
                     @Test func set() { setTest(Float64.self, Int64.self, Float32.self) }
                     // @Test(.bug(id: "86b7ef7w7")) func setInout() { setInoutTest(Float64.self, Int64.self, Float32.self) }

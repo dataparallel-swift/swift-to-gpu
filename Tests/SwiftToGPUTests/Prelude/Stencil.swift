@@ -4,34 +4,40 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Stencil") struct StencilTests {
-    @Suite("Int32") struct Int32Tests {
+@Suite("Stencil")
+struct StencilTests {
+    @Suite("Int32")
+    struct Int32Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Int32.self) }
         @Test func adjacentDifference() { adjacentDifferenceTest(Int32.self) }
         @Test func laplace1D() { laplace1DTest(Int32.self) }
     }
 
-    @Suite("Int64") struct Int64Tests {
+    @Suite("Int64")
+    struct Int64Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Int64.self) }
         @Test func adjacentDifference() { adjacentDifferenceTest(Int64.self) }
         @Test func laplace1D() { laplace1DTest(Int64.self) }
     }
 
     #if arch(arm64)
-    @Suite("Float16") struct Float16Tests {
+    @Suite("Float16")
+    struct Float16Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Float16.self) }
         @Test func adjacentDifference() { adjacentDifferenceTest(Float16.self) }
         @Test func laplace1D() { laplace1DTest(Float16.self) }
     }
     #endif
 
-    @Suite("Float32") struct Float32Tests {
+    @Suite("Float32")
+    struct Float32Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Float32.self) }
         @Test func adjacentDifference() { adjacentDifferenceTest(Float32.self) }
         @Test func laplace1D() { laplace1DTest(Float32.self) }
     }
 
-    @Suite("Float64") struct Float64Tests {
+    @Suite("Float64")
+    struct Float64Tests {
         @Test func finiteDifference() { finiteDifferenceTest(Float64.self) }
         @Test func adjacentDifference() { adjacentDifferenceTest(Float64.self) }
         @Test func laplace1D() { laplace1DTest(Float64.self) }

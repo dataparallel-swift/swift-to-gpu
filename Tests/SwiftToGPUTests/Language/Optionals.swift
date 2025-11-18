@@ -4,8 +4,10 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Optionals") struct OptionalTests {
-    @Suite("Int") struct IntTests {
+@Suite("Optionals")
+struct OptionalTests {
+    @Suite("Int")
+    struct IntTests {
         @Test func ifLet() { ifLetTest(Int.self) }
         @Test func guardLet() { guardLetTest(Int.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Int.self) }
@@ -13,7 +15,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Int.self) }
     }
 
-    @Suite("Int8") struct Int8Tests {
+    @Suite("Int8")
+    struct Int8Tests {
         @Test func ifLet() { ifLetTest(Int8.self) }
         @Test func guardLet() { guardLetTest(Int8.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Int8.self) }
@@ -21,7 +24,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Int8.self) }
     }
 
-    @Suite("Int16") struct Int16Tests {
+    @Suite("Int16")
+    struct Int16Tests {
         @Test func ifLet() { ifLetTest(Int16.self) }
         @Test func guardLet() { guardLetTest(Int16.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Int16.self) }
@@ -29,7 +33,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Int16.self) }
     }
 
-    @Suite("Int32") struct Int32Tests {
+    @Suite("Int32")
+    struct Int32Tests {
         @Test func ifLet() { ifLetTest(Int32.self) }
         @Test func guardLet() { guardLetTest(Int32.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Int32.self) }
@@ -37,7 +42,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Int32.self) }
     }
 
-    @Suite("Int64") struct Int64Tests {
+    @Suite("Int64")
+    struct Int64Tests {
         @Test func ifLet() { ifLetTest(Int64.self) }
         @Test func guardLet() { guardLetTest(Int64.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Int64.self) }
@@ -45,7 +51,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Int64.self) }
     }
 
-    @Suite("UInt") struct UIntTests {
+    @Suite("UInt")
+    struct UIntTests {
         @Test func ifLet() { ifLetTest(UInt.self) }
         @Test func guardLet() { guardLetTest(UInt.self) }
         @Test func nilCoalescing() { nilCoalescingTest(UInt.self) }
@@ -53,7 +60,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(UInt.self) }
     }
 
-    @Suite("UInt8") struct UInt8Tests {
+    @Suite("UInt8")
+    struct UInt8Tests {
         @Test func ifLet() { ifLetTest(UInt8.self) }
         @Test func guardLet() { guardLetTest(UInt8.self) }
         @Test func nilCoalescing() { nilCoalescingTest(UInt8.self) }
@@ -61,7 +69,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(UInt8.self) }
     }
 
-    @Suite("UInt16") struct UInt16Tests {
+    @Suite("UInt16")
+    struct UInt16Tests {
         @Test func ifLet() { ifLetTest(UInt16.self) }
         @Test func guardLet() { guardLetTest(UInt16.self) }
         @Test func nilCoalescing() { nilCoalescingTest(UInt16.self) }
@@ -69,7 +78,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(UInt16.self) }
     }
 
-    @Suite("UInt32") struct UInt32Tests {
+    @Suite("UInt32")
+    struct UInt32Tests {
         @Test func ifLet() { ifLetTest(UInt32.self) }
         @Test func guardLet() { guardLetTest(UInt32.self) }
         @Test func nilCoalescing() { nilCoalescingTest(UInt32.self) }
@@ -77,7 +87,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(UInt32.self) }
     }
 
-    @Suite("UInt64") struct UInt64Tests {
+    @Suite("UInt64")
+    struct UInt64Tests {
         @Test func ifLet() { ifLetTest(UInt64.self) }
         @Test func guardLet() { guardLetTest(UInt64.self) }
         @Test func nilCoalescing() { nilCoalescingTest(UInt64.self) }
@@ -86,7 +97,8 @@ import Testing
     }
 
     #if arch(arm64)
-    @Suite("Float16") struct Float16Tests {
+    @Suite("Float16")
+    struct Float16Tests {
         @Test func ifLet() { ifLetTest(Float16.self) }
         @Test func guardLet() { guardLetTest(Float16.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Float16.self) }
@@ -95,7 +107,8 @@ import Testing
     }
     #endif
 
-    @Suite("Float32") struct Float32Tests {
+    @Suite("Float32")
+    struct Float32Tests {
         @Test func ifLet() { ifLetTest(Float32.self) }
         @Test func guardLet() { guardLetTest(Float32.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Float32.self) }
@@ -103,7 +116,8 @@ import Testing
         @Test func forceUnwrapNonnil() { forceUnwrapNonnilTest(Float32.self) }
     }
 
-    @Suite("Float64") struct Float64Tests {
+    @Suite("Float64")
+    struct Float64Tests {
         @Test func ifLet() { ifLetTest(Float64.self) }
         @Test func guardLet() { guardLetTest(Float64.self) }
         @Test func nilCoalescing() { nilCoalescingTest(Float64.self) }

@@ -5,8 +5,10 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Enumerations") struct EnumerationTests {
-    @Suite("PlainEnumeration") struct PlainEnumerationTests {
+@Suite("Enumerations")
+struct EnumerationTests {
+    @Suite("PlainEnumeration")
+    struct PlainEnumerationTests {
         enum E1: Arbitrary {
             case opt1
 
@@ -132,17 +134,21 @@ import Testing
     // Select an arbitrary subset from the below, rather than the entire
     // cartesian product.
     //
-    @Suite("EnumerationWithAssociatedValues") struct EnumerationWithAssociatedValuesTests {
-        @Suite("Int") struct IntTests {
+    @Suite("EnumerationWithAssociatedValues")
+    struct EnumerationWithAssociatedValuesTests {
+        @Suite("Int")
+        struct IntTests {
             @Test func switchEV1() { switchEV1Test(Int.self) }
 
-            @Suite("Int") struct IntTests {
+            @Suite("Int")
+            struct IntTests {
                 @Test func switchEV2() { switchEV2Test(Int.self, Int.self) }
                 @Test func switchEV3() { switchEV3Test(Int.self, Int.self) }
                 @Test func switchEV4() { switchEV4Test(Int.self, Int.self) }
             }
 
-            @Suite("Int8") struct Int8Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func switchEV2() { switchEV2Test(Int.self, Int8.self) }
                 @Test func switchEV3() { switchEV3Test(Int.self, Int8.self) }
                 @Test func switchEV4() { switchEV4Test(Int.self, Int8.self) }
@@ -197,7 +203,8 @@ import Testing
             // }
         }
 
-        @Suite("Int8") struct Int8Tests {
+        @Suite("Int8")
+        struct Int8Tests {
             @Test func switchEV1() { switchEV1Test(Int8.self) }
 
             // @Suite("Int") struct IntTests {
@@ -212,13 +219,15 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(Int8.self, Int8.self) }
             // }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func switchEV2() { switchEV2Test(Int8.self, Int16.self) }
                 @Test func switchEV3() { switchEV3Test(Int8.self, Int16.self) }
                 @Test func switchEV4() { switchEV4Test(Int8.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func switchEV2() { switchEV2Test(Int8.self, Int32.self) }
                 @Test func switchEV3() { switchEV3Test(Int8.self, Int32.self) }
                 @Test func switchEV4() { switchEV4Test(Int8.self, Int32.self) }
@@ -261,7 +270,8 @@ import Testing
             // }
         }
 
-        @Suite("Int16") struct Int16Tests {
+        @Suite("Int16")
+        struct Int16Tests {
             @Test func switchEV1() { switchEV1Test(Int16.self) }
 
             // @Suite("Int") struct IntTests {
@@ -288,13 +298,15 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(Int16.self, Int32.self) }
             // }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func switchEV2() { switchEV2Test(Int16.self, Int64.self) }
                 @Test func switchEV3() { switchEV3Test(Int16.self, Int64.self) }
                 @Test func switchEV4() { switchEV4Test(Int16.self, Int64.self) }
             }
 
-            @Suite("UInt") struct UIntTests {
+            @Suite("UInt")
+            struct UIntTests {
                 @Test func switchEV2() { switchEV2Test(Int16.self, UInt.self) }
                 @Test func switchEV3() { switchEV3Test(Int16.self, UInt.self) }
                 @Test func switchEV4() { switchEV4Test(Int16.self, UInt.self) }
@@ -325,7 +337,8 @@ import Testing
             // }
         }
 
-        @Suite("Int32") struct Int32Tests {
+        @Suite("Int32")
+        struct Int32Tests {
             @Test func switchEV1() { switchEV1Test(Int32.self) }
 
             // @Suite("Int") struct IntTests {
@@ -364,13 +377,15 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(Int32.self, UInt.self) }
             // }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func switchEV2() { switchEV2Test(Int32.self, UInt8.self) }
                 @Test func switchEV3() { switchEV3Test(Int32.self, UInt8.self) }
                 @Test func switchEV4() { switchEV4Test(Int32.self, UInt8.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func switchEV2() { switchEV2Test(Int32.self, UInt16.self) }
                 @Test func switchEV3() { switchEV3Test(Int32.self, UInt16.self) }
                 @Test func switchEV4() { switchEV4Test(Int32.self, UInt16.self) }
@@ -389,7 +404,8 @@ import Testing
             // }
         }
 
-        @Suite("Int64") struct Int64Tests {
+        @Suite("Int64")
+        struct Int64Tests {
             @Test func switchEV1() { switchEV1Test(Int64.self) }
 
             // @Suite("Int") struct IntTests {
@@ -440,23 +456,27 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(Int64.self, UInt16.self) }
             // }
 
-            @Suite("UInt32") struct UInt32Tests {
+            @Suite("UInt32")
+            struct UInt32Tests {
                 @Test func switchEV2() { switchEV2Test(Int64.self, UInt32.self) }
                 @Test func switchEV3() { switchEV3Test(Int64.self, UInt32.self) }
                 @Test func switchEV4() { switchEV4Test(Int64.self, UInt32.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func switchEV2() { switchEV2Test(Int64.self, UInt64.self) }
                 @Test func switchEV3() { switchEV3Test(Int64.self, UInt64.self) }
                 @Test func switchEV4() { switchEV4Test(Int64.self, UInt64.self) }
             }
         }
 
-        @Suite("UInt") struct UIntTests {
+        @Suite("UInt")
+        struct UIntTests {
             @Test func switchEV1() { switchEV1Test(UInt.self) }
 
-            @Suite("Int") struct IntTests {
+            @Suite("Int")
+            struct IntTests {
                 @Test func switchEV2() { switchEV2Test(UInt.self, Int.self) }
                 @Test func switchEV3() { switchEV3Test(UInt.self, Int.self) }
                 @Test func switchEV4() { switchEV4Test(UInt.self, Int.self) }
@@ -468,7 +488,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt.self, Int8.self) }
             // }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func switchEV2() { switchEV2Test(UInt.self, Int16.self) }
                 @Test func switchEV3() { switchEV3Test(UInt.self, Int16.self) }
                 @Test func switchEV4() { switchEV4Test(UInt.self, Int16.self) }
@@ -517,7 +538,8 @@ import Testing
             // }
         }
 
-        @Suite("UInt8") struct UInt8Tests {
+        @Suite("UInt8")
+        struct UInt8Tests {
             @Test func switchEV1() { switchEV1Test(UInt8.self) }
 
             // @Suite("Int") struct IntTests {
@@ -526,7 +548,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt8.self, Int.self) }
             // }
 
-            @Suite("Int8") struct Int8Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func switchEV2() { switchEV2Test(UInt8.self, Int8.self) }
                 @Test func switchEV3() { switchEV3Test(UInt8.self, Int8.self) }
                 @Test func switchEV4() { switchEV4Test(UInt8.self, Int8.self) }
@@ -538,7 +561,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt8.self, Int16.self) }
             // }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func switchEV2() { switchEV2Test(UInt8.self, Int32.self) }
                 @Test func switchEV3() { switchEV3Test(UInt8.self, Int32.self) }
                 @Test func switchEV4() { switchEV4Test(UInt8.self, Int32.self) }
@@ -581,7 +605,8 @@ import Testing
             // }
         }
 
-        @Suite("UInt16") struct UInt16Tests {
+        @Suite("UInt16")
+        struct UInt16Tests {
             @Test func switchEV1() { switchEV1Test(UInt16.self) }
 
             // @Suite("Int") struct IntTests {
@@ -596,7 +621,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt16.self, Int8.self) }
             // }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func switchEV2() { switchEV2Test(UInt16.self, Int16.self) }
                 @Test func switchEV3() { switchEV3Test(UInt16.self, Int16.self) }
                 @Test func switchEV4() { switchEV4Test(UInt16.self, Int16.self) }
@@ -608,7 +634,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt16.self, Int32.self) }
             // }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func switchEV2() { switchEV2Test(UInt16.self, Int64.self) }
                 @Test func switchEV3() { switchEV3Test(UInt16.self, Int64.self) }
                 @Test func switchEV4() { switchEV4Test(UInt16.self, Int64.self) }
@@ -645,7 +672,8 @@ import Testing
             // }
         }
 
-        @Suite("UInt32") struct UInt32Tests {
+        @Suite("UInt32")
+        struct UInt32Tests {
             @Test func switchEV1() { switchEV1Test(UInt32.self) }
 
             // @Suite("Int") struct IntTests {
@@ -666,7 +694,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt32.self, Int16.self) }
             // }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func switchEV2() { switchEV2Test(UInt32.self, Int32.self) }
                 @Test func switchEV3() { switchEV3Test(UInt32.self, Int32.self) }
                 @Test func switchEV4() { switchEV4Test(UInt32.self, Int32.self) }
@@ -678,7 +707,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt32.self, Int64.self) }
             // }
 
-            @Suite("UInt") struct UIntTests {
+            @Suite("UInt")
+            struct UIntTests {
                 @Test func switchEV2() { switchEV2Test(UInt32.self, UInt.self) }
                 @Test func switchEV3() { switchEV3Test(UInt32.self, UInt.self) }
                 @Test func switchEV4() { switchEV4Test(UInt32.self, UInt.self) }
@@ -709,7 +739,8 @@ import Testing
             // }
         }
 
-        @Suite("UInt64") struct UInt64Tests {
+        @Suite("UInt64")
+        struct UInt64Tests {
             @Test func switchEV1() { switchEV1Test(UInt64.self) }
 
             // @Suite("Int") struct IntTests {
@@ -736,7 +767,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt64.self, Int32.self) }
             // }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func switchEV2() { switchEV2Test(UInt64.self, Int64.self) }
                 @Test func switchEV3() { switchEV3Test(UInt64.self, Int64.self) }
                 @Test func switchEV4() { switchEV4Test(UInt64.self, Int64.self) }
@@ -748,7 +780,8 @@ import Testing
             //     @Test func switchEV4() { switchEV4Test(UInt64.self, UInt.self) }
             // }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func switchEV2() { switchEV2Test(UInt64.self, UInt8.self) }
                 @Test func switchEV3() { switchEV3Test(UInt64.self, UInt8.self) }
                 @Test func switchEV4() { switchEV4Test(UInt64.self, UInt8.self) }

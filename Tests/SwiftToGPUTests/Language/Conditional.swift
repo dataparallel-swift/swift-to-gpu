@@ -5,7 +5,8 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Conditional") struct ConditionalTests {
+@Suite("Conditional")
+struct ConditionalTests {
     @Test func ifTrue() {
         func ifTrue(_ i: Int) -> Int {
             if true { return i }

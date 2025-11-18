@@ -5,8 +5,10 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Switch") struct SwitchTests {
-    @Suite("Int") struct IntTests {
+@Suite("Switch")
+struct SwitchTests {
+    @Suite("Int")
+    struct IntTests {
         @Test func switch1() { switch1Test(Int.self) }
         @Test func switch2() { switch2Test(Int.self) }
         @Test func switch3() { switch3Test(Int.self) }
@@ -15,7 +17,8 @@ import Testing
         @Test func switch6() { switch6Test(Int.self) }
     }
 
-    @Suite("Int8") struct Int8Tests {
+    @Suite("Int8")
+    struct Int8Tests {
         @Test func switch1() { switch1Test(Int8.self) }
         @Test func switch2() { switch2Test(Int8.self) }
         @Test func switch3() { switch3Test(Int8.self) }
@@ -24,7 +27,8 @@ import Testing
         @Test func switch6() { switch6Test(Int8.self) }
     }
 
-    @Suite("Int16") struct Int16Tests {
+    @Suite("Int16")
+    struct Int16Tests {
         @Test func switch1() { switch1Test(Int16.self) }
         @Test func switch2() { switch2Test(Int16.self) }
         @Test func switch3() { switch3Test(Int16.self) }
@@ -33,7 +37,8 @@ import Testing
         @Test func switch6() { switch6Test(Int16.self) }
     }
 
-    @Suite("Int32") struct Int32Tests {
+    @Suite("Int32")
+    struct Int32Tests {
         @Test func switch1() { switch1Test(Int32.self) }
         @Test func switch2() { switch2Test(Int32.self) }
         @Test func switch3() { switch3Test(Int32.self) }
@@ -42,7 +47,8 @@ import Testing
         @Test func switch6() { switch6Test(Int32.self) }
     }
 
-    @Suite("Int64") struct Int64Tests {
+    @Suite("Int64")
+    struct Int64Tests {
         @Test func switch1() { switch1Test(Int64.self) }
         @Test func switch2() { switch2Test(Int64.self) }
         @Test func switch3() { switch3Test(Int64.self) }
@@ -51,7 +57,8 @@ import Testing
         @Test func switch6() { switch6Test(Int64.self) }
     }
 
-    @Suite("UInt") struct UIntTests {
+    @Suite("UInt")
+    struct UIntTests {
         @Test func switch1() { switch1Test(UInt.self) }
         @Test func switch2() { switch2Test(UInt.self) }
         @Test func switch3() { switch3Test(UInt.self) }
@@ -60,7 +67,8 @@ import Testing
         @Test func switch6() { switch6Test(UInt.self) }
     }
 
-    @Suite("UInt8") struct UInt8Tests {
+    @Suite("UInt8")
+    struct UInt8Tests {
         @Test func switch1() { switch1Test(UInt8.self) }
         @Test func switch2() { switch2Test(UInt8.self) }
         @Test func switch3() { switch3Test(UInt8.self) }
@@ -69,7 +77,8 @@ import Testing
         @Test func switch6() { switch6Test(UInt8.self) }
     }
 
-    @Suite("UInt16") struct UInt16Tests {
+    @Suite("UInt16")
+    struct UInt16Tests {
         @Test func switch1() { switch1Test(UInt16.self) }
         @Test func switch2() { switch2Test(UInt16.self) }
         @Test func switch3() { switch3Test(UInt16.self) }
@@ -78,7 +87,8 @@ import Testing
         @Test func switch6() { switch6Test(UInt16.self) }
     }
 
-    @Suite("UInt32") struct UInt32Tests {
+    @Suite("UInt32")
+    struct UInt32Tests {
         @Test func switch1() { switch1Test(UInt32.self) }
         @Test func switch2() { switch2Test(UInt32.self) }
         @Test func switch3() { switch3Test(UInt32.self) }
@@ -87,7 +97,8 @@ import Testing
         @Test func switch6() { switch6Test(UInt32.self) }
     }
 
-    @Suite("UInt64") struct UInt64Tests {
+    @Suite("UInt64")
+    struct UInt64Tests {
         @Test func switch1() { switch1Test(UInt64.self) }
         @Test func switch2() { switch2Test(UInt64.self) }
         @Test func switch3() { switch3Test(UInt64.self) }

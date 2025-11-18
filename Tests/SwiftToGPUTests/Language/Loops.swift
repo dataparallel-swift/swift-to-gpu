@@ -5,9 +5,12 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-@Suite("Loop") struct LoopTests {
-    @Suite("For") struct ForLoopTests {
-        @Suite("Int") struct IntTests {
+@Suite("Loop")
+struct LoopTests {
+    @Suite("For")
+    struct ForLoopTests {
+        @Suite("Int")
+        struct IntTests {
             @Test func forLoop() { forLoopTest(Int.self) }
             @Test func forLoopContinue() { forLoopContinueTest(Int.self) }
             @Test func forLoopBreak() { forLoopBreakTest(Int.self) }
@@ -16,7 +19,8 @@ import Testing
             @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(Int.self) }
         }
 
-        @Suite("Int32") struct Int32Tests {
+        @Suite("Int32")
+        struct Int32Tests {
             @Test func forLoop() { forLoopTest(Int32.self) }
             @Test func forLoopContinue() { forLoopContinueTest(Int32.self) }
             @Test func forLoopBreak() { forLoopBreakTest(Int32.self) }
@@ -25,7 +29,8 @@ import Testing
             @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(Int32.self) }
         }
 
-        @Suite("Int64") struct Int64Tests {
+        @Suite("Int64")
+        struct Int64Tests {
             @Test func forLoop() { forLoopTest(Int64.self) }
             @Test func forLoopContinue() { forLoopContinueTest(Int64.self) }
             @Test func forLoopBreak() { forLoopBreakTest(Int64.self) }
@@ -34,7 +39,8 @@ import Testing
             @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(Int64.self) }
         }
 
-        @Suite("UInt") struct UIntTests {
+        @Suite("UInt")
+        struct UIntTests {
             @Test func forLoop() { forLoopTest(UInt.self) }
             @Test func forLoopContinue() { forLoopContinueTest(UInt.self) }
             @Test func forLoopBreak() { forLoopBreakTest(UInt.self) }
@@ -43,7 +49,8 @@ import Testing
             @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(UInt.self) }
         }
 
-        @Suite("UInt32") struct UInt32Tests {
+        @Suite("UInt32")
+        struct UInt32Tests {
             @Test func forLoop() { forLoopTest(UInt32.self) }
             @Test func forLoopContinue() { forLoopContinueTest(UInt32.self) }
             @Test func forLoopBreak() { forLoopBreakTest(UInt32.self) }
@@ -52,7 +59,8 @@ import Testing
             @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(UInt32.self) }
         }
 
-        @Suite("UInt64") struct UInt64Tests {
+        @Suite("UInt64")
+        struct UInt64Tests {
             @Test func forLoop() { forLoopTest(UInt64.self) }
             @Test func forLoopContinue() { forLoopContinueTest(UInt64.self) }
             @Test func forLoopBreak() { forLoopBreakTest(UInt64.self) }
@@ -62,8 +70,10 @@ import Testing
         }
     }
 
-    @Suite("While") struct WhileLoopTests {
-        @Suite("Int") struct IntTests {
+    @Suite("While")
+    struct WhileLoopTests {
+        @Suite("Int")
+        struct IntTests {
             @Test func whileLoop() { whileLoopTest(Int.self) }
             @Test func whileLoopContinue() { whileLoopContinueTest(Int.self) }
             @Test func whileLoopBreak() { whileLoopBreakTest(Int.self) }
@@ -72,7 +82,8 @@ import Testing
             @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(Int.self) }
         }
 
-        @Suite("Int32") struct Int32Tests {
+        @Suite("Int32")
+        struct Int32Tests {
             @Test func whileLoop() { whileLoopTest(Int32.self) }
             @Test func whileLoopContinue() { whileLoopContinueTest(Int32.self) }
             @Test func whileLoopBreak() { whileLoopBreakTest(Int32.self) }
@@ -81,7 +92,8 @@ import Testing
             @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(Int32.self) }
         }
 
-        @Suite("Int64") struct Int64Tests {
+        @Suite("Int64")
+        struct Int64Tests {
             @Test func whileLoop() { whileLoopTest(Int64.self) }
             @Test func whileLoopContinue() { whileLoopContinueTest(Int64.self) }
             @Test func whileLoopBreak() { whileLoopBreakTest(Int64.self) }
@@ -90,7 +102,8 @@ import Testing
             @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(Int64.self) }
         }
 
-        @Suite("UInt") struct UIntTests {
+        @Suite("UInt")
+        struct UIntTests {
             @Test func whileLoop() { whileLoopTest(UInt.self) }
             @Test func whileLoopContinue() { whileLoopContinueTest(UInt.self) }
             @Test func whileLoopBreak() { whileLoopBreakTest(UInt.self) }
@@ -99,7 +112,8 @@ import Testing
             @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(UInt.self) }
         }
 
-        @Suite("UInt32") struct UInt32Tests {
+        @Suite("UInt32")
+        struct UInt32Tests {
             @Test func whileLoop() { whileLoopTest(UInt32.self) }
             @Test func whileLoopContinue() { whileLoopContinueTest(UInt32.self) }
             @Test func whileLoopBreak() { whileLoopBreakTest(UInt32.self) }
@@ -108,7 +122,8 @@ import Testing
             @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(UInt32.self) }
         }
 
-        @Suite("UInt64") struct UInt64Tests {
+        @Suite("UInt64")
+        struct UInt64Tests {
             @Test func whileLoop() { whileLoopTest(UInt64.self) }
             @Test func whileLoopContinue() { whileLoopContinueTest(UInt64.self) }
             @Test func whileLoopBreak() { whileLoopBreakTest(UInt64.self) }

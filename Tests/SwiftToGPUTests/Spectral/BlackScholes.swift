@@ -7,7 +7,8 @@ import Testing
 
 // swiftlint:disable identifier_name
 
-@Suite("BlackScholes") struct BlackScholesTests {
+@Suite("BlackScholes")
+struct BlackScholesTests {
     #if arch(arm64)
     @Test func blackscholes16() { blackscholesTest(Float16.self) }
     #endif

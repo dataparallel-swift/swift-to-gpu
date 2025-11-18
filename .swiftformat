@@ -3,7 +3,3 @@
 
 # rules
 --disable redundantType # clarity
-
-[nofib]
---filter Backends/PTXBackend/Tests/PTXBackendTests/**
---disable wrapAttributes # @Test, @Suite

@@ -9,163 +9,197 @@ import Testing
 // `inout`, `borrowing`, `consuming` etc. We would like to vary the function
 // signature to explore this space.
 //
-@Suite("Functions") struct FunctionTests {
-    @Suite struct SimpleFunctionCallTests {
-        @Suite("Int") struct IntTests {
+@Suite("Functions")
+struct FunctionTests {
+    @Suite
+    struct SimpleFunctionCallTests {
+        @Suite("Int")
+        struct IntTests {
             @Test func id() { idTest(Int.self) }
             @Test func idNoinline() { idNoinlineTest(Int.self) }
 
-            @Suite("Int") struct IntTests {
+            @Suite("Int")
+            struct IntTests {
                 @Test func binary() { binaryTest(Int.self, Int.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, Int.self) }
             }
 
-            @Suite("Int8") struct Int8Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func binary() { binaryTest(Int.self, Int8.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, Int8.self) }
             }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func binary() { binaryTest(Int.self, Int16.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func binary() { binaryTest(Int.self, Int32.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, Int32.self) }
             }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func binary() { binaryTest(Int.self, Int64.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, Int64.self) }
             }
 
-            @Suite("UInt") struct UIntTests {
+            @Suite("UInt")
+            struct UIntTests {
                 @Test func binary() { binaryTest(Int.self, UInt.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, UInt.self) }
             }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func binary() { binaryTest(Int.self, UInt8.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, UInt8.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func binary() { binaryTest(Int.self, UInt16.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, UInt16.self) }
             }
 
-            @Suite("UInt32") struct UInt32Tests {
+            @Suite("UInt32")
+            struct UInt32Tests {
                 @Test func binary() { binaryTest(Int.self, UInt32.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, UInt32.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func binary() { binaryTest(Int.self, UInt64.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Int.self, UInt64.self) }
             }
         }
 
-        @Suite("UInt") struct UIntTests {
+        @Suite("UInt")
+        struct UIntTests {
             @Test func id() { idTest(UInt.self) }
             @Test func idNoinline() { idNoinlineTest(UInt.self) }
 
-            @Suite("Int") struct IntTests {
+            @Suite("Int")
+            struct IntTests {
                 @Test func binary() { binaryTest(UInt.self, Int.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, Int.self) }
             }
 
-            @Suite("Int8") struct Int8Tests {
+            @Suite("Int8")
+            struct Int8Tests {
                 @Test func binary() { binaryTest(UInt.self, Int8.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, Int8.self) }
             }
 
-            @Suite("Int16") struct Int16Tests {
+            @Suite("Int16")
+            struct Int16Tests {
                 @Test func binary() { binaryTest(UInt.self, Int16.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, Int16.self) }
             }
 
-            @Suite("Int32") struct Int32Tests {
+            @Suite("Int32")
+            struct Int32Tests {
                 @Test func binary() { binaryTest(UInt.self, Int32.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, Int32.self) }
             }
 
-            @Suite("Int64") struct Int64Tests {
+            @Suite("Int64")
+            struct Int64Tests {
                 @Test func binary() { binaryTest(UInt.self, Int64.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, Int64.self) }
             }
 
-            @Suite("UInt") struct UIntTests {
+            @Suite("UInt")
+            struct UIntTests {
                 @Test func binary() { binaryTest(UInt.self, UInt.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, UInt.self) }
             }
 
-            @Suite("UInt8") struct UInt8Tests {
+            @Suite("UInt8")
+            struct UInt8Tests {
                 @Test func binary() { binaryTest(UInt.self, UInt8.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, UInt8.self) }
             }
 
-            @Suite("UInt16") struct UInt16Tests {
+            @Suite("UInt16")
+            struct UInt16Tests {
                 @Test func binary() { binaryTest(UInt.self, UInt16.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, UInt16.self) }
             }
 
-            @Suite("UInt32") struct UInt32Tests {
+            @Suite("UInt32")
+            struct UInt32Tests {
                 @Test func binary() { binaryTest(UInt.self, UInt32.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, UInt32.self) }
             }
 
-            @Suite("UInt64") struct UInt64Tests {
+            @Suite("UInt64")
+            struct UInt64Tests {
                 @Test func binary() { binaryTest(UInt.self, UInt64.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(UInt.self, UInt64.self) }
             }
         }
 
-        @Suite("Float32") struct Float32Tests {
+        @Suite("Float32")
+        struct Float32Tests {
             @Test func id() { idTest(Float32.self) }
             @Test func idNoinline() { idNoinlineTest(Float32.self) }
 
             #if arch(arm64)
-            @Suite("Float16") struct Float16Tests {
+            @Suite("Float16")
+            struct Float16Tests {
                 @Test func binary() { binaryTest(Float32.self, Float16.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Float32.self, Float16.self) }
             }
             #endif
 
-            @Suite("Float32") struct Float32Tests {
+            @Suite("Float32")
+            struct Float32Tests {
                 @Test func binary() { binaryTest(Float32.self, Float32.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Float32.self, Float32.self) }
             }
 
-            @Suite("Float64") struct Float64Tests {
+            @Suite("Float64")
+            struct Float64Tests {
                 @Test func binary() { binaryTest(Float32.self, Float64.self) }
                 @Test func binaryNoinline() { binaryNoInlineTest(Float32.self, Float64.self) }
             }
         }
     }
 
-    @Suite struct RecursiveFunctionCallTests {
-        @Suite struct FactorialTests {
+    @Suite
+    struct RecursiveFunctionCallTests {
+        @Suite
+        struct FactorialTests {
             @Test func factorialTailcall() { factorialTailcallTest(Int.self) }
             @Test func factorialRecursive() { factorialRecursiveTest(Int.self) }
             @Test func factorialTailcallNoinline() { factorialTailcallNoinlineTest(Int.self) }
             @Test func factorialRecursiveNoinline() { factorialRecursiveNoinlineTest(Int.self) }
         }
 
-        @Suite struct FibonacciTests {
+        @Suite
+        struct FibonacciTests {
             @Test func fibonacciRecursive() { fibonacciRecursiveTest(Int.self) }
             @Test func fibonacciRecursiveNoinline() { fibonacciRecursiveNoinlineTest(Int.self) }
         }
 
-        @Suite struct MutuallyRecursiveTests {
+        @Suite
+        struct MutuallyRecursiveTests {
             @Test func mutuallyRecursive() { mutuallyRecursiveTest(Int.self) }
             @Test func mutuallyRecursiveNoinline() { mutuallyRecursiveNoinlineTest(Int.self) }
         }
     }
 
     // XXX: inout paratemeters seem completely broken
-    @Suite struct InoutParameterTests {
-        @Suite("Int") struct IntTests {
+    @Suite
+    struct InoutParameterTests {
+        @Suite("Int")
+        struct IntTests {
             // @Test(.bug(id: "86b6ycdvn")) func inout1() { inoutTest1(Int.self) }
             // @Test(.bug(id: "86b6ycdvn")) func inout2() { inoutTest2(Int.self) }
         }
