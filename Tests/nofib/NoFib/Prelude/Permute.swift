@@ -4,33 +4,33 @@ import SwiftCheck
 import SwiftToPTX
 import Testing
 
-// TODO: something seems to be wrong with my local setup. I followed the instructions on
-// https://gitlab.com/PassiveLogic/tooling/homebrew-tap/-/blob/main/README.md?ref_type=heads#getting-started
-// ensured that `swiftformat --version` matches with that on CI, but the behavior seems different
-// between my machine and CI  --- CK 2025-11-05
 // swiftformat:disable trailingCommas
 // swiftlint:disable identifier_name
 
-@Suite("Permute") struct Permute {
+@Suite("Permute")
+struct Permute {
     // bijective index mappings
-    @Test func test_permute_copy() { prop_permute_copy(Int32.self) }
-    @Test func test_permute_circular_shift() { prop_permute_circular_shift(Int32.self) }
-    @Test func test_permute_shuffle() { prop_permute_shuffle(Int32.self) }
-    @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(Int32.self) }
+    @Suite("Int32")
+    struct Int32Tests {
+        @Test func test_permute_copy() { prop_permute_copy(Int32.self) }
+        @Test func test_permute_circular_shift() { prop_permute_circular_shift(Int32.self) }
+        @Test func test_permute_shuffle() { prop_permute_shuffle(Int32.self) }
+        @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(Int32.self) }
 
-    // injective index mappings
-    @Test func test_permute_strided_write() { prop_permute_strided_write(Int32.self) }
-    @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(Int32.self) }
-    @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(Int32.self) }
+        // injective index mappings
+        @Test func test_permute_strided_write() { prop_permute_strided_write(Int32.self) }
+        @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(Int32.self) }
+        @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(Int32.self) }
 
-    // element-wise combinations (bijective index mapping)
-    // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(Int32.self) }
-    // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(Int32.self) }
+        // element-wise combinations (bijective index mapping)
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(Int32.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(Int32.self) }
 
-    // non-injective index mappings
-    // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(Int32.self) }
-    // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(Int32.self) }
-    // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(Int32.self) }
+        // non-injective index mappings
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(Int32.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(Int32.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(Int32.self) }
+    }
 }
 
 extension Array {
