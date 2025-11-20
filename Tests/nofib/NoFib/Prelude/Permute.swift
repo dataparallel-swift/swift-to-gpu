@@ -9,27 +9,104 @@ import Testing
 
 @Suite("Permute")
 struct Permute {
-    // bijective index mappings
-    @Suite("Int32")
-    struct Int32Tests {
-        @Test func test_permute_copy() { prop_permute_copy(Int32.self) }
-        @Test func test_permute_circular_shift() { prop_permute_circular_shift(Int32.self) }
-        @Test func test_permute_shuffle() { prop_permute_shuffle(Int32.self) }
-        @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(Int32.self) }
+    @Suite("Int")
+    struct IntTests {
+        typealias T = Int
+
+        // bijective index mappings
+        @Test func test_permute_copy() { prop_permute_copy(T.self) }
+        @Test func test_permute_circular_shift() { prop_permute_circular_shift(T.self) }
+        @Test func test_permute_shuffle() { prop_permute_shuffle(T.self) }
+        @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(T.self) }
 
         // injective index mappings
-        @Test func test_permute_strided_write() { prop_permute_strided_write(Int32.self) }
-        @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(Int32.self) }
-        @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(Int32.self) }
+        @Test func test_permute_strided_write() { prop_permute_strided_write(T.self) }
+        @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(T.self) }
+        @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(T.self) }
 
         // element-wise combinations (bijective index mapping)
-        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(Int32.self) }
-        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(Int32.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(T.self) }
 
         // non-injective index mappings
-        // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(Int32.self) }
-        // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(Int32.self) }
-        // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(Int32.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(T.self) }
+    }
+
+    @Suite("Int32")
+    struct Int32Tests {
+        typealias T = Int32
+
+        // bijective index mappings
+        @Test func test_permute_copy() { prop_permute_copy(T.self) }
+        @Test func test_permute_circular_shift() { prop_permute_circular_shift(T.self) }
+        @Test func test_permute_shuffle() { prop_permute_shuffle(T.self) }
+        @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(T.self) }
+
+        // injective index mappings
+        @Test func test_permute_strided_write() { prop_permute_strided_write(T.self) }
+        @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(T.self) }
+        @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(T.self) }
+
+        // element-wise combinations (bijective index mapping)
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(T.self) }
+
+        // non-injective index mappings
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(T.self) }
+    }
+
+    @Suite("Float32")
+    struct Float32Tests {
+        typealias T = Float32
+
+        // bijective index mappings
+        @Test func test_permute_copy() { prop_permute_copy(T.self) }
+        @Test func test_permute_circular_shift() { prop_permute_circular_shift(T.self) }
+        @Test func test_permute_shuffle() { prop_permute_shuffle(T.self) }
+        @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(T.self) }
+
+        // injective index mappings
+        @Test func test_permute_strided_write() { prop_permute_strided_write(T.self) }
+        @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(T.self) }
+        @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(T.self) }
+
+        // element-wise combinations (bijective index mapping)
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(T.self) }
+
+        // non-injective index mappings
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(T.self) }
+    }
+
+    @Suite("Float64")
+    struct Float64Tests {
+        typealias T = Float64
+
+        // bijective index mappings
+        @Test func test_permute_copy() { prop_permute_copy(T.self) }
+        @Test func test_permute_circular_shift() { prop_permute_circular_shift(T.self) }
+        @Test func test_permute_shuffle() { prop_permute_shuffle(T.self) }
+        @Test func test_permute_matrix_transpose() { prop_permute_matrix_transpose(T.self) }
+
+        // injective index mappings
+        @Test func test_permute_strided_write() { prop_permute_strided_write(T.self) }
+        @Test func test_permute_shuffle_injective() { prop_permute_shuffle_injective(T.self) }
+        @Test func test_permute_shuffle_generalized() { prop_permute_shuffle_generalized(T.self) }
+
+        // element-wise combinations (bijective index mapping)
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_sum() { prop_permute_elementwise_sum(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_elementwise_min() { prop_permute_elementwise_min(T.self) }
+
+        // non-injective index mappings
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_group_reduce() { prop_permute_group_reduce(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_histogram() { prop_permute_histogram(T.self) }
+        // @Test(.bug(id: "86b7dzf83")) func test_permute_generalized() { prop_permute_generalized(T.self) }
     }
 }
 
