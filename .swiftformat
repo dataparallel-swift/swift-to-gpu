@@ -1,10 +1,10 @@
 # file options
---exclude icebox
+--exclude Backends/PTXBackend/icebox
 
 # rules
 --disable redundantType # clarity
 --disable consecutiveSpaces # alignment
 
 [nofib]
---filter Tests/nofib/**
+--filter Backends/PTXBackend/Tests/PTXBackendTests/**
 --disable indent,braces,wrapAttributes # forAll[NoShrink]

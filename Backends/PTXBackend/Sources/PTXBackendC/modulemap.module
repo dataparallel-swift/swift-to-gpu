@@ -1,0 +1,6 @@
+// Copyright (c) 2025 PassiveLogic, Inc.
+
+module PTXBackendC {
+  header "ptx-backend.h"
+  export *
+}

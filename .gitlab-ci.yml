@@ -24,20 +24,77 @@ include:
   # Test stage
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       runner-tags:
         - passivelogic-linux-small-arm64
-  - component: gitlab.com/PassiveLogic/ci/swift-test@4.17  # TODO: update to @4 once swift-image 6.2 is usable
+
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
+      package-traits:
+        - PTX
       enable-code-coverage: false
       additional-setup:
         - apt install -y libcapstone-dev
       runner-tags:
         - passivelogic-compiler-orin
+      job-prefix: 'ptx '
+
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+    inputs:
+      swift-image: passivelogic/swift:6.2-noble
+      package-traits:
+        - CPU
+      additional-setup:
+        - apt install -y libcapstone-dev
+      runner-tags:
+        - passivelogic-linux-small-arm64
+      job-prefix: 'cpu-arm64 '
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+    inputs:
+      swift-image: passivelogic/swift:6.2-noble
+      package-traits:
+        - CPU
+      additional-setup:
+        - apt install -y libcapstone-dev
+      runner-tags:
+        - passivelogic-linux-small-amd64
+      job-prefix: 'cpu-x86_64 '
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-image: passivelogic/swift:6.2-noble
+      swift-package-path: Benchmarks
+      package-traits:
+        - CPU
+      job-prefix: 'benchmark-cpu-arm64 '
+      job-stage: test
+      runner-tags:
+        - passivelogic-linux-small-arm64
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-image: passivelogic/swift:6.2-noble
+      swift-package-path: Benchmarks
+      package-traits:
+        - CPU
+      job-prefix: 'benchmark-cpu-x86_64 '
+      job-stage: test
+      runner-tags:
+        - passivelogic-linux-small-amd64
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
+      swift-package-path: Benchmarks
+      package-traits:
+        - PTX
+      job-prefix: 'benchmark-ptx '
+      job-stage: test
+      runner-tags:
+        - passivelogic-compiler-orin
+        
   - component: gitlab.com/PassiveLogic/ci/swift-benchmarks@4
     inputs:
-      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.1  # reverted from 6.2 due to https://app.clickup.com/t/86b7ay6ug
+      benchmark-package-path: Benchmarks
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift:6.2
       additional-setup:
         - apt install -y libcapstone-dev
 
@@ -45,7 +102,7 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swift-docs@4
     inputs:
       product-names:
-        - SwiftToPTX
+        - SwiftToGPU
       runner-tags:
         - passivelogic-linux-small-amd64
       additional-setup:
