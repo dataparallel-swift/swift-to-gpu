@@ -45,7 +45,7 @@ struct BlockDescriptor: Hashable, Equatable {
  *     `max_cached_bytes`, allocations are freed when they are deallocated
  *     rather than being returned to their bin-cache.
  */
-struct CachingHostAllocator {
+public struct CachingHostAllocator {
     // Because NIOLockedValueBox has reference semantics, we can actually make
     // this a struct (rather than a class) and its fields/member functions
     // non-mutating, and still have the cache shared between users.
@@ -56,7 +56,7 @@ struct CachingHostAllocator {
     /// The default allocator used by the swift-to-ptx compiler pass, biased towards
     /// small block sizes as that is what we encounter most often when lifting the
     /// closure environment for execution on the GPU.
-    static let smallBlockAllocator = CachingHostAllocator(using: [4, 8, 12, 16, 24, 32, 64, 128, 192, 256])
+    public static let smallBlockAllocator = CachingHostAllocator(using: [4, 8, 12, 16, 24, 32, 64, 128, 192, 256])
     // XXX: ↑ I have noticed @swift_retain and @swift_release calls in the generated
     // LLVM, but we don't want this to ever to be deallocated once initialised; need
     // to check this. ---TLM 2024-04-22

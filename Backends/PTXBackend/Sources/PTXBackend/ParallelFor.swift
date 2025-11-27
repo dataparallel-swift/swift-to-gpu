@@ -13,7 +13,7 @@
 @inline(never)          // ...but don't actually inline it; we still need to look for this symbol from the llvm-plugin
 // Internal function
 // swiftlint:disable:next missing_docs
-func parallel_for<E: Error>(
+public func parallel_for<E: Error>(
     iterations: Int,
     context: PTXContext = .defaultContext,
     allocator: CachingHostAllocator = .smallBlockAllocator,
@@ -32,12 +32,14 @@ func parallel_for<E: Error>(
     """)
 }
 
-public func parallel_for<E: Error>(
-    iterations: Int,
-    _ body: (Int) throws(E) -> Void
-) throws(E) -> PTXEvent {
-    try parallel_for(iterations: iterations, context: .defaultContext, allocator: .smallBlockAllocator, body)
-}
+// XXX TODO: Once we have async functions we should only expose this minimal
+// interface and keep all the details of the allocator, stream, etc. internal.
+// public func parallel_for<E: Error>(
+//     iterations: Int,
+//     _ body: (Int) throws(E) -> Void
+// ) throws(E) -> PTXEvent {
+//     try parallel_for(iterations: iterations, context: .defaultContext, allocator: .smallBlockAllocator, body)
+// }
 
 @inline(never)
 @usableFromInline

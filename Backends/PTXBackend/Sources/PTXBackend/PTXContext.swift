@@ -20,7 +20,7 @@ public struct PTXContext: ContextProtocol {
     /// The default context to use for swift-to-ptx lifted operations. This
     /// corresponds to the primary context of the first device, which is the same
     /// context implicitly used by the CUDA Runtime API.
-    static let defaultContext = try! PTXContext() // swiftlint:disable:this force_try
+    public static let defaultContext = try! PTXContext() // swiftlint:disable:this force_try
 
     @inline(__always)
     internal var warpSize: Int32 {
