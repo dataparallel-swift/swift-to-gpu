@@ -5,100 +5,136 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// swiftlint:disable file_length type_body_length
+@Suite("Loop")
+struct LoopTests {
+    @Suite("For")
+    struct ForLoopTests {
+        @Suite("Int")
+        struct IntTests {
+            @Test func forLoop() { forLoopTest(Int.self) }
+            @Test func forLoopContinue() { forLoopContinueTest(Int.self) }
+            @Test func forLoopBreak() { forLoopBreakTest(Int.self) }
+            @Test func forLoopNest() { forLoopNestTest(Int.self) }
+            @Test func forLoopNestBreakInner() { forLoopNestBreakInnerTest(Int.self) }
+            @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(Int.self) }
+        }
 
-// swiftformat:disable wrap wrapArguments wrapSingleLineComments trailingCommas blankLinesBetweenScopes
-@Suite("Loops") struct Loops {
-    @Suite("ForLoops") struct ForLoops {
-        @Test("simple_for_loop.Int") func test_simple_for_loop_1() { prop_simple_for_loop(Int.self) }
-        @Test("simple_for_loop.Int32") func test_simple_for_loop_2() { prop_simple_for_loop(Int32.self) }
-        @Test("simple_for_loop.Int64") func test_simple_for_loop_3() { prop_simple_for_loop(Int64.self) }
-        @Test("simple_for_loop.UInt") func test_simple_for_loop_4() { prop_simple_for_loop(UInt.self) }
-        @Test("simple_for_loop.UInt32") func test_simple_for_loop_5() { prop_simple_for_loop(UInt32.self) }
-        @Test("simple_for_loop.UInt64") func test_simple_for_loop_6() { prop_simple_for_loop(UInt64.self) }
+        @Suite("Int32")
+        struct Int32Tests {
+            @Test func forLoop() { forLoopTest(Int32.self) }
+            @Test func forLoopContinue() { forLoopContinueTest(Int32.self) }
+            @Test func forLoopBreak() { forLoopBreakTest(Int32.self) }
+            @Test func forLoopNest() { forLoopNestTest(Int32.self) }
+            @Test func forLoopNestBreakInner() { forLoopNestBreakInnerTest(Int32.self) }
+            @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(Int32.self) }
+        }
 
-        @Test("for_loop_continue.Int") func test_for_loop_continue_1() { prop_for_loop_continue(Int.self) }
-        @Test("for_loop_continue.Int32") func test_for_loop_continue_2() { prop_for_loop_continue(Int32.self) }
-        @Test("for_loop_continue.Int64") func test_for_loop_continue_3() { prop_for_loop_continue(Int64.self) }
-        @Test("for_loop_continue.UInt") func test_for_loop_continue_4() { prop_for_loop_continue(UInt.self) }
-        @Test("for_loop_continue.UInt32") func test_for_loop_continue_5() { prop_for_loop_continue(UInt32.self) }
-        @Test("for_loop_continue.UInt64") func test_for_loop_continue_6() { prop_for_loop_continue(UInt64.self) }
+        @Suite("Int64")
+        struct Int64Tests {
+            @Test func forLoop() { forLoopTest(Int64.self) }
+            @Test func forLoopContinue() { forLoopContinueTest(Int64.self) }
+            @Test func forLoopBreak() { forLoopBreakTest(Int64.self) }
+            @Test func forLoopNest() { forLoopNestTest(Int64.self) }
+            @Test func forLoopNestBreakInner() { forLoopNestBreakInnerTest(Int64.self) }
+            @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(Int64.self) }
+        }
 
-        @Test("for_loop_break.Int") func test_for_loop_break_1() { prop_for_loop_break(Int.self) }
-        @Test("for_loop_break.Int32") func test_for_loop_break_2() { prop_for_loop_break(Int32.self) }
-        @Test("for_loop_break.Int64") func test_for_loop_break_3() { prop_for_loop_break(Int64.self) }
-        @Test("for_loop_break.UInt") func test_for_loop_break_4() { prop_for_loop_break(UInt.self) }
-        @Test("for_loop_break.UInt32") func test_for_loop_break_5() { prop_for_loop_break(UInt32.self) }
-        @Test("for_loop_break.UInt64") func test_for_loop_break_6() { prop_for_loop_break(UInt64.self) }
+        @Suite("UInt")
+        struct UIntTests {
+            @Test func forLoop() { forLoopTest(UInt.self) }
+            @Test func forLoopContinue() { forLoopContinueTest(UInt.self) }
+            @Test func forLoopBreak() { forLoopBreakTest(UInt.self) }
+            @Test func forLoopNest() { forLoopNestTest(UInt.self) }
+            @Test func forLoopNestBreakInner() { forLoopNestBreakInnerTest(UInt.self) }
+            @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(UInt.self) }
+        }
 
-        @Test("nested_for_loop.Int") func test_nested_for_loop_1() { prop_nested_for_loops(Int.self) }
-        @Test("nested_for_loop.Int32") func test_nested_for_loop_2() { prop_nested_for_loops(Int32.self) }
-        @Test("nested_for_loop.Int64") func test_nested_for_loop_3() { prop_nested_for_loops(Int64.self) }
-        @Test("nested_for_loop.UInt") func test_nested_for_loop_4() { prop_nested_for_loops(UInt.self) }
-        @Test("nested_for_loop.UInt32") func test_nested_for_loop_5() { prop_nested_for_loops(UInt32.self) }
-        @Test("nested_for_loop.UInt64") func test_nested_for_loop_6() { prop_nested_for_loops(UInt64.self) }
+        @Suite("UInt32")
+        struct UInt32Tests {
+            @Test func forLoop() { forLoopTest(UInt32.self) }
+            @Test func forLoopContinue() { forLoopContinueTest(UInt32.self) }
+            @Test func forLoopBreak() { forLoopBreakTest(UInt32.self) }
+            @Test func forLoopNest() { forLoopNestTest(UInt32.self) }
+            @Test func forLoopNestBreakInner() { forLoopNestBreakInnerTest(UInt32.self) }
+            @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(UInt32.self) }
+        }
 
-        @Test("nested_for_loops_break_inner.Int") func test_nested_for_loops_break_inner_1() { prop_nested_for_loops_break_inner(Int.self) }
-        @Test("nested_for_loops_break_inner.Int32") func test_nested_for_loops_break_inner_2() { prop_nested_for_loops_break_inner(Int32.self) }
-        @Test("nested_for_loops_break_inner.Int64") func test_nested_for_loops_break_inner_3() { prop_nested_for_loops_break_inner(Int64.self) }
-        @Test("nested_for_loops_break_inner.UInt") func test_nested_for_loops_break_inner_4() { prop_nested_for_loops_break_inner(UInt.self) }
-        @Test("nested_for_loops_break_inner.UInt32") func test_nested_for_loops_break_inner_5() { prop_nested_for_loops_break_inner(UInt32.self) }
-        @Test("nested_for_loops_break_inner.UInt64") func test_nested_for_loops_break_inner_6() { prop_nested_for_loops_break_inner(UInt64.self) }
-
-        @Test("nested_for_loops_break_outer.Int") func test_nested_for_loops_break_outer_1() { prop_nested_for_loops_break_outer(Int.self) }
-        @Test("nested_for_loops_break_outer.Int32") func test_nested_for_loops_break_outer_2() { prop_nested_for_loops_break_outer(Int32.self) }
-        @Test("nested_for_loops_break_outer.Int64") func test_nested_for_loops_break_outer_3() { prop_nested_for_loops_break_outer(Int64.self) }
-        @Test("nested_for_loops_break_outer.UInt") func test_nested_for_loops_break_outer_4() { prop_nested_for_loops_break_outer(UInt.self) }
-        @Test("nested_for_loops_break_outer.UInt32") func test_nested_for_loops_break_outer_5() { prop_nested_for_loops_break_outer(UInt32.self) }
-        @Test("nested_for_loops_break_outer.UInt64") func test_nested_for_loops_break_outer_6() { prop_nested_for_loops_break_outer(UInt64.self) }
+        @Suite("UInt64")
+        struct UInt64Tests {
+            @Test func forLoop() { forLoopTest(UInt64.self) }
+            @Test func forLoopContinue() { forLoopContinueTest(UInt64.self) }
+            @Test func forLoopBreak() { forLoopBreakTest(UInt64.self) }
+            @Test func forLoopNest() { forLoopNestTest(UInt64.self) }
+            @Test func forLoopNestBreakInner() { forLoopNestBreakInnerTest(UInt64.self) }
+            @Test func forLoopNestBreakOuter() { forLoopNestBreakOuterTest(UInt64.self) }
+        }
     }
 
-    @Suite("WhileLoops") struct WhileLoops {
-        @Test("simple_while_loop.Int") func test_simple_while_loop_1() { prop_simple_while_loop(Int.self) }
-        @Test("simple_while_loop.Int32") func test_simple_while_loop_2() { prop_simple_while_loop(Int32.self) }
-        @Test("simple_while_loop.Int64") func test_simple_while_loop_3() { prop_simple_while_loop(Int64.self) }
-        @Test("simple_while_loop.UInt") func test_simple_while_loop_4() { prop_simple_while_loop(UInt.self) }
-        @Test("simple_while_loop.UInt32") func test_simple_while_loop_5() { prop_simple_while_loop(UInt32.self) }
-        @Test("simple_while_loop.UInt64") func test_simple_while_loop_6() { prop_simple_while_loop(UInt64.self) }
+    @Suite("While")
+    struct WhileLoopTests {
+        @Suite("Int")
+        struct IntTests {
+            @Test func whileLoop() { whileLoopTest(Int.self) }
+            @Test func whileLoopContinue() { whileLoopContinueTest(Int.self) }
+            @Test func whileLoopBreak() { whileLoopBreakTest(Int.self) }
+            @Test func whileLoopNest() { whileLoopNestTest(Int.self) }
+            @Test func whileLoopNestBreakInner() { whileLoopNestBreakInnerTest(Int.self) }
+            @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(Int.self) }
+        }
 
-        @Test("while_loop_continue.Int") func test_while_loop_continue_1() { prop_while_loop_continue(Int.self) }
-        @Test("while_loop_continue.Int32") func test_while_loop_continue_2() { prop_while_loop_continue(Int32.self) }
-        @Test("while_loop_continue.Int64") func test_while_loop_continue_3() { prop_while_loop_continue(Int64.self) }
-        @Test("while_loop_continue.UInt") func test_while_loop_continue_4() { prop_while_loop_continue(UInt.self) }
-        @Test("while_loop_continue.UInt32") func test_while_loop_continue_5() { prop_while_loop_continue(UInt32.self) }
-        @Test("while_loop_continue.UInt64") func test_while_loop_continue_6() { prop_while_loop_continue(UInt64.self) }
+        @Suite("Int32")
+        struct Int32Tests {
+            @Test func whileLoop() { whileLoopTest(Int32.self) }
+            @Test func whileLoopContinue() { whileLoopContinueTest(Int32.self) }
+            @Test func whileLoopBreak() { whileLoopBreakTest(Int32.self) }
+            @Test func whileLoopNest() { whileLoopNestTest(Int32.self) }
+            @Test func whileLoopNestBreakInner() { whileLoopNestBreakInnerTest(Int32.self) }
+            @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(Int32.self) }
+        }
 
-        @Test("while_loop_break.Int") func test_while_loop_break_1() { prop_while_loop_break(Int.self) }
-        @Test("while_loop_break.Int32") func test_while_loop_break_2() { prop_while_loop_break(Int32.self) }
-        @Test("while_loop_break.Int64") func test_while_loop_break_3() { prop_while_loop_break(Int64.self) }
-        @Test("while_loop_break.UInt") func test_while_loop_break_4() { prop_while_loop_break(UInt.self) }
-        @Test("while_loop_break.UInt32") func test_while_loop_break_5() { prop_while_loop_break(UInt32.self) }
-        @Test("while_loop_break.UInt64") func test_while_loop_break_6() { prop_while_loop_break(UInt64.self) }
+        @Suite("Int64")
+        struct Int64Tests {
+            @Test func whileLoop() { whileLoopTest(Int64.self) }
+            @Test func whileLoopContinue() { whileLoopContinueTest(Int64.self) }
+            @Test func whileLoopBreak() { whileLoopBreakTest(Int64.self) }
+            @Test func whileLoopNest() { whileLoopNestTest(Int64.self) }
+            @Test func whileLoopNestBreakInner() { whileLoopNestBreakInnerTest(Int64.self) }
+            @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(Int64.self) }
+        }
 
-        @Test("nested_while_loop.Int") func test_nested_while_loop_1() { prop_nested_while_loops(Int.self) }
-        @Test("nested_while_loop.Int32") func test_nested_while_loop_2() { prop_nested_while_loops(Int32.self) }
-        @Test("nested_while_loop.Int64") func test_nested_while_loop_3() { prop_nested_while_loops(Int64.self) }
-        @Test("nested_while_loop.UInt") func test_nested_while_loop_4() { prop_nested_while_loops(UInt.self) }
-        @Test("nested_while_loop.UInt32") func test_nested_while_loop_5() { prop_nested_while_loops(UInt32.self) }
-        @Test("nested_while_loop.UInt64") func test_nested_while_loop_6() { prop_nested_while_loops(UInt64.self) }
+        @Suite("UInt")
+        struct UIntTests {
+            @Test func whileLoop() { whileLoopTest(UInt.self) }
+            @Test func whileLoopContinue() { whileLoopContinueTest(UInt.self) }
+            @Test func whileLoopBreak() { whileLoopBreakTest(UInt.self) }
+            @Test func whileLoopNest() { whileLoopNestTest(UInt.self) }
+            @Test func whileLoopNestBreakInner() { whileLoopNestBreakInnerTest(UInt.self) }
+            @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(UInt.self) }
+        }
 
-        @Test("nested_while_loops_break_inner.Int") func test_nested_while_loops_break_inner_1() { prop_nested_while_loops_break_inner(Int.self) }
-        @Test("nested_while_loops_break_inner.Int32") func test_nested_while_loops_break_inner_2() { prop_nested_while_loops_break_inner(Int32.self) }
-        @Test("nested_while_loops_break_inner.Int64") func test_nested_while_loops_break_inner_3() { prop_nested_while_loops_break_inner(Int64.self) }
-        @Test("nested_while_loops_break_inner.UInt") func test_nested_while_loops_break_inner_4() { prop_nested_while_loops_break_inner(UInt.self) }
-        @Test("nested_while_loops_break_inner.UInt32") func test_nested_while_loops_break_inner_5() { prop_nested_while_loops_break_inner(UInt32.self) }
-        @Test("nested_while_loops_break_inner.UInt64") func test_nested_while_loops_break_inner_6() { prop_nested_while_loops_break_inner(UInt64.self) }
+        @Suite("UInt32")
+        struct UInt32Tests {
+            @Test func whileLoop() { whileLoopTest(UInt32.self) }
+            @Test func whileLoopContinue() { whileLoopContinueTest(UInt32.self) }
+            @Test func whileLoopBreak() { whileLoopBreakTest(UInt32.self) }
+            @Test func whileLoopNest() { whileLoopNestTest(UInt32.self) }
+            @Test func whileLoopNestBreakInner() { whileLoopNestBreakInnerTest(UInt32.self) }
+            @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(UInt32.self) }
+        }
 
-        @Test("nested_while_loops_break_outer.Int") func test_nested_while_loops_break_outer_1() { prop_nested_while_loops_break_outer(Int.self) }
-        @Test("nested_while_loops_break_outer.Int32") func test_nested_while_loops_break_outer_2() { prop_nested_while_loops_break_outer(Int32.self) }
-        @Test("nested_while_loops_break_outer.Int64") func test_nested_while_loops_break_outer_3() { prop_nested_while_loops_break_outer(Int64.self) }
-        @Test("nested_while_loops_break_outer.UInt") func test_nested_while_loops_break_outer_4() { prop_nested_while_loops_break_outer(UInt.self) }
-        @Test("nested_while_loops_break_outer.UInt32") func test_nested_while_loops_break_outer_5() { prop_nested_while_loops_break_outer(UInt32.self) }
-        @Test("nested_while_loops_break_outer.UInt64") func test_nested_while_loops_break_outer_6() { prop_nested_while_loops_break_outer(UInt64.self) }
+        @Suite("UInt64")
+        struct UInt64Tests {
+            @Test func whileLoop() { whileLoopTest(UInt64.self) }
+            @Test func whileLoopContinue() { whileLoopContinueTest(UInt64.self) }
+            @Test func whileLoopBreak() { whileLoopBreakTest(UInt64.self) }
+            @Test func whileLoopNest() { whileLoopNestTest(UInt64.self) }
+            @Test func whileLoopNestBreakInner() { whileLoopNestBreakInnerTest(UInt64.self) }
+            @Test func whileLoopNestBreakOuter() { whileLoopNestBreakOuterTest(UInt64.self) }
+        }
 
         // non-range based loops, i.e. ones that defy transliteration to range-based for loops for
-        @Test("while_loop_collatz") func test_while_loop_collatz() {
-            func while_loop_collatz(_ n: Int) -> Int {
+        @Test("while_loop_collatz") func whileLoopCollatz() {
+            func collatz(_ n: Int) -> Int {
                 var iterations = 0
                 var n = n
                 while n != 1 {
@@ -114,20 +150,20 @@ import Testing
             }
             // Collatz conjecture's iterations complete successfully without intermediate overflows in this range
             let gen = Int.arbitrary.suchThat { $0 > 0 && $0 < 100000 }
-            property("while_loop_collatz") <-
-              forAllNoShrink(gen.proliferate) { (xs: [Int]) in
-                let expected = xs.map(while_loop_collatz)
-                let actual = map(xs, while_loop_collatz)
-                return try? #require(expected == actual)
-              }
+            property(#function) <-
+                forAllNoShrink(gen.proliferate) { xs in
+                    let expected = xs.map(collatz)
+                    let actual = map(xs, collatz)
+                    return try? #require(expected == actual)
+                }
         }
     }
 }
 
 // MARK: functions with for loops
 
-private func prop_simple_for_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func simple_for_loop(_ n: T) -> Int {
+private func forLoopTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func forLoop(_ n: T) -> Int {
         var result = 0
         let start = min(n, 0)
         let end = max(n, 0)
@@ -136,16 +172,16 @@ private func prop_simple_for_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         }
         return result
     }
-    property("simple_for_loop." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(simple_for_loop)
-        let actual = map(xs, simple_for_loop)
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(forLoop)
+            let actual = map(xs, forLoop)
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_for_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func for_loop_break(_ n: T, _ mod: Int) -> Int {
+private func forLoopBreakTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func forLoopBreak(_ n: T, _ mod: Int) -> Int {
         var result = 0
         let start = min(n, 0)
         let end = max(n, 0)
@@ -158,16 +194,16 @@ private func prop_for_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property("for_loop_break." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in for_loop_break(x, k) }
-        let actual = map(xs) { x in for_loop_break(x, k) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in forLoopBreak(x, k) }
+            let actual = map(xs) { x in forLoopBreak(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_for_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func for_loop_continue(_ n: T, _ mod: Int) -> Int {
+private func forLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func forLoopContinue(_ n: T, _ mod: Int) -> Int {
         var result = 0
         let start = min(n, 0)
         let end = max(n, 0)
@@ -181,17 +217,17 @@ private func prop_for_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type)
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property("for_loop_continue." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in for_loop_continue(x, k) }
-        let actual = map(xs) { x in for_loop_continue(x, k) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in forLoopContinue(x, k) }
+            let actual = map(xs) { x in forLoopContinue(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_nested_for_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func nested_for_loops(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // be comfortable about avoiding overflows
+private func forLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func forLoopNest(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0 // be comfortable about avoiding overflows
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(n, 0)
@@ -203,17 +239,17 @@ private func prop_nested_for_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
         }
         return result
     }
-    property("nested_for_loops." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in nested_for_loops(x, y) }
-        let actual = zipWith(xs, ys) { x, y in nested_for_loops(x, y) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in forLoopNest(x, y) }
+            let actual = zipWith(xs, ys) { x, y in forLoopNest(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_nested_for_loops_break_inner<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func nested_for_loops_break_inner(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+private func forLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func forLoopNestBreakInner(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -229,17 +265,17 @@ private func prop_nested_for_loops_break_inner<T: Arbitrary & FixedWidthInteger>
         }
         return result
     }
-    property("nested_for_loops_break_inner." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in nested_for_loops_break_inner(x, y) }
-        let actual = zipWith(xs, ys) { x, y in nested_for_loops_break_inner(x, y) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in forLoopNestBreakInner(x, y) }
+            let actual = zipWith(xs, ys) { x, y in forLoopNestBreakInner(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_nested_for_loops_break_outer<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func nested_for_loops_break_outer(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+private func forLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func forLoopNestBreakOuter(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -254,16 +290,16 @@ private func prop_nested_for_loops_break_outer<T: Arbitrary & FixedWidthInteger>
         }
         return result
     }
-    property("nested_for_loops_break_outer." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in nested_for_loops_break_outer(x, y) }
-        let actual = zipWith(xs, ys) { x, y in nested_for_loops_break_outer(x, y) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in forLoopNestBreakOuter(x, y) }
+            let actual = zipWith(xs, ys) { x, y in forLoopNestBreakOuter(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_simple_while_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func simple_while_loop(_ n: T) -> T {
+private func whileLoopTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func whileLoop(_ n: T) -> T {
         var result: T = 0
         let start = min(n, 0)
         let end = max(n, 0)
@@ -274,16 +310,16 @@ private func prop_simple_while_loop<T: Arbitrary & FixedWidthInteger>(_: T.Type)
         }
         return result
     }
-    property("simple_while_loop." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary) { (xs: [T]) in
-        let expected = xs.map(simple_while_loop)
-        let actual = map(xs, simple_while_loop)
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (xs: [T]) in
+            let expected = xs.map(whileLoop)
+            let actual = map(xs, whileLoop)
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_while_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func while_loop_break(_ n: T, _ mod: Int) -> Int {
+private func whileLoopBreakTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func whileLoopBreak(_ n: T, _ mod: Int) -> Int {
         var result = 0
         let start = min(n, 0)
         let end = max(n, 0)
@@ -298,16 +334,16 @@ private func prop_while_loop_break<T: Arbitrary & FixedWidthInteger>(_: T.Type) 
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property("while_loop_break." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in while_loop_break(x, k) }
-        let actual = map(xs) { x in while_loop_break(x, k) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in whileLoopBreak(x, k) }
+            let actual = map(xs) { x in whileLoopBreak(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func while_loop_continue(_ n: T, _ mod: Int) -> Int {
+private func whileLoopContinueTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func whileLoopContinue(_ n: T, _ mod: Int) -> Int {
         var result = 0
         let start = min(n, 0)
         let end = max(n, 0)
@@ -324,17 +360,17 @@ private func prop_while_loop_continue<T: Arbitrary & FixedWidthInteger>(_: T.Typ
         return result
     }
     let gen = Int.arbitrary.suchThat { $0 != 0 }
-    property("while_loop_continue." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
-        let expected = xs.map { x in while_loop_continue(x, k) }
-        let actual = map(xs) { x in while_loop_continue(x, k) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, gen) { (xs: [T], k: Int) in
+            let expected = xs.map { x in whileLoopContinue(x, k) }
+            let actual = map(xs) { x in whileLoopContinue(x, k) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_nested_while_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func nested_while_loops(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // be comfortable about avoiding overflows
+private func whileLoopNestTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func whileLoopNest(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0 // be comfortable about avoiding overflows
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(n, 0)
@@ -350,17 +386,17 @@ private func prop_nested_while_loops<T: Arbitrary & FixedWidthInteger>(_: T.Type
         }
         return result
     }
-    property("nested_while_loops." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in nested_while_loops(x, y) }
-        let actual = zipWith(xs, ys) { x, y in nested_while_loops(x, y) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in whileLoopNest(x, y) }
+            let actual = zipWith(xs, ys) { x, y in whileLoopNest(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_nested_while_loops_break_inner<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func nested_while_loops_break_inner(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+private func whileLoopNestBreakInnerTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func whileLoopNestBreakInner(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -380,17 +416,17 @@ private func prop_nested_while_loops_break_inner<T: Arbitrary & FixedWidthIntege
         }
         return result
     }
-    property("nested_while_loops_break_inner." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in nested_while_loops_break_inner(x, y) }
-        let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_inner(x, y) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in whileLoopNestBreakInner(x, y) }
+            let actual = zipWith(xs, ys) { x, y in whileLoopNestBreakInner(x, y) }
+            return try? #require(expected == actual)
+        }
 }
 
-private func prop_nested_while_loops_break_outer<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
-    func nested_while_loops_break_outer(_ k: T, _ n: T) -> Double {
-        var result: Double = 0.0  // Double to comfortably avoid overflow
+private func whileLoopNestBreakOuterTest<T: Arbitrary & FixedWidthInteger>(_: T.Type) {
+    func whileLoopNestBreakOuter(_ k: T, _ n: T) -> Double {
+        var result: Double = 0.0 // Double to comfortably avoid overflow
         let iStart = min(k, 0)
         let iEnd = max(k, 0)
         let jStart = min(k, 0)
@@ -409,10 +445,10 @@ private func prop_nested_while_loops_break_outer<T: Arbitrary & FixedWidthIntege
         }
         return result
     }
-    property("nested_while_loops_break_outer." + String(describing: T.self)) <-
-      forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
-        let expected = zip(xs, ys).map { x, y in nested_while_loops_break_outer(x, y) }
-        let actual = zipWith(xs, ys) { x, y in nested_while_loops_break_outer(x, y) }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, [T].arbitrary) { (xs: [T], ys: [T]) in
+            let expected = zip(xs, ys).map { x, y in whileLoopNestBreakOuter(x, y) }
+            let actual = zipWith(xs, ys) { x, y in whileLoopNestBreakOuter(x, y) }
+            return try? #require(expected == actual)
+        }
 }

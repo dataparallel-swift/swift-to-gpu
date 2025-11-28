@@ -140,9 +140,9 @@ extension Float64: Similar {
 extension Optional: Similar where Wrapped: Similar {
     static func ~~~ (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
-            case (.none,        .none):    return true // swiftlint:disable:this comma
+            case (.none, .none): return true
             case let (.some(x), .some(y)): return x ~~~ y
-            default:                       return false
+            default: return false
         }
     }
 }

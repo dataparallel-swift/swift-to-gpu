@@ -4,13 +4,13 @@
 import Foundation
 import PackageDescription
 
-let libraryType     = ProcessInfo.processInfo.environment["BUILD_STATIC_LIBRARIES"].isSet ? Product.Library.LibraryType.static : nil
-let enableTracy     = ProcessInfo.processInfo.environment["SWIFT_TRACY_ENABLE"].isSet
+let libraryType = ProcessInfo.processInfo.environment["BUILD_STATIC_LIBRARIES"].isSet ? Product.Library.LibraryType.static : nil
+let enableTracy = ProcessInfo.processInfo.environment["SWIFT_TRACY_ENABLE"].isSet
 
-var _cSettings: [CSetting] = []
+var cSettings: [CSetting] = []
 
 if enableTracy {
-    _cSettings += [
+    cSettings += [
         .define("TRACY_ENABLE"),
         .define("TRACY_DELAYED_INIT"),
         .define("TRACY_MANUAL_LIFETIME"),
@@ -43,7 +43,7 @@ let package = Package(
                 .product(name: "swift-mimalloc", package: "swift-mimalloc"),
             ],
             publicHeadersPath: ".",
-            cSettings: _cSettings
+            cSettings: cSettings
         ),
         .target(
             name: "PTXBackend",
@@ -61,10 +61,10 @@ let package = Package(
 )
 
 private extension String? {
-  var isSet: Bool {
-    if let value = self {
-      return value.isEmpty || value == "1" || value.lowercased() == "true"
+    var isSet: Bool {
+        if let value = self {
+            return value.isEmpty || value == "1" || value.lowercased() == "true"
+        }
+        return false
     }
-    return false
-  }
 }

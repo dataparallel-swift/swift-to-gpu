@@ -20,8 +20,8 @@ public final class PTXEvent: EventProtocol {
     /// Create a new event with the given flags
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html#group__CUDA__EVENT_1g450687e75f3ff992fe01662a43d9d3db
     public init(withFlags: [CUevent_flags] = [CU_EVENT_BLOCKING_SYNC]) throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         // See note in PTXStream.init()
         var tmp: CUevent? = nil
@@ -37,8 +37,8 @@ public final class PTXEvent: EventProtocol {
 
     /// Import a raw CUDA 'CUevent'
     public init(rawEvent: CUevent) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         self.rawEvent = rawEvent
         logger.trace(".init(rawEvent: \(self.rawEvent))")
@@ -47,8 +47,8 @@ public final class PTXEvent: EventProtocol {
     /// Wait for this event to be completed. This is a blocking call.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html#group__CUDA__EVENT_1g9e520d34e51af7f5375610bca4add99c
     public func sync() throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         try cuda_safe_call { cuEventSynchronize(self.rawEvent) }
     }
@@ -56,8 +56,8 @@ public final class PTXEvent: EventProtocol {
     /// Returns 'true' if this event is complete
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html#group__CUDA__EVENT_1g6f0704d755066b0ee705749ae911deef
     public func complete() throws(CUDAError) -> Bool {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         return try cuda_safe_async_call { cuEventQuery(self.rawEvent) }
     }

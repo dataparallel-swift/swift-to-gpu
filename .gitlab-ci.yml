@@ -38,7 +38,7 @@ include:
         - apt install -y libcapstone-dev
       runner-tags:
         - passivelogic-compiler-orin
-      job-prefix: 'ptx '
+      job-prefix: 'ptx-arm64 '
 
   - component: gitlab.com/PassiveLogic/ci/swift-test@4
     inputs:
@@ -86,7 +86,7 @@ include:
       swift-package-path: Benchmarks
       package-traits:
         - PTX
-      job-prefix: 'benchmark-ptx '
+      job-prefix: 'benchmark-ptx-arm64 '
       job-stage: test
       runner-tags:
         - passivelogic-compiler-orin

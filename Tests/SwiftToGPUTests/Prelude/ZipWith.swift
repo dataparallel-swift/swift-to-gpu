@@ -4,5 +4,5 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// @Suite("ZipWith") struct ZipWith {
+// @Suite("ZipWith") struct ZipWithTests {
 // }

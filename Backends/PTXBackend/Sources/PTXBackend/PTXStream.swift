@@ -26,8 +26,8 @@ public struct PTXStream: StreamProtocol {
     /// Create a new execution stream with the given flags
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1ga581f0c5833e21ded8b5a56594e243f4
     public init(withFlags: [CUstream_flags] = []) throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         // NOTE: We do some extra juggling here so that the struct will store a
         // non-optional CUstream value. This just avoids an extra inttoptr
@@ -47,8 +47,8 @@ public struct PTXStream: StreamProtocol {
 
     /// Import a raw CUDA 'CUstream'
     public init(rawStream: CUstream) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         self.rawStream = rawStream
         logger.trace(".init(rawStream: \(self.rawStream))")
@@ -57,8 +57,8 @@ public struct PTXStream: StreamProtocol {
     /// Wait until the device has completed all operations in this stream.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g15e49dd91ec15991eb7c0a741beb7dad
     public func sync() throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         logger.trace(".sync() \(self.rawStream)")
         try cuda_safe_call { cuStreamSynchronize(self.rawStream) }
@@ -69,8 +69,8 @@ public struct PTXStream: StreamProtocol {
     /// completion of the work that was captured.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html#group__CUDA__EVENT_1g95424d3be52c4eb95d83861b70fb89d1
     public func record() throws(CUDAError) -> PTXEvent {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         let event = try PTXEvent()
         logger.trace(".record() in \(self.rawStream) -> \(event.rawEvent)")
@@ -84,8 +84,8 @@ public struct PTXStream: StreamProtocol {
     /// efficiently on the device, where possible.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g6a898b652dfc6aa1d5c8d97062618b2f
     public func waitOn(event: PTXEvent) throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         logger.trace(".waitOn(event: \(event.rawEvent))")
         try cuda_safe_call { cuStreamWaitEvent(self.rawStream, event.rawEvent, 0) }
@@ -97,8 +97,8 @@ public struct PTXStream: StreamProtocol {
     /// once the device completes work in this stream.
     /// https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g244c8833de4596bcd31a06cdf21ee758
     public func destroy() throws(CUDAError) {
-        let __zone = #Zone
-        defer { __zone.end() }
+        let zone = #Zone
+        defer { zone.end() }
 
         logger.trace("destroy() \(self.rawStream)")
         try cuda_safe_call { cuStreamDestroy_v2(self.rawStream) }

@@ -4,5 +4,5 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// @Suite("Permute") struct Permute {
+// @Suite("Permute") struct PermuteTests {
 // }

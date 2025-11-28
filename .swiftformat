@@ -3,8 +3,3 @@
 
 # rules
 --disable redundantType # clarity
---disable consecutiveSpaces # alignment
-
-[nofib]
---filter Backends/PTXBackend/Tests/PTXBackendTests/**
---disable indent,braces,wrapAttributes # forAll[NoShrink]

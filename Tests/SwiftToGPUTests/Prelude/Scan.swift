@@ -4,5 +4,5 @@ import SwiftCheck
 import SwiftToGPU
 import Testing
 
-// @Suite("Scan") struct Scan {
+// @Suite("Scan") struct ScanTests {
 // }
