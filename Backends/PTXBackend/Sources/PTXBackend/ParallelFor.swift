@@ -40,7 +40,7 @@ public func parallel_for<E: Error>(
     fatalError("""
     Swift-to-PTX translation failed.
     Compile in release mode to enable PTX translation. Failing that, please submit a bug to:
-    https://gitlab.com/PassiveLogic/compiler/swift-to-ptx/-/issues
+    https://github.com/dataparallel-swift/swift-to-gpu/issues
     """)
 }
 
