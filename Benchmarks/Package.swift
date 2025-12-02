@@ -11,10 +11,9 @@ if !disableJemalloc {
 }
 
 let package = Package(
-    name: "swift-ptx-backend-benchmarks",
+    name: "swift-to-gpu-benchmarks",
     platforms: [.macOS("15")],
     traits: [
-        .default(enabledTraits: ["CPU"]),
         "CPU",
         "PTX",
     ],
@@ -36,7 +35,7 @@ let package = Package(
             name: "BenchmarkFunctions",
             dependencies: [
                 .target(name: "BenchmarkFunctionsC", condition: .when(traits: ["PTX"])),
-                .product(name: "SwiftToGPU", package: "swift-to-ptx"),
+                .product(name: "SwiftToGPU", package: "swift-to-gpu"),
                 .product(name: "Numerics", package: "swift-numerics"),
             ],
             swiftSettings: [
