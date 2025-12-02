@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import SwiftCheck
-import SwiftToPTX
+import SwiftToGPU
 import Testing
 
 // swiftformat:disable trailingCommas
@@ -111,33 +111,34 @@ private extension Array {
 
 /// parallel array write (i -> i)
 private func backpermuteCopyTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
-    property("backpermuteCopy.\(T.self)") <-
-      forAllNoShrink([T].arbitrary) { (source: [T]) in
-        let expected = source
-        let actual = backpermute(from: source, count: source.count) { $0 }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (source: [T]) in
+            let expected = source
+            let actual = backpermute(from: source, count: source.count) { $0 }
+            return try? #require(expected == actual)
+        }
 }
 
 /// parallel array write with circular shift ((i + shift) % count -> i)
 private func backpermuteCircularShiftTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
-    property("backpermuteCircularShift.\(T.self)") <-
-      forAllNoShrink([T].arbitrary, Int.arbitrary.suchThat { $0 >= 0 }) { (source: [T], shift: Int) in
-        let expected = source.backpermute(count: source.count) { ($0 + shift) % source.count }
-        let actual = backpermute(from: source, count: source.count) { ($0 + shift) % source.count }
-        return try? #require(expected == actual)
-      }
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, Int.arbitrary.suchThat { $0 >= 0 }) { (source: [T], shift: Int) in
+            let expected = source.backpermute(count: source.count) { ($0 + shift) % source.count }
+            let actual = backpermute(from: source, count: source.count) { ($0 + shift) % source.count }
+            return try? #require(expected == actual)
+        }
 }
 
 /// parallel shuffle (p(i0 -> i where p: xs.indices -> xs.indices is bijective, i.e. a permutation
 private func backpermuteShuffleTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
-    property("backpermuteShuffle.\(T.self)") <-
-      forAllNoShrink([T].arbitrary) { (source: [T]) in
-      forAllNoShrink(source.generateShuffledIndices()) { (shuffledIndices: [Int]) in
-        let expected = source.backpermute(count: source.count) { shuffledIndices[$0] }
-        let actual = backpermute(from: source, count: source.count) { shuffledIndices[$0] }
-        return try? #require(expected == actual)
-      }}
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (source: [T]) in
+            forAllNoShrink(Gen.fromShufflingElements(of: Array(source.indices))) { (shuffledIndices: [Int]) in
+                let expected = source.backpermute(count: source.count) { shuffledIndices[$0] }
+                let actual = backpermute(from: source, count: source.count) { shuffledIndices[$0] }
+                return try? #require(expected == actual)
+            }
+        }
 }
 
 /// row-major matrix transpose
@@ -151,13 +152,14 @@ private func backpermuteMatrixTransposeTest<T: Arbitrary & Equatable & Expressib
         let transposedColCount = rowCount
         return transposedRowIndex * transposedColCount + transposedColIndex
     }
-    property("backpermuteMatrixTranspose.\(T.self)") <-
-      forAllNoShrink(Gen<Int>.choose((1, maxDimension)), Gen<Int>.choose((1, maxDimension))) { (m: Int, n: Int) in
-      forAllNoShrink(T.arbitrary.proliferate(withSize: m * n)) { (matrix: [T]) in
-        let expected = matrix.backpermute(count: matrix.count) { transposeRowMajor($0, rowCount: m, colCount: n) }
-        let actual = backpermute(from: matrix, count: matrix.count) { transposeRowMajor($0, rowCount: m, colCount: n) }
-        return try? #require(expected == actual)
-      }}
+    property(#function) <-
+        forAllNoShrink(Gen<Int>.choose((1, maxDimension)), Gen<Int>.choose((1, maxDimension))) { (m: Int, n: Int) in
+            forAllNoShrink(T.arbitrary.proliferate(withSize: m * n)) { (matrix: [T]) in
+                let expected = matrix.backpermute(count: matrix.count) { transposeRowMajor($0, rowCount: m, colCount: n) }
+                let actual = backpermute(from: matrix, count: matrix.count) { transposeRowMajor($0, rowCount: m, colCount: n) }
+                return try? #require(expected == actual)
+            }
+        }
 }
 
 /// parallel strided array write (i -> i * n)
@@ -165,13 +167,14 @@ private func backpermuteStridedReadTest<T: Arbitrary & ExpressibleByIntegerLiter
     let maxSize = 32
     let sizeGen = Gen<Int>.choose((0, maxSize))
     let strideGen = Gen<Int>.choose((1, 5))
-    property("backpermuteStridedRead.\(T.self)") <-
-      forAllNoShrink(sizeGen, strideGen) { (intoCount: Int, stride: Int) in
-      forAllNoShrink(T.arbitrary.proliferate(withSize: intoCount * stride)) { (source: [T]) in
-        let expected = source.backpermute(count: intoCount) { $0 * stride }
-        let actual = backpermute(from: source, count: intoCount) { $0 * stride }
-        return try? #require(expected == actual)
-      }}
+    property(#function) <-
+        forAllNoShrink(sizeGen, strideGen) { (intoCount: Int, stride: Int) in
+            forAllNoShrink(T.arbitrary.proliferate(withSize: intoCount * stride)) { (source: [T]) in
+                let expected = source.backpermute(count: intoCount) { $0 * stride }
+                let actual = backpermute(from: source, count: intoCount) { $0 * stride }
+                return try? #require(expected == actual)
+            }
+        }
 }
 
 private extension Either {
@@ -209,11 +212,12 @@ private extension Array {
 private func backpermuteEitherGenericTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
     let maxSize = 256
     let sizeGen = Gen<Int>.choose((0, maxSize))
-    property("backpermuteEitherGeneric.\(T.self)") <-
-      forAllNoShrink([T].arbitrary, sizeGen) { (from: [T], intoCount: Int) in
-      forAllNoShrink(from.indexOrValueGen.proliferate(withSize: intoCount)) { (indices: [Either<Int, T>]) in
-        let expected = from.backpermute(count: intoCount) { indices[$0] }
-        let actual = backpermute(from: from, count: intoCount) { indices[$0] }
-        return try? #require(expected == actual)
-      }}
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, sizeGen) { (from: [T], intoCount: Int) in
+            forAllNoShrink(from.indexOrValueGen.proliferate(withSize: intoCount)) { (indices: [Either<Int, T>]) in
+                let expected = from.backpermute(count: intoCount) { indices[$0] }
+                let actual = backpermute(from: from, count: intoCount) { indices[$0] }
+                return try? #require(expected == actual)
+            }
+        }
 }
