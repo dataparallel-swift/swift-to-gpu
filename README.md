@@ -1,4 +1,4 @@
-# Swift-to-PTX
+# Swift-to-GPU
 
 Lift Swift code to parallel CUDA kernels.
 
@@ -8,9 +8,15 @@ Add to your `Package.swift`:
 
 ```swift
     dependencies: [
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-to-ptx.git", revision: "0.2")
+        .package(url:"https://github.com/dataparallel-swift/swift-to-gpu.git", from: "1.0.0", traits: ["PTX"])
     ]
 ```
+
+If you do not have a NVIDIA GPU, you can instead build against the (currently
+sequential) CPU backend by supplying the "CPU" trait instead.
+
+> [!IMPORTANT]
+> You must supply either the PTX or CPU trait, otherwise the package will fail to compile.
 
 ## Adding it to your code
 
@@ -49,15 +55,24 @@ sequential operations such as Array.append(). (You should (almost) never be
 using that anyway: figure out what the requirements of your program are
 instead!)
 
+## API
+
+A number of the usual data-parallel array operators are available from the
+[Prelude.swift](/Sources/SwiftToGPU/Prelude.swift) module. It is expected that
+this will grow (and change) rapidly as the project continues. Prefer to use
+these combinators rather than raw `parallel_for` loops whenever possible.
+
 ## Building
 
-You will need to compile your project with a swift toolchain that includes the
-swift-to-ptx compiler transformation, e.g. available from here:
+When building against the PTX backend, you will need to compile your project
+with a swift toolchain that includes the swift-to-ptx compiler transformation,
+e.g. available from here:
 
-https://gitlab.com/PassiveLogic/compiler/swift
+https://gitlab.com/dataparallel-swift/swift
 
 Note that the transformation is only enabled when compiling with optimisations
-(release mode).
+(either compile in release mode, or enable optimisations for the specific target
+that uses SwiftToGPU).
 
 There are two ways to set up the development environment:
 
@@ -86,19 +101,23 @@ container.
    command. For example, to launch an interactive container:
    ```
    podman run --rm -it \
-     -v $PWD:/root  \  # make the current directory available in the container
-     registry.gitlab.com/passivelogic/compiler/swift:latest \
+     -v $PWD:/$(basename $PWD)  \ # make the current directory available in the container
+     -w /$(basename $PWD)       \ # set default working directory
+     ghcr.io/dataparallel-swift/swift:latest \
      /bin/bash
    ```
    but it can be simpler to just run the one command you want, for example:
    ```
-   podman run -v $PWD:/root registry.gitlab.com/passivelogic/compiler/swift:latest \
+   podman run -v ... ghcr.io/dataparallel-swift/swift:latest \
      swift build -c release
    ```
 
    Building executables with the `--static-swift-stdlib` option is useful when
    copying the resulting executable to a remote executor.
 
+   If you want to run GPU-accelerated code inside of a container, you will need
+   to set up and configure the [NVIDIA container
+   toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html).
 
 ### Native
 
@@ -109,12 +128,11 @@ with the addition that LLVM must be built with the NVPTX backend, e.g.:
 ./utils/build-script --llvm-targets-to-build "AArch64;NVPTX" ...
 ```
 
-## API
-
-A number of the usual data-parallel array operators are available from the
-[Prelude.swift](/Sources/swift-to-ptx/Prelude.swift) module. It is expected that
-this will grow (and change) rapidly as the project continues.
-
+The [swift-docker](https://github.com/dataparallel-swift/swift-docker) includes
+an example container that can be used to build a GPU enabled toolchain, e.g.:
+```
+./utils/build-script --preset=buildbot_linux,gpu,no_test install_destdir=... installable_package=...
+```
 
 ## Command line options
 
@@ -229,20 +247,26 @@ computation for each byte transferred.
 ## Limitations
 
   * All code to be lifted to the device must be present in a single compilation
-    unit passed to the LLVM compiler. Unfortunately, due to the way
-    optimisations work, this does not always/necessarily correspond to a single
-    .swift file.
+    unit passed to the LLVM compiler. Typically this can be achieved by putting
+    all of the code for the GPU kernel into a single .swift file, and/or by
+    sprinkling `@alwaysEmitIntoClient` onto any functions that you want to call
+    from the GPU. You will also need to make sure that any generic functions can
+    be completely specialised at the call site. Still, the swift-to-ptx
+    transformation pass does not always succeed, so improving this compilation
+    model is an important milestone on the roadmap.
 
-    In particular, note that the `--enable-testing` flag, which is added
-    automatically by `swift test`, will change how optimisations are performed.
+  * The `--enable-testing` flag, which is added automatically by `swift test`,
+    changes how optimisations are performed, which may in turn cause the pass to
+    fail in cases that succeed in the regular compilation mode.
 
-  * `--enable-code-coverage` is currently not supported
+  * `--enable-code-coverage` is currently not supported.
 
 
 ## TODO
 
+  * Improve the compilation model
   * Integration with Swift structured concurrency
   * Integration with debugging / profiling tools
+  * Leverage Swift language safety features in kernel code
   * A mechanism for automatic kernel fusion
   * ...
-
