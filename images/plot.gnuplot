@@ -2,7 +2,7 @@
 datatype = "f16"
 benchmark = "blackscholes"
 
-set terminal svg
+set terminal svg enhanced background rgb 'white'
 set output sprintf("%s-%s.svg", benchmark, datatype)
 
 set title "Black-Scholes (Float16)"
