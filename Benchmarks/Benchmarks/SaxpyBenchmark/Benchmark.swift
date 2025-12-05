@@ -14,10 +14,9 @@
 
 import Benchmark
 import BenchmarkFunctions
-import Randy
 
 let benchmarks: @Sendable () -> Void = {
-    var gen = UniformRandomNumberGenerator()
+    var gen = SystemRandomNumberGenerator()
     let configs: [(Int, BenchmarkScalingFactor)] = [
         (100, .one),
         (1000, .one),
@@ -45,11 +44,15 @@ let benchmarks: @Sendable () -> Void = {
         )
     }
 
+    func randomArray<Element: Randomizable, R: RandomNumberGenerator>(count: Int, using generator: inout R) -> [Element] {
+        (0 ..< count).map { _ in Element.sample(using: &generator) }
+    }
+
     // swiftlint:disable:next large_tuple
     func setup<A: Randomizable>(_: A.Type, _ n: Int) -> (A, [A], [A]) {
-        let alpha = A.random(using: &gen)
-        let xs = Array<A>.random(count: n, using: &gen)
-        let ys = Array<A>.random(count: n, using: &gen)
+        let alpha = A.sample(using: &gen)
+        let xs: [A] = randomArray(count: n, using: &gen)
+        let ys: [A] = randomArray(count: n, using: &gen)
         return (alpha, xs, ys)
     }
 
@@ -94,3 +97,20 @@ let benchmarks: @Sendable () -> Void = {
         // Benchmark("saxpy/cpu_specialised/f64/\(size)",  configuration: config(scaling), closure: bench(saxpy_cpu_specialised),  setup: { setup(Float64.self, size) })
     }
 }
+
+protocol Randomizable {
+    static func sample<R: RandomNumberGenerator>(using generator: inout R) -> Self
+}
+
+extension BinaryFloatingPoint where RawSignificand: FixedWidthInteger {
+    static func sample<R: RandomNumberGenerator>(using generator: inout R) -> Self {
+        Self.random(in: 0 ... 1, using: &generator)
+    }
+}
+
+#if arch(arm64)
+@available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *)
+extension Float16: Randomizable {}
+#endif
+extension Float32: Randomizable {}
+extension Float64: Randomizable {}

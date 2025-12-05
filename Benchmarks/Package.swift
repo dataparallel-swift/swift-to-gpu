@@ -27,7 +27,6 @@ let package = Package(
         ),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/Randy.git", from: "0.7.0"),
         .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
     ],
     targets: [
@@ -59,7 +58,6 @@ let package = Package(
         .executableTarget(
             name: "SaxpyBenchmark",
             dependencies: [
-                "Randy",
                 "BenchmarkFunctions",
                 .product(name: "Benchmark", package: "package-benchmark"),
             ],
@@ -76,7 +74,6 @@ let package = Package(
         .executableTarget(
             name: "BlackScholesBenchmark",
             dependencies: [
-                "Randy",
                 "BenchmarkFunctions",
                 .product(name: "Benchmark", package: "package-benchmark"),
             ],
