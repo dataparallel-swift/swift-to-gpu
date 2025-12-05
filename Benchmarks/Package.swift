@@ -27,7 +27,7 @@ let package = Package(
         ),
         .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
+        .package(url: "https://github.com/dataparallel-swift/swift-cuda.git", from: "1.0.0"),
     ],
     targets: [
         .target(

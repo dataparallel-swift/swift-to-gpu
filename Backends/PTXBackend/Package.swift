@@ -29,9 +29,9 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", "1.6.3" ..< "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", "2.42.0" ..< "3.0.0"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.8.1"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-cuda.git", from: "0.2.0"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-tracy.git", revision: "60ac56c594ee"),
-        .package(url: "git@gitlab.com:PassiveLogic/compiler/swift-mimalloc.git", revision: "0.1"),
+        .package(url: "https://github.com/dataparallel-swift/swift-cuda.git", from: "1.0.0"),
+        .package(url: "https://github.com/dataparallel-swift/swift-tracy.git", revision: "1.0.0"),
+        .package(url: "https://github.com/dataparallel-swift/swift-mimalloc.git", revision: "1.0.0", traits: ["CUDA"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
