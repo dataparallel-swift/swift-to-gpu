@@ -38,8 +38,12 @@ public func parallel_for<E: Error>(
     dontLetTheCompilerOptimizeThisAway(stream)
     // swiftlint:disable:next no_fatalerror
     fatalError("""
-    Swift-to-PTX translation failed.
-    Compile in release mode to enable PTX translation. Failing that, please submit a bug to:
+    Swift-to-PTX translation failed!
+
+    Ensure you are using a Swift-to-GPU enabled compiler, e.g. available from:
+    https://github.com/dataparallel-swift/swift
+
+    and compile in release mode to enable PTX translation. Failing that, please submit a bug to:
     https://github.com/dataparallel-swift/swift-to-gpu/issues
     """)
 }
