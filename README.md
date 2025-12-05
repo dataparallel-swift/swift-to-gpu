@@ -229,9 +229,9 @@ i.e. $z_i = \alpha \cdot x_i + y_i$.
 This represents a workload with a high bytes/flops ratio, that is overall
 dominated by the cost of data transfer.
 
-![](./images/saxpy-f16.svg)
-![](./images/saxpy-f32.svg)
-![](./images/saxpy-f64.svg)
+![](./images/saxpy-f16.png)
+![](./images/saxpy-f32.png)
+![](./images/saxpy-f64.png)
 
 ### [BlackScholes](./Benchmarks/benchmark-functions/BlackScholes.swift)
 
@@ -240,9 +240,9 @@ This benchmark implements the
 pricing model. This represents a workload that does a reasonable amount of
 computation for each byte transferred.
 
-![](./images/blackscholes-f16.svg)
-![](./images/blackscholes-f32.svg)
-![](./images/blackscholes-f64.svg)
+![](./images/blackscholes-f16.png)
+![](./images/blackscholes-f32.png)
+![](./images/blackscholes-f64.png)
 
 ## Limitations
 
