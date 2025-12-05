@@ -1,11 +1,22 @@
-// Copyright (c) 2025 PassiveLogic, Inc.
+// Copyright (c) 2025 The swift-to-gpu authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 import Benchmark
 import BenchmarkFunctions
-import Randy
 
 let benchmarks: @Sendable () -> Void = {
-    var gen = UniformRandomNumberGenerator()
+    var gen = SystemRandomNumberGenerator()
     let configs: [(Int, BenchmarkScalingFactor)] = [
         (100, .one),
         (1000, .one),
@@ -33,13 +44,21 @@ let benchmarks: @Sendable () -> Void = {
         )
     }
 
+    func randomArray<Element: Randomizable, R: RandomNumberGenerator>(
+        count: Int,
+        in range: ClosedRange<Element>,
+        using generator: inout R
+    ) -> [Element] {
+        (0 ..< count).map { _ in Element.sample(in: range, using: &generator) }
+    }
+
     // swiftlint:disable:next large_tuple
-    func setup<A: BinaryFloatingPoint & RandomizableWithDistribution>(_: A.Type, _ n: Int) -> (A, A, [A], [A], [A]) {
+    func setup<A: Randomizable & BinaryFloatingPoint>(_: A.Type, _ n: Int) -> (A, A, [A], [A], [A]) {
         let riskfree: A = 0.02
         let volatility: A = 0.30
-        let price = Array<A>.random(count: n, in: RandomDistribution(.uniform(min: 5, max: 30)), using: &gen)
-        let strike = Array<A>.random(count: n, in: RandomDistribution(.uniform(min: 1, max: 100)), using: &gen)
-        let time = Array<A>.random(count: n, in: RandomDistribution(.uniform(min: 0.25, max: 10)), using: &gen)
+        let price: [A] = randomArray(count: n, in: 5 ... 30, using: &gen)
+        let strike: [A] = randomArray(count: n, in: 1 ... 100, using: &gen)
+        let time: [A] = randomArray(count: n, in: 0.25 ... 10, using: &gen)
         return (riskfree, volatility, price, strike, time)
     }
 
@@ -71,3 +90,20 @@ let benchmarks: @Sendable () -> Void = {
         Benchmark("blackscholes/cpu_generic_safe/f64/\(size)", configuration: config(scaling), closure: bench(blackscholes_cpu_generic_safe), setup: { setup(Float64.self, size) })
     }
 }
+
+protocol Randomizable where Self: Comparable {
+    static func sample<R: RandomNumberGenerator>(in range: ClosedRange<Self>, using generator: inout R) -> Self
+}
+
+extension BinaryFloatingPoint where RawSignificand: FixedWidthInteger {
+    static func sample<R: RandomNumberGenerator>(in range: ClosedRange<Self>, using generator: inout R) -> Self {
+        Self.random(in: range, using: &generator)
+    }
+}
+
+#if arch(arm64)
+@available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *)
+extension Float16: Randomizable {}
+#endif
+extension Float32: Randomizable {}
+extension Float64: Randomizable {}
