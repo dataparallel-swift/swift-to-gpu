@@ -68,7 +68,7 @@ When building against the PTX backend, you will need to compile your project
 with a swift toolchain that includes the swift-to-ptx compiler transformation,
 e.g. available from here:
 
-https://gitlab.com/dataparallel-swift/swift
+https://github.com/dataparallel-swift/swift
 
 Note that the transformation is only enabled when compiling with optimisations
 (either compile in release mode, or enable optimisations for the specific target
