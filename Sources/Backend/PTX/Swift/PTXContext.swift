@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 import BackendInterface
 import CUDA
 import Logging
@@ -141,3 +142,4 @@ public struct PTXContext: ContextProtocol {
         try cuda_safe_call { cuDevicePrimaryCtxRelease_v2(self.rawDevice) }
     }
 }
+#endif

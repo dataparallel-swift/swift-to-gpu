@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 import CUDA
 
 public struct CUDAError: Error, CustomStringConvertible {
@@ -44,3 +45,4 @@ func cuda_safe_async_call(_ function: () -> CUresult) throws(CUDAError) -> Bool 
         default: throw CUDAError(status: result)
     }
 }
+#endif

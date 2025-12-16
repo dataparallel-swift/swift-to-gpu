@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 // Running the corresponding llvm optimisation plugin on code that calls this
 // function will result in the 'body' closure being translated into a CUDA
 // kernel such that all `iterations` are executed at once in data-parallel.
@@ -64,3 +65,4 @@ func dontLetTheCompilerOptimizeThisAway<T>(_ it: T) {
 }
 
 private nonisolated(unsafe) var blackhole: Any?
+#endif
