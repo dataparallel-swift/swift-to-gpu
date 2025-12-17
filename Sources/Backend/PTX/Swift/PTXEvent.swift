@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 import BackendInterface
 import CUDA
 import Logging
@@ -82,3 +83,4 @@ public final class PTXEvent: EventProtocol {
         try! cuda_safe_call { cuEventDestroy_v2(self.rawEvent) } // swiftlint:disable:this force_try
     }
 }
+#endif

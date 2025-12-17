@@ -12,19 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extension Array {
-    @usableFromInline
-    init(count: Int, generator: @escaping (Int) -> Element) {
-        // swiftlint:disable:next no_precondition
-        precondition(count >= 0, "arrays must have non-negative sizes")
-        self.init(
-            unsafeUninitializedCapacity: count,
-            initializingWith: { buffer, initializedCount in
-                for i in 0 ..< count {
-                    buffer.initializeElement(at: i, to: generator(i))
-                }
-                initializedCount = count
-            }
-        )
+#if CPU
+import BackendInterface
+
+public func parallel_for<E: Error>(
+    iterations: Int,
+    _ body: (Int) throws(E) -> Void
+) throws(E) -> CPUEvent {
+    for i in 0 ..< iterations {
+        try body(i)
+    }
+    return CPUEvent()
+}
+
+public enum CPUError: Error {}
+
+public struct CPUEvent: EventProtocol {
+    public func sync() throws(CPUError) {}
+
+    public func complete() throws(CPUError) -> Bool {
+        true
     }
 }
+#endif

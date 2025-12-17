@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 import Logging
 import NIOConcurrencyHelpers
 import PTXBackendC
@@ -302,3 +303,4 @@ private func pow(_ base: Int, _ exp: Int) -> Int {
     return r
     // swiftlint:enable identifier_name shorthand_operator
 }
+#endif

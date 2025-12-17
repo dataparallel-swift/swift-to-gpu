@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 import CUDA
 import Logging
 import PTXBackendC
@@ -172,3 +173,4 @@ public func launch_parallel_for
 
     return event
 }
+#endif

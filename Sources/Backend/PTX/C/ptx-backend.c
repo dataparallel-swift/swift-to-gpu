@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifdef PTX
 #include <errno.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -186,3 +187,4 @@ void swift_slowDealloc(void* ptr, size_t size, size_t align_mask) {
 size_t swift_usableSize(const void* ptr) {
   return mi_usable_size(ptr);
 }
+#endif

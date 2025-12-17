@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if PTX
 import BackendInterface
 import CUDA
 import Logging
@@ -139,3 +140,4 @@ public let streamLegacy = unsafeBitCast(0x1, to: PTXStream.self)
 /// non-blocking stream and will synchronize with the legacy default stream if
 /// both are used in a program.
 public let streamPerThread = unsafeBitCast(0x2, to: PTXStream.self)
+#endif
