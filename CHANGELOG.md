@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [next]
 
+## [1.0.1] - 2025-12-17
+
+### Fixed
+- Workaround to enable importing this as a remote package
+
 ## [1.0.0] - 2025-12-05
 
 ### Added
-
 - Initial release
 
 
-[next]: https://github.com/dataparallel-swift/swift-to-gpu/compare/1.0.0...HEAD
+[next]: https://github.com/dataparallel-swift/swift-to-gpu/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/dataparallel-swift/swift-to-gpu/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/dataparallel-swift/swift-to-gpu/releases/tag/1.0.0
