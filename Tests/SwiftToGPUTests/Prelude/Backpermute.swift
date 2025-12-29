@@ -29,7 +29,8 @@ struct Backpermute {
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
-        @Test func backpermuteEitherGeneric() { backpermuteEitherGenericTest(T.self) }
+        @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
+        @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
     }
 
     @Suite("Int32")
@@ -40,7 +41,8 @@ struct Backpermute {
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
-        @Test func backpermuteEitherGeneric() { backpermuteEitherGenericTest(T.self) }
+        @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
+        @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
     }
 
     @Suite("Int64")
@@ -51,7 +53,8 @@ struct Backpermute {
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
-        @Test func backpermuteEitherGeneric() { backpermuteEitherGenericTest(T.self) }
+        @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
+        @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
     }
 
     @Suite("Float32")
@@ -62,7 +65,8 @@ struct Backpermute {
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
-        @Test func backpermuteEitherGeneric() { backpermuteEitherGenericTest(T.self) }
+        @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
+        @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
     }
 
     @Suite("Float64")
@@ -73,7 +77,8 @@ struct Backpermute {
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
-        @Test func backpermuteEitherGeneric() { backpermuteEitherGenericTest(T.self) }
+        @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
+        @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
     }
 }
 
@@ -129,7 +134,7 @@ private func backpermuteCircularShiftTest<T: Arbitrary & ExpressibleByIntegerLit
         }
 }
 
-/// parallel shuffle (p(i0 -> i where p: xs.indices -> xs.indices is bijective, i.e. a permutation
+/// parallel shuffle (p(i) -> i where p: xs.indices -> xs.indices is bijective, i.e. a permutation)
 private func backpermuteShuffleTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
     property(#function) <-
         forAllNoShrink([T].arbitrary) { (source: [T]) in
@@ -177,6 +182,30 @@ private func backpermuteStridedReadTest<T: Arbitrary & ExpressibleByIntegerLiter
         }
 }
 
+/// parallel array write with default value for out-of-bounds indices
+private func backpermuteWithDefaultTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
+    let maxSize = 256
+    let sizeGen = Gen<Int>.choose((0, maxSize))
+    let defaultValue: T = 0
+    property(#function) <-
+        forAllNoShrink([T].arbitrary, sizeGen) { (from: [T], intoCount: Int) in
+            forAllNoShrink(Gen<Int>.choose((-from.count, from.count - 1)).proliferate(withSize: intoCount)) { (indices: [Int]) in
+                // swiftlint:disable:next logger_over_print
+                print(from, indices)
+                func p(_ i: Int) -> Either<Int, T> {
+                    let index = indices[i]
+                    guard index >= 0, index < from.count else {
+                        return Either.right(defaultValue)
+                    }
+                    return Either.left(index)
+                }
+                let expected = from.backpermute(count: intoCount, p)
+                let actual = backpermute(from: from, count: intoCount, p)
+                return try? #require(expected == actual)
+            }
+        }
+}
+
 private extension Either {
     /// randomly choose between `genLeft` and `genRight` with equal weight
     static func gen(_ genLeft: Gen<A>, _ genRight: Gen<B>) -> Gen<Self> {
@@ -209,7 +238,7 @@ private extension Array {
     }
 }
 
-private func backpermuteEitherGenericTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
+private func backpermuteGeneralizedTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
     let maxSize = 256
     let sizeGen = Gen<Int>.choose((0, maxSize))
     property(#function) <-
