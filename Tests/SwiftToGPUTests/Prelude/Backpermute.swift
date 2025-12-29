@@ -78,20 +78,13 @@ struct Backpermute {
 }
 
 private extension Array {
-    func backpermute<Err: Error>(count: Int, _ p: (Index) throws(Err) -> Index) throws(Err) -> Self {
-        // SEE: [Array initialiser with typed throws]
-        var into = Self(unsafeUninitializedCapacity: count)
-        try self.backpermute(into: &into, p)
-        return into
-    }
-
     func backpermute<Err: Error>(into: inout Self, _ p: (Index) throws(Err) -> Index) throws(Err) {
         for i in into.indices {
             into[i] = self[try p(i)]
         }
     }
 
-    func backpermute<Err: Error>(count: Int, _ p: (Int) throws(Err) -> Either<Index, Element>) throws(Err) -> Self {
+    func backpermute<Err: Error>(count: Int, _ p: (Index) throws(Err) -> Index) throws(Err) -> Self {
         // SEE: [Array initialiser with typed throws]
         var into = Self(unsafeUninitializedCapacity: count)
         try self.backpermute(into: &into, p)
@@ -106,6 +99,13 @@ private extension Array {
             }
             into[i] = v
         }
+    }
+
+    func backpermute<Err: Error>(count: Int, _ p: (Int) throws(Err) -> Either<Index, Element>) throws(Err) -> Self {
+        // SEE: [Array initialiser with typed throws]
+        var into = Self(unsafeUninitializedCapacity: count)
+        try self.backpermute(into: &into, p)
+        return into
     }
 }
 
