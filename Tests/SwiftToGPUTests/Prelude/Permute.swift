@@ -173,7 +173,8 @@ private func circularShiftTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equa
 private func shuffleTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
     property(#function) <-
         forAllNoShrink([T].arbitrary) { (source: [T]) in
-            forAllNoShrink(source.generateShuffledIndices()) { (shuffledIndices: [Int]) in
+            let indexGen = Gen.fromShufflingElements(of: Array(source.indices))
+            return forAllNoShrink(indexGen) { (shuffledIndices: [Int]) in
                 var expected: [T] = fill(count: source.count, with: 0)
                 var actual: [T] = fill(count: source.count, with: 0)
                 source.permute(into: &expected) { shuffledIndices[$0] }
@@ -230,9 +231,8 @@ private func shufleInjectiveTest<T: Arbitrary & ExpressibleByIntegerLiteral & Eq
         ) { (source: [T], multiplier: Int, overshoot: Int) in
             // into.count >= source.count
             let intoCount = source.count * multiplier + overshoot
-            return forAllNoShrink(
-                [T].generateShuffledIndices(upTo: intoCount, count: source.count)
-            ) { (shuffledIndices: [Int]) in
+            let indexGen = Gen.fromShufflingElements(of: Array(0 ..< intoCount)).map(take(source.count))
+            return forAllNoShrink(indexGen) { (shuffledIndices: [Int]) in
                 var expected: [T] = fill(count: intoCount, with: 0)
                 var actual: [T] = fill(count: intoCount, with: 0)
                 source.permute(into: &expected) { shuffledIndices[$0] }
@@ -262,9 +262,8 @@ private func shuffleGeneralizedTest<T: Arbitrary & ExpressibleByIntegerLiteral &
             let intoCount = source.count * n
             // permute indices can shoot past destination array bounds
             let upperBound = intoCount * overShoot
-            return forAllNoShrink(
-                [T].generateShuffledIndices(upTo: upperBound, count: source.count)
-            ) { (shuffledIndices: [Int]) in
+            let indexGen = Gen.fromShufflingElements(of: Array(0 ..< upperBound)).map(take(source.count))
+            return forAllNoShrink(indexGen) { (shuffledIndices: [Int]) in
                 var expected: [T] = fill(count: intoCount, with: 0)
                 var actual: [T] = fill(count: intoCount, with: 0)
                 source.permute(into: &expected) { p($0, shuffledIndices, intoCount) }
@@ -310,7 +309,8 @@ private func elementwiseMinTest<T: Arbitrary & Comparable & ExpressibleByInteger
 private func groupReduceTest<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.Type) {
     property(#function) <-
         forAllNoShrink([T].arbitrary, [T].arbitrary) { (from: [T], into: [T]) in
-            forAllNoShrink(into.generateShuffledIndices(count: from.count)) { (indices: [Int]) in
+            let indexGen = Gen.fromShufflingElements(of: Array(into.indices)).map(take(from.count))
+            return forAllNoShrink(indexGen) { (indices: [Int]) in
                 var expected = into
                 var actual = into
                 from.permute(into: &expected, combining: +) { indices[$0] }
@@ -356,9 +356,9 @@ private func generalizedTest<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.T
             Gen<Int>.choose((1, maxMultiplier)),
             Gen<Int>.choose((0, maxOvershoot)),
         ) { (from: [T], into: [T], multiplier: Int, overshoot: Int) in
-            forAllNoShrink(
-                [T].generateShuffledIndices(upTo: into.count * multiplier + overshoot, count: from.count)
-            ) { (indices: [Int]) in
+            let upperBound = into.count * multiplier + overshoot
+            let indexGen = Gen.fromShufflingElements(of: Array(0 ..< upperBound)).map(take(from.count))
+            return forAllNoShrink(indexGen) { (indices: [Int]) in
                 var expected = into
                 var actual = into
                 from.permute(into: &expected, combining: +) { p($0, indices, into.count) }
@@ -366,4 +366,12 @@ private func generalizedTest<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.T
                 return try? #require(expected ~~~ actual)
             }
         }
+}
+
+private func take<T>(_ count: Int) -> (([T]) -> [T]) {
+    { array in
+        // swiftlint:disable:next no_precondition
+        precondition(count <= array.count)
+        return (0 ..< count).map { array[$0] }
+    }
 }
