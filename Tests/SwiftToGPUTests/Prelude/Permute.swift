@@ -1,4 +1,4 @@
-// Copyright (c) 2025 The swift-to-gpu authors. All rights reserved.
+// Copyright (c) 2026 The swift-to-gpu authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,164 @@ import Testing
 
 @Suite("Permute")
 struct Permute {
+    // MARK: - Unit Tests (hardcoded examples)
+
+    /// Reverse permutation: i -> (n-1-i)
+    @Test func reversePermutation() {
+        let source = [1, 2, 3, 4, 5]
+        var result: [Int] = fill(count: 5, with: 0)
+        permute(from: source, into: &result) { source.count - 1 - $0 }
+        #expect(result == [5, 4, 3, 2, 1])
+    }
+
+    /// Circular shift: i -> (i+2) % n
+    @Test func circularShift() {
+        let source = [1, 2, 3, 4, 5]
+        var result: [Int] = fill(count: 5, with: 0)
+        permute(from: source, into: &result) { ($0 + 2) % source.count }
+        // source[0]=1 -> result[2], source[1]=2 -> result[3], source[2]=3 -> result[4],
+        // source[3]=4 -> result[0], source[4]=5 -> result[1]
+        #expect(result == [4, 5, 1, 2, 3])
+    }
+
+    /// Strided write: i -> 2*i (scatter into larger array)
+    @Test func stridedWrite() {
+        let source = [10, 20, 30]
+        var result: [Int] = fill(count: 6, with: 0)
+        permute(from: source, into: &result) { $0 * 2 }
+        // source[0]=10 -> result[0], source[1]=20 -> result[2], source[2]=30 -> result[4]
+        #expect(result == [10, 0, 20, 0, 30, 0])
+    }
+
+    /// Partial permutation with nil: only some elements are written
+    @Test func partialPermutationWithNil() {
+        let source = [100, 200, 300, 400, 500]
+        var result: [Int] = fill(count: 5, with: -1)
+        permute(from: source, into: &result) { i in
+            // Only write even-indexed elements
+            i % 2 == 0 ? i : nil
+        }
+        // source[0]=100 -> result[0], source[2]=300 -> result[2], source[4]=500 -> result[4]
+        #expect(result == [100, -1, 300, -1, 500])
+    }
+
+    /// 2x3 row-major matrix transpose: .e.g. [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
+    @Test func matrixTranspose2x3() {
+        // 2x3 matrix stored in row-major order: [1,2,3
+        //                                        4,5,6]
+        // swiftformat:disable:next wrap wrapArguments
+        let matrix = [1, 2, 3,
+                      4, 5, 6]
+        let rowCount = 2, colCount = 3
+        var transposed: [Int] = fill(count: matrix.count, with: 0)
+
+        permute(from: matrix, into: &transposed) { i in
+            let rowIndex = i / colCount
+            let colIndex = i % colCount
+            let transposedRowIndex = colIndex
+            let transposedColIndex = rowIndex
+            let transposedColCount = rowCount
+            return transposedRowIndex * transposedColCount + transposedColIndex
+        }
+
+        // Transposed 3x2 matrix: [[1,4],[2,5],[3,6]] ≡ [1,4,2,5,3,6]
+        // swiftformat:disable:next wrap wrapArguments
+        #expect(transposed == [1, 4,
+                               2, 5,
+                               3, 6])
+    }
+
+    /// Shuffle with known permutation
+    @Test func shuffle() {
+        let source = [10, 20, 30, 40, 50]
+        let indices = [3, 0, 4, 1, 2] // where each element goes
+        var result: [Int] = fill(count: 5, with: 0)
+        permute(from: source, into: &result) { indices[$0] }
+        // source[0]=10 -> result[3], source[1]=20 -> result[0], source[2]=30 -> result[4],
+        // source[3]=40 -> result[1], source[4]=50 -> result[2]
+        #expect(result == [20, 40, 50, 10, 30])
+    }
+
+    /// Scatter into sparse locations
+    @Test func sparseScatter() {
+        let source = [100, 200, 300]
+        let targetIndices = [7, 2, 5] // where each element goes
+        var result: [Int] = fill(count: 10, with: 0)
+        permute(from: source, into: &result) { targetIndices[$0] }
+        #expect(result == [0, 0, 200, 0, 0, 300, 0, 100, 0, 0])
+    }
+
+    // MARK: - Unit Tests (with combining function)
+
+    // /// Element-wise sum: result[i] = xs[i] + ys[i]
+    // @Test(.bug(id: "86b7dzf83")) func elementwiseSum() {
+    //     let xs = [1, 2, 3, 4, 5]
+    //     var ys = [10, 20, 30, 40, 50]
+    //     permute(from: xs, into: &ys, combining: +) { $0 }
+    //     #expect(ys == [11, 22, 33, 44, 55])
+    // }
+
+    // /// Element-wise min: result[i] = min(xs[i], ys[i])
+    // @Test(.bug(id: "86b7dzf83")) func elementwiseMin() {
+    //     let xs = [5, 2, 8, 1, 9]
+    //     var ys = [3, 7, 4, 6, 2]
+    //     permute(from: xs, into: &ys, combining: min) { $0 }
+    //     #expect(ys == [3, 2, 4, 1, 2])
+    // }
+
+    // /// Group reduce: multiple source elements contribute to the same destination
+    // @Test(.bug(id: "86b7dzf83")) func groupReduce() {
+    //     // Values to accumulate
+    //     let values = [10, 20, 30, 40, 50]
+    //     // Group assignments: values[0,2,4] go to group 0, values[1,3] go to group 1
+    //     let groups = [0, 1, 0, 1, 0]
+    //     var sums: [Int] = fill(count: 2, with: 0)
+    //     permute(from: values, into: &sums, combining: +) { groups[$0] }
+    //     // group 0: 10 + 30 + 50 = 90
+    //     // group 1: 20 + 40 = 60
+    //     #expect(sums == [90, 60])
+    // }
+
+    // /// Histogram: count occurrences of values in bins
+    // @Test(.bug(id: "86b7dzf83")) func histogram() {
+    //     // Data values in range [0, 4]
+    //     let data = [0, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+    //     let ones: [Int] = fill(count: data.count, with: 1)
+    //     var bins: [Int] = fill(count: 5, with: 0)
+    //     permute(from: ones, into: &bins, combining: +) { data[$0] }
+    //     // bin 0: 1 occurrence, bin 1: 1, bin 2: 2, bin 3: 3, bin 4: 4
+    //     #expect(bins == [1, 1, 2, 3, 4])
+    // }
+
+    // /// Partial group reduce with nil: only some elements contribute
+    // @Test(.bug(id: "86b7dzf83")) func partialGroupReduce() {
+    //     let values = [100, 200, 300, 400, 500]
+    //     var result: [Int] = fill(count: 3, with: 0)
+    //     permute(from: values, into: &result, combining: +) { i in
+    //         // Only include odd-indexed elements
+    //         // values[1]=200 -> result[0], values[3]=400 -> result[1]
+    //         switch i {
+    //         case 1: 0
+    //         case 3: 1
+    //         default: nil
+    //         }
+    //     }
+    //     #expect(result == [200, 400, 0])
+    // }
+
+    /// Scatter-add: add values at specific sparse locations
+    // @Test(.bug(id: "86b7dzf83")) func scatterAdd() {
+    //     let values = [5, 10, 15]
+    //     let indices = [1, 3, 1] // Note: indices 0 and 2 both map to position 1
+    //     var result: [Int] = fill(count: 5, with: 0)
+    //     permute(from: values, into: &result, combining: +) { indices[$0] }
+    //     // result[1] = values[0] + values[2] = 5 + 15 = 20
+    //     // result[3] = values[1] = 10
+    //     #expect(result == [0, 20, 0, 10, 0])
+    // }
+
+    // MARK: - Property-Based Tests
+
     @Suite("Int")
     struct IntTests {
         typealias T = Int
