@@ -1,0 +1,140 @@
+variables:
+  BENCHMARK_DISABLE_JEMALLOC: true
+
+stages:
+  - lint
+  - test
+  - deploy
+
+include:
+  # Lint stage
+  - component: gitlab.com/PassiveLogic/ci/commitlint@4
+    inputs:
+      job-stage: lint
+  - component: gitlab.com/PassiveLogic/ci/swiftlint@4
+    inputs:
+      job-stage: lint
+  - component: gitlab.com/PassiveLogic/ci/swiftformat@4
+    inputs:
+      job-stage: lint
+  # Not compatible with package traits
+  # - component: gitlab.com/PassiveLogic/ci/swift-import-analyzer@4
+  #   inputs:
+  #     job-stage: lint
+
+  # Test stage
+  # Not compatible with package traits
+  # - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
+  #   inputs:
+  #     swift-image: ghcr.io/dataparallel-swift/swift:6.1-jammy
+  #     runner-tags:
+  #       - passivelogic-linux-small-arm64
+
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+    inputs:
+      swift-image: ghcr.io/dataparallel-swift/swift:6.1-jammy
+      package-traits:
+        - PTX
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
+      enable-code-coverage: false
+      additional-setup:
+        - apt install -y libcapstone-dev
+      runner-tags:
+        - passivelogic-compiler-orin
+      job-prefix: 'ptx-arm64 '
+
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+    inputs:
+      swift-image: docker.io/library/swift:6.1-jammy
+      package-traits:
+        - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
+      additional-setup:
+        - apt install -y libcapstone-dev
+      runner-tags:
+        - passivelogic-linux-small-arm64
+      job-prefix: 'cpu-arm64 '
+  - component: gitlab.com/PassiveLogic/ci/swift-test@4
+    inputs:
+      swift-image: docker.io/library/swift:6.1-jammy
+      package-traits:
+        - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
+      additional-setup:
+        - apt install -y libcapstone-dev
+      runner-tags:
+        - passivelogic-linux-small-amd64
+      job-prefix: 'cpu-x86_64 '
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-image: docker.io/library/swift:6.1-jammy
+      swift-package-path: Benchmarks
+      package-traits:
+        - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
+      job-prefix: 'benchmark-cpu-arm64 '
+      job-stage: test
+      runner-tags:
+        - passivelogic-linux-small-arm64
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-image: docker.io/library/swift:6.1-jammy
+      swift-package-path: Benchmarks
+      package-traits:
+        - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
+      job-prefix: 'benchmark-cpu-x86_64 '
+      job-stage: test
+      runner-tags:
+        - passivelogic-linux-small-amd64
+  - component: gitlab.com/PassiveLogic/ci/swift-build@4
+    inputs:
+      swift-image: ghcr.io/dataparallel-swift/swift:6.1-jammy
+      swift-package-path: Benchmarks
+      package-traits:
+        - PTX
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
+      job-prefix: 'benchmark-ptx-arm64 '
+      job-stage: test
+      runner-tags:
+        - passivelogic-compiler-orin
+
+  - component: gitlab.com/PassiveLogic/ci/swift-benchmarks@4
+    inputs:
+      benchmark-package-path: Benchmarks
+      swift-image: ghcr.io/dataparallel-swift/swift:6.1-jammy
+      additional-setup:
+        - apt install -y libcapstone-dev
+
+  # Deploy stage
+  - component: gitlab.com/PassiveLogic/ci/swift-docs@4
+    inputs:
+      product-names:
+        - SwiftToGPU
+      runner-tags:
+        - passivelogic-linux-small-amd64
+      additional-setup:
+        - apt-get -y install wget
+        - wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+        - dpkg -i cuda-keyring_1.1-1_all.deb
+        - apt-get update
+        - apt-get -y install cuda-nvcc-12-6
+  - component: gitlab.com/PassiveLogic/ci/swift-dependabot@4
+    inputs:
+      token: ${SWIFT_DEPENDABOT_TOKEN}
+      token-email: ${SWIFT_DEPENDABOT_EMAIL}
+      assignee-username: trevor@passivelogic.com
+
+benchmark-orin:
+  extends: .run_benchmarks
+  tags:
+    - passivelogic-compiler-orin
+
+# disable cloud benchmarks
+benchmark-cloud:
+  rules:
+    - when: never
+
+benchmark-upload-cloud:
+  rules:
+    - when: never
