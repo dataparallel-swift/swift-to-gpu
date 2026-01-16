@@ -16,6 +16,7 @@ let package = Package(
     traits: [
         "CPU",
         "PTX",
+        .default(enabledTraits: ["PTX"]),
     ],
     dependencies: [
         .package(
