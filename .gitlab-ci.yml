@@ -35,6 +35,7 @@ include:
       swift-image: ghcr.io/dataparallel-swift/swift:6.1-jammy
       package-traits:
         - PTX
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
       enable-code-coverage: false
       additional-setup:
         - apt install -y libcapstone-dev
@@ -47,6 +48,7 @@ include:
       swift-image: docker.io/library/swift:6.1-jammy
       package-traits:
         - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
       additional-setup:
         - apt install -y libcapstone-dev
       runner-tags:
@@ -57,6 +59,7 @@ include:
       swift-image: docker.io/library/swift:6.1-jammy
       package-traits:
         - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
       additional-setup:
         - apt install -y libcapstone-dev
       runner-tags:
@@ -68,6 +71,7 @@ include:
       swift-package-path: Benchmarks
       package-traits:
         - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
       job-prefix: 'benchmark-cpu-arm64 '
       job-stage: test
       runner-tags:
@@ -78,6 +82,7 @@ include:
       swift-package-path: Benchmarks
       package-traits:
         - CPU
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
       job-prefix: 'benchmark-cpu-x86_64 '
       job-stage: test
       runner-tags:
@@ -88,6 +93,7 @@ include:
       swift-package-path: Benchmarks
       package-traits:
         - PTX
+      warnings-as-errors: false # swift-6.1 error: conflicting options '-Wwarning' and '-suppress-warnings'
       job-prefix: 'benchmark-ptx-arm64 '
       job-stage: test
       runner-tags:
