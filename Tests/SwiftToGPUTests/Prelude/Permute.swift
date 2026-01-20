@@ -23,90 +23,84 @@ import Testing
 struct Permute {
     // MARK: - Unit Tests (hardcoded examples)
 
-    /// Reverse permutation: i -> (n-1-i)
+    // /// Reverse permutation: i -> (n-1-i)
     // @Test(.bug(id: "86b86zd5j")) func reversePermutation() {
     //     let source = [1, 2, 3, 4, 5]
     //     var result: [Int] = fill(count: source.count, with: 0)
     //     permute(from: source, into: &result) { source.count - 1 - $0 }
     //     #expect(result == [5, 4, 3, 2, 1])
     // }
-
-    /// Circular shift: i -> (i+2) % n
-    @Test func circularShift() {
-        let source = [1, 2, 3, 4, 5]
-        var result: [Int] = fill(count: 5, with: 0)
-        permute(from: source, into: &result) { ($0 + 2) % source.count }
-        // source[0]=1 -> result[2], source[1]=2 -> result[3], source[2]=3 -> result[4],
-        // source[3]=4 -> result[0], source[4]=5 -> result[1]
-        #expect(result == [4, 5, 1, 2, 3])
-    }
+    //
+    // /// Circular shift: i -> (i+2) % n
+    // @Test func circularShift() {
+    //     let source = [1, 2, 3, 4, 5]
+    //     var result: [Int] = fill(count: 5, with: 0)
+    //     permute(from: source, into: &result) { ($0 + 2) % source.count }
+    //     // source[0]=1 -> result[2], source[1]=2 -> result[3], source[2]=3 -> result[4],
+    //     // source[3]=4 -> result[0], source[4]=5 -> result[1]
+    //     #expect(result == [4, 5, 1, 2, 3])
+    // }
 
     /// Strided write: i -> 2*i (scatter into larger array)
-    @Test func stridedWrite() {
-        let source = [10, 20, 30]
-        var result: [Int] = fill(count: 6, with: 0)
-        permute(from: source, into: &result) { $0 * 2 }
-        // source[0]=10 -> result[0], source[1]=20 -> result[2], source[2]=30 -> result[4]
-        #expect(result == [10, 0, 20, 0, 30, 0])
-    }
+    @Test func stridedWrite() { stridedWriteUnitTest() }
 
-    /// Partial permutation with nil: only some elements are written
-    @Test func partialPermutationWithNil() {
-        let source = [100, 200, 300, 400, 500]
-        var result: [Int] = fill(count: 5, with: -1)
-        permute(from: source, into: &result) { i in
-            // Only write even-indexed elements
-            i % 2 == 0 ? i : nil
-        }
-        // source[0]=100 -> result[0], source[2]=300 -> result[2], source[4]=500 -> result[4]
-        #expect(result == [100, -1, 300, -1, 500])
-    }
-
-    /// 2x3 row-major matrix transpose: .e.g. [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
-    @Test func matrixTranspose2x3() {
-        // 2x3 matrix stored in row-major order: [1,2,3
-        //                                        4,5,6]
-        // swiftformat:disable:next wrap wrapArguments
-        let matrix = [1, 2, 3,
-                      4, 5, 6]
-        let rowCount = 2, colCount = 3
-        var transposed: [Int] = fill(count: matrix.count, with: 0)
-
-        permute(from: matrix, into: &transposed) { i in
-            let rowIndex = i / colCount
-            let colIndex = i % colCount
-            let transposedRowIndex = colIndex
-            let transposedColIndex = rowIndex
-            let transposedColCount = rowCount
-            return transposedRowIndex * transposedColCount + transposedColIndex
-        }
-
-        // Transposed 3x2 matrix: [[1,4],[2,5],[3,6]] ≡ [1,4,2,5,3,6]
-        // swiftformat:disable:next wrap wrapArguments
-        #expect(transposed == [1, 4,
-                               2, 5,
-                               3, 6])
-    }
-
-    /// Shuffle with known permutation
-    @Test func shuffle() {
-        let source = [10, 20, 30, 40, 50]
-        let indices = [3, 0, 4, 1, 2] // where each element goes
-        var result: [Int] = fill(count: 5, with: 0)
-        permute(from: source, into: &result) { indices[$0] }
-        // source[0]=10 -> result[3], source[1]=20 -> result[0], source[2]=30 -> result[4],
-        // source[3]=40 -> result[1], source[4]=50 -> result[2]
-        #expect(result == [20, 40, 50, 10, 30])
-    }
-
-    /// Scatter into sparse locations
-    @Test func sparseScatter() {
-        let source = [100, 200, 300]
-        let targetIndices = [7, 2, 5] // where each element goes
-        var result: [Int] = fill(count: 10, with: 0)
-        permute(from: source, into: &result) { targetIndices[$0] }
-        #expect(result == [0, 0, 200, 0, 0, 300, 0, 100, 0, 0])
-    }
+    // /// Partial permutation with nil: only some elements are written
+    // @Test func partialPermutationWithNil() {
+    //     let source = [100, 200, 300, 400, 500]
+    //     var result: [Int] = fill(count: 5, with: -1)
+    //     permute(from: source, into: &result) { i in
+    //         // Only write even-indexed elements
+    //         i % 2 == 0 ? i : nil
+    //     }
+    //     // source[0]=100 -> result[0], source[2]=300 -> result[2], source[4]=500 -> result[4]
+    //     #expect(result == [100, -1, 300, -1, 500])
+    // }
+    //
+    // /// 2x3 row-major matrix transpose: .e.g. [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
+    // @Test func matrixTranspose2x3() {
+    //     // 2x3 matrix stored in row-major order: [1,2,3
+    //     //                                        4,5,6]
+    //     // swiftformat:disable:next wrap wrapArguments
+    //     let matrix = [1, 2, 3,
+    //                   4, 5, 6]
+    //     let rowCount = 2, colCount = 3
+    //     var transposed: [Int] = fill(count: matrix.count, with: 0)
+    //
+    //     permute(from: matrix, into: &transposed) { i in
+    //         let rowIndex = i / colCount
+    //         let colIndex = i % colCount
+    //         let transposedRowIndex = colIndex
+    //         let transposedColIndex = rowIndex
+    //         let transposedColCount = rowCount
+    //         return transposedRowIndex * transposedColCount + transposedColIndex
+    //     }
+    //
+    //     // Transposed 3x2 matrix: [[1,4],[2,5],[3,6]] ≡ [1,4,2,5,3,6]
+    //     // swiftformat:disable:next wrap wrapArguments
+    //     #expect(transposed == [1, 4,
+    //                            2, 5,
+    //                            3, 6])
+    // }
+    //
+    // /// Shuffle with known permutation
+    // @Test func shuffle() {
+    //     let source = [10, 20, 30, 40, 50]
+    //     let indices = [3, 0, 4, 1, 2] // where each element goes
+    //     var result: [Int] = fill(count: 5, with: 0)
+    //     permute(from: source, into: &result) { indices[$0] }
+    //     // source[0]=10 -> result[3], source[1]=20 -> result[0], source[2]=30 -> result[4],
+    //     // source[3]=40 -> result[1], source[4]=50 -> result[2]
+    //     #expect(result == [20, 40, 50, 10, 30])
+    // }
+    //
+    // /// Scatter into sparse locations
+    // @Test func sparseScatter() {
+    //     let source = [100, 200, 300]
+    //     let targetIndices = [7, 2, 5] // where each element goes
+    //     var result: [Int] = fill(count: 10, with: 0)
+    //     permute(from: source, into: &result) { targetIndices[$0] }
+    //     #expect(result == [0, 0, 200, 0, 0, 300, 0, 100, 0, 0])
+    // }
 
     // MARK: - Unit Tests (with combining function)
 
@@ -302,6 +296,14 @@ extension Array {
             }
         }
     }
+}
+
+private func stridedWriteUnitTest() {
+    let source = [10, 20, 30]
+    var result: [Int] = fill(count: 6, with: 0)
+    permute(from: source, into: &result) { $0 * 2 }
+    // source[0]=10 -> result[0], source[1]=20 -> result[2], source[2]=30 -> result[4]
+    #expect(result == [10, 0, 20, 0, 30, 0])
 }
 
 /// parallel array write (i -> i)
