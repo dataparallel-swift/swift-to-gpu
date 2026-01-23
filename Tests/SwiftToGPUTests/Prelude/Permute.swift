@@ -23,14 +23,29 @@ import Testing
 struct Permute {
     // MARK: - Unit Tests (hardcoded examples)
 
-    // /// Reverse permutation: i -> (n-1-i)
-    // @Test(.bug(id: "86b86zd5j")) func reversePermutation() {
-    //     let source = [1, 2, 3, 4, 5]
-    //     var result: [Int] = fill(count: source.count, with: 0)
-    //     permute(from: source, into: &result) { source.count - 1 - $0 }
-    //     #expect(result == [5, 4, 3, 2, 1])
-    // }
-    //
+    @inline(never)
+    func copy<T>(_ xs: [T]) -> [T] {
+        // NOTE: [Array literals on the GPU]
+        // There is an optimization pass/a combination of passes that lifts array literals
+        // into one of the constant data section. On Linux, they end up in the .data section, which
+        // is inaccessible to the GPU runtime. We rely on the compiler being unable to const-fold
+        // `map` to work around this and create a new heap-allocated array from a static array.
+        xs.map(\.self)
+    }
+
+    /// Reverse permutation: i -> (n-1-i)
+    @Test(arguments: zip(
+        [[1, 2, 3, 4, 5], [1], [], [1, 2]],
+        [[5, 4, 3, 2, 1], [1], [], [2, 1]]
+    ))
+    func reversePermutation(sourceLiteral: [Int], expected: [Int]) {
+        // SEE: [Array literals on the GPU]
+        let source = copy(sourceLiteral)
+        var actual: [Int] = fill(count: source.count, with: 0)
+        permute(from: source, into: &actual) { source.count - 1 - $0 }
+        #expect(expected == actual)
+    }
+
     // /// Circular shift: i -> (i+2) % n
     // @Test func circularShift() {
     //     let source = [1, 2, 3, 4, 5]
@@ -40,10 +55,10 @@ struct Permute {
     //     // source[3]=4 -> result[0], source[4]=5 -> result[1]
     //     #expect(result == [4, 5, 1, 2, 3])
     // }
-
-    /// Strided write: i -> 2*i (scatter into larger array)
-    @Test func stridedWrite() { stridedWriteUnitTest() }
-
+    //
+    // /// Strided write: i -> 2*i (scatter into larger array)
+    // @Test func stridedWrite() { stridedWriteUnitTest() }
+    //
     // /// Partial permutation with nil: only some elements are written
     // @Test func partialPermutationWithNil() {
     //     let source = [100, 200, 300, 400, 500]
