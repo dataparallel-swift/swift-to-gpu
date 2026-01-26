@@ -1,4 +1,4 @@
-// Copyright (c) 2025 The swift-to-gpu authors. All rights reserved.
+// Copyright (c) 2026 The swift-to-gpu authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -72,10 +72,9 @@ private func finiteDifferenceTest<T: Arbitrary & AdditiveArithmetic & Similar>(_
     // XXX: required because of https://app.clickup.com/t/86b7az9f8
     @inline(never)
     func finiteDifference(_ xs: Array<T>) -> Array<T> {
-        // TODO: Cannot early exit because of a bug (ClickUp: 86b6vgvy0)
-        // guard xs.count > 1 else {
-        //     return []
-        // }
+        guard xs.count > 1 else {
+            return []
+        }
         let output = generate(count: xs.count - 1) { i in
             xs[i + 1] - xs[i]
         }
@@ -138,11 +137,10 @@ private func laplace1DTest<T: Numeric & Arbitrary & Similar>(_: T.Type) {
     // XXX: required because of https://app.clickup.com/t/86b7az9f8
     @inline(never)
     func laplace1D(_ xs: Array<T>) -> Array<T> {
-        // TODO: Cannot early exit because of a bug (ClickUp: 86b6vgvy0)
-        // guard xs.count > 2 else {
-        //     return []
-        // }
-        generate(count: xs.count - 2) { i in
+        guard xs.count > 2 else {
+            return []
+        }
+        return generate(count: xs.count - 2) { i in
             xs[i] + xs[i + 2] - 2 * xs[i + 1]
         }
     }
