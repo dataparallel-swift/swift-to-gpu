@@ -69,8 +69,6 @@ extension Array where Element: AdditiveArithmetic {
 }
 
 private func finiteDifferenceTest<T: Arbitrary & AdditiveArithmetic & Similar>(_: T.Type) {
-    // XXX: required because of https://app.clickup.com/t/86b7az9f8
-    @inline(never)
     func finiteDifference(_ xs: Array<T>) -> Array<T> {
         guard xs.count > 1 else {
             return []
