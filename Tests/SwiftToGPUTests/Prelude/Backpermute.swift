@@ -1,4 +1,4 @@
-// Copyright (c) 2025 The swift-to-gpu authors. All rights reserved.
+// Copyright (c) 2026 The swift-to-gpu authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ struct Backpermute {
 
     /// Swap first and second halves.
     @Test(arguments: zip(
-        [[1, 2, 3, 4, 5, 6], [1,2], [1], [], [1, 2, 3, 4, 5]],
-        [[4, 5, 6, 1, 2, 3], [2,1], [1], [], [3, 4, 5, 1, 2]]
+        [[1, 2, 3, 4, 5, 6], [1, 2], [1], [], [1, 2, 3, 4, 5]],
+        [[4, 5, 6, 1, 2, 3], [2, 1], [1], [], [3, 4, 5, 1, 2]]
     ))
     func swapHalves(sourceLiteral: [Int], expected: [Int]) {
         // SEE: [Array literals on the GPU]
