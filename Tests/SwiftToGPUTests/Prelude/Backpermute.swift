@@ -25,6 +25,7 @@ struct Backpermute {
     struct IntTests {
         typealias T = Int
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
+        @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -37,6 +38,7 @@ struct Backpermute {
     struct Int32Tests {
         typealias T = Int32
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
+        @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -49,6 +51,7 @@ struct Backpermute {
     struct Int64Tests {
         typealias T = Int64
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
+        @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -61,6 +64,7 @@ struct Backpermute {
     struct Float32Tests {
         typealias T = Float32
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
+        @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -73,6 +77,7 @@ struct Backpermute {
     struct Float64Tests {
         typealias T = Float64
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
+        @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -120,6 +125,16 @@ private func backpermuteCopyTest<T: Arbitrary & ExpressibleByIntegerLiteral & Eq
         forAllNoShrink([T].arbitrary) { (source: [T]) in
             let expected = source
             let actual = backpermute(from: source, count: source.count) { $0 }
+            return try? #require(expected == actual)
+        }
+}
+
+/// reverse array (n - 1 - i -> i)
+private func backpermuteReverseTest<T: Arbitrary & Equatable>(_: T.Type) {
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (source: [T]) in
+            let expected = Array(source.reversed())
+            let actual = backpermute(from: source, count: source.count) { source.count - 1 - $0 }
             return try? #require(expected == actual)
         }
 }
