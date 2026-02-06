@@ -295,15 +295,13 @@ private func backpermuteStridedReadTest<T: Arbitrary & ExpressibleByIntegerLiter
 private func backpermuteWithDefaultTest<T: Arbitrary & ExpressibleByIntegerLiteral & Equatable>(_: T.Type) {
     let maxSize = 256
     let sizeGen = Gen<Int>.choose((0, maxSize))
-    let defaultValue: T = 0
+    let defaultValue: T = 99
     property(#function) <-
         forAllNoShrink([T].arbitrary, sizeGen) { (from: [T], intoCount: Int) in
             forAllNoShrink(Gen<Int>.choose((-from.count, from.count - 1)).proliferate(withSize: intoCount)) { (indices: [Int]) in
-                // swiftlint:disable:next logger_over_print
-                print(from, indices)
                 func p(_ i: Int) -> Either<Int, T> {
                     let index = indices[i]
-                    guard index >= 0, index < from.count else {
+                    guard from.count > 0, index >= from.startIndex, index < from.startIndex else {
                         return Either.right(defaultValue)
                     }
                     return Either.left(index)
