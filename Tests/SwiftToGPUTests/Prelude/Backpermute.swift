@@ -26,6 +26,7 @@ struct Backpermute {
         typealias T = Int
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
         @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
+        @Test func backpermuteSwapHalves() { backpermuteSwapHalvesTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -39,6 +40,7 @@ struct Backpermute {
         typealias T = Int32
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
         @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
+        @Test func backpermuteSwapHalves() { backpermuteSwapHalvesTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -52,6 +54,7 @@ struct Backpermute {
         typealias T = Int64
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
         @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
+        @Test func backpermuteSwapHalves() { backpermuteSwapHalvesTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -65,6 +68,7 @@ struct Backpermute {
         typealias T = Float32
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
         @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
+        @Test func backpermuteSwapHalves() { backpermuteSwapHalvesTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -78,6 +82,7 @@ struct Backpermute {
         typealias T = Float64
         @Test func backpermuteCopy() { backpermuteCopyTest(T.self) }
         @Test func backpermuteReverse() { backpermuteReverseTest(T.self) }
+        @Test func backpermuteSwapHalves() { backpermuteSwapHalvesTest(T.self) }
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
@@ -135,6 +140,23 @@ private func backpermuteReverseTest<T: Arbitrary & Equatable>(_: T.Type) {
         forAllNoShrink([T].arbitrary) { (source: [T]) in
             let expected = Array(source.reversed())
             let actual = backpermute(from: source, count: source.count) { source.count - 1 - $0 }
+            return try? #require(expected == actual)
+        }
+}
+
+/// swap first and second halves (for odd counts, second half contains the middle element)
+private func backpermuteSwapHalvesTest<T: Arbitrary & Equatable>(_: T.Type) {
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (source: [T]) in
+            let split = source.count / 2
+            let secondHalfCount = source.count - split
+            let expected = Array(source[split ..< source.count]) + Array(source[0 ..< split])
+            let actual = backpermute(from: source, count: source.count) { i in
+                if i < secondHalfCount {
+                    return i + split
+                }
+                return i - secondHalfCount
+            }
             return try? #require(expected == actual)
         }
 }
