@@ -21,6 +21,78 @@ import Testing
 
 @Suite("Backpermute")
 struct Backpermute {
+    // MARK: - Unit Tests (hardcoded examples)
+
+    // Reverse permutation: (n - 1 - i) -> i
+    @Test(arguments: zip(
+        [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
+        [[5, 4, 3, 2, 1], [], [1], [2, 1], [3, 2, 1]]
+    ))
+    func reversePermutation(sourceLiteral: [Int], expected: [Int]) {
+        // SEE: [Array literals on the GPU]
+        let source = copy(sourceLiteral)
+        let actual = backpermute(from: source, count: source.count) { source.count - 1 - $0 }
+        #expect(actual == expected)
+    }
+
+    /// Swap first and second halves.
+    @Test(arguments: zip(
+        [[1, 2, 3, 4, 5, 6], [1,2], [1], [], [1, 2, 3, 4, 5]],
+        [[4, 5, 6, 1, 2, 3], [2,1], [1], [], [3, 4, 5, 1, 2]]
+    ))
+    func swapHalves(sourceLiteral: [Int], expected: [Int]) {
+        // SEE: [Array literals on the GPU]
+        let source = copy(sourceLiteral)
+        let split = source.count / 2
+        let secondHalfCount = source.count - split
+        let actual = backpermute(from: source, count: source.count) { i in
+            if i < secondHalfCount {
+                return i + split
+            }
+            return i - secondHalfCount
+        }
+        #expect(actual == expected)
+    }
+
+    /// Circular shift by +2: ((i + 2) % n) -> i
+    @Test(arguments: zip(
+        [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
+        [[3, 4, 5, 1, 2], [], [1], [1, 2], [3, 1, 2]]
+    ))
+    func circularShift(sourceLiteral: [Int], expected: [Int]) {
+        // SEE: [Array literals on the GPU]
+        let source = copy(sourceLiteral)
+        let actual = backpermute(from: source, count: source.count) { ($0 + 2) % source.count }
+        #expect(actual == expected)
+    }
+
+    /// 2x3 row-major matrix transpose: [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
+    @Test
+    func matrixTranspose2x3() {
+        // 2x3 matrix stored in row-major order
+        // swiftformat:disable:next wrap wrapArguments
+        let matrixLiteral = [1, 2, 3,
+                             4, 5, 6]
+        // Transposed 3x2 matrix in row-major order
+        // swiftformat:disable:next wrap wrapArguments
+        let expected = [1, 4,
+                        2, 5,
+                        3, 6]
+        // SEE: [Array literals on the GPU]
+        let matrix = copy(matrixLiteral)
+        let rowCount = 2
+        let colCount = 3
+        let transposedColCount = rowCount
+        let actual = backpermute(from: matrix, count: matrix.count) { i in
+            let transposedRowIndex = i / transposedColCount
+            let transposedColIndex = i % transposedColCount
+            let sourceRowIndex = transposedColIndex
+            let sourceColIndex = transposedRowIndex
+            return sourceRowIndex * colCount + sourceColIndex
+        }
+        #expect(actual == expected)
+    }
+
     @Suite("Int")
     struct IntTests {
         typealias T = Int
