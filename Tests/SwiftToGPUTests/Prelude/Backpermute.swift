@@ -93,6 +93,39 @@ struct Backpermute {
         #expect(actual == expected)
     }
 
+    /// Extract diagonal from row-major square matrix.
+    @Test(arguments: zip(
+        [([1, 2, 3, 4], 2), ([1], 1), ([], 0), ([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)],
+        [[1, 4], [1], [], [1, 5, 9]]
+    ))
+    func diagonalFromRowMajorSquareMatrix(sourceAndDimension: ([Int], Int), expected: [Int]) {
+        let (matrixLiteral, dimension) = sourceAndDimension
+        // SEE: [Array literals on the GPU]
+        let matrix = copy(matrixLiteral)
+        let actual = backpermute(from: matrix, count: dimension) { i in
+            i * dimension + i
+        }
+        #expect(actual == expected)
+    }
+
+    /// Reorder by writing even indices first, then odd indices.
+    @Test(arguments: zip(
+        [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5], [1], []],
+        [[1, 3, 5, 2, 4, 6], [1, 3, 5, 2, 4], [1], []]
+    ))
+    func evenThenOddIndices(sourceLiteral: [Int], expected: [Int]) {
+        // SEE: [Array literals on the GPU]
+        let source = copy(sourceLiteral)
+        let evenCount = (source.count + 1) / 2
+        let actual = backpermute(from: source, count: source.count) { i in
+            if i < evenCount {
+                return i * 2
+            }
+            return (i - evenCount) * 2 + 1
+        }
+        #expect(actual == expected)
+    }
+
     @Suite("Int")
     struct IntTests {
         typealias T = Int
