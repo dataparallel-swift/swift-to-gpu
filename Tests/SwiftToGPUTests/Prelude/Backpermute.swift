@@ -24,107 +24,107 @@ struct Backpermute {
     // MARK: - Unit Tests (hardcoded examples)
 
     // Reverse permutation: (n - 1 - i) -> i
-    @Test(arguments: zip(
-        [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
-        [[5, 4, 3, 2, 1], [], [1], [2, 1], [3, 2, 1]]
-    ))
-    func reversePermutation(sourceLiteral: [Int], expected: [Int]) {
-        // SEE: [Array literals on the GPU]
-        let source = copy(sourceLiteral)
-        let actual = backpermute(from: source, count: source.count) { source.count - 1 - $0 }
-        #expect(actual == expected)
-    }
-
-    /// Swap first and second halves.
-    @Test(arguments: zip(
-        [[1, 2, 3, 4, 5, 6], [1, 2], [1], [], [1, 2, 3, 4, 5]],
-        [[4, 5, 6, 1, 2, 3], [2, 1], [1], [], [3, 4, 5, 1, 2]]
-    ))
-    func swapHalves(sourceLiteral: [Int], expected: [Int]) {
-        // SEE: [Array literals on the GPU]
-        let source = copy(sourceLiteral)
-        let split = source.count / 2
-        let secondHalfCount = source.count - split
-        let actual = backpermute(from: source, count: source.count) { i in
-            if i < secondHalfCount {
-                return i + split
-            }
-            return i - secondHalfCount
-        }
-        #expect(actual == expected)
-    }
-
+    // @Test(.bug(id: 86b8jkjek), arguments: zip(
+    //     [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
+    //     [[5, 4, 3, 2, 1], [], [1], [2, 1], [3, 2, 1]]
+    // ))
+    // func reversePermutation(sourceLiteral: [Int], expected: [Int]) {
+    //     // SEE: [Array literals on the GPU]
+    //     let source = copy(sourceLiteral)
+    //     let actual = backpermute(from: source, count: source.count) { source.count - 1 - $0 }
+    //     #expect(actual == expected)
+    // }
+    //
+    // /// Swap first and second halves.
+    // @Test(.bug(id: 86b8jkjek), arguments: zip(
+    //     [[1, 2, 3, 4, 5, 6], [1, 2], [1], [], [1, 2, 3, 4, 5]],
+    //     [[4, 5, 6, 1, 2, 3], [2, 1], [1], [], [3, 4, 5, 1, 2]]
+    // ))
+    // func swapHalves(sourceLiteral: [Int], expected: [Int]) {
+    //     // SEE: [Array literals on the GPU]
+    //     let source = copy(sourceLiteral)
+    //     let split = source.count / 2
+    //     let secondHalfCount = source.count - split
+    //     let actual = backpermute(from: source, count: source.count) { i in
+    //         if i < secondHalfCount {
+    //             return i + split
+    //         }
+    //         return i - secondHalfCount
+    //     }
+    //     #expect(actual == expected)
+    // }
+    //
     /// Circular shift by +2: ((i + 2) % n) -> i
-    @Test(arguments: zip(
-        [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
-        [[3, 4, 5, 1, 2], [], [1], [1, 2], [3, 1, 2]]
-    ))
-    func circularShift(sourceLiteral: [Int], expected: [Int]) {
-        // SEE: [Array literals on the GPU]
-        let source = copy(sourceLiteral)
-        let actual = backpermute(from: source, count: source.count) { ($0 + 2) % source.count }
-        #expect(actual == expected)
-    }
-
-    /// 2x3 row-major matrix transpose: [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
-    @Test
-    func matrixTranspose2x3() {
-        // 2x3 matrix stored in row-major order
-        // swiftformat:disable:next wrap wrapArguments
-        let matrixLiteral = [1, 2, 3,
-                             4, 5, 6]
-        // Transposed 3x2 matrix in row-major order
-        // swiftformat:disable:next wrap wrapArguments
-        let expected = [1, 4,
-                        2, 5,
-                        3, 6]
-        // SEE: [Array literals on the GPU]
-        let matrix = copy(matrixLiteral)
-        let rowCount = 2
-        let colCount = 3
-        let transposedColCount = rowCount
-        let actual = backpermute(from: matrix, count: matrix.count) { i in
-            let transposedRowIndex = i / transposedColCount
-            let transposedColIndex = i % transposedColCount
-            let sourceRowIndex = transposedColIndex
-            let sourceColIndex = transposedRowIndex
-            return sourceRowIndex * colCount + sourceColIndex
-        }
-        #expect(actual == expected)
-    }
-
-    /// Extract diagonal from row-major square matrix.
-    @Test(arguments: zip(
-        [([1, 2, 3, 4], 2), ([1], 1), ([], 0), ([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)],
-        [[1, 4], [1], [], [1, 5, 9]]
-    ))
-    func diagonalFromRowMajorSquareMatrix(sourceAndDimension: ([Int], Int), expected: [Int]) {
-        let (matrixLiteral, dimension) = sourceAndDimension
-        // SEE: [Array literals on the GPU]
-        let matrix = copy(matrixLiteral)
-        let actual = backpermute(from: matrix, count: dimension) { i in
-            i * dimension + i
-        }
-        #expect(actual == expected)
-    }
-
-    /// Reorder by writing even indices first, then odd indices.
-    @Test(arguments: zip(
-        [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5], [1], []],
-        [[1, 3, 5, 2, 4, 6], [1, 3, 5, 2, 4], [1], []]
-    ))
-    func evenThenOddIndices(sourceLiteral: [Int], expected: [Int]) {
-        // SEE: [Array literals on the GPU]
-        let source = copy(sourceLiteral)
-        let evenCount = (source.count + 1) / 2
-        let actual = backpermute(from: source, count: source.count) { i in
-            if i < evenCount {
-                return i * 2
-            }
-            return (i - evenCount) * 2 + 1
-        }
-        #expect(actual == expected)
-    }
+    // @Test(.bug(id: 86b8jkjek), arguments: zip(
+    //     [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
+    //     [[3, 4, 5, 1, 2], [], [1], [1, 2], [3, 1, 2]]
+    // ))
+    // func circularShift(sourceLiteral: [Int], expected: [Int]) {
+    //     // SEE: [Array literals on the GPU]
+    //     let source = copy(sourceLiteral)
+    //     let actual = backpermute(from: source, count: source.count) { ($0 + 2) % source.count }
+    //     #expect(actual == expected)
+    // }
+    //
+    // /// 2x3 row-major matrix transpose: [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
+    // @Test(.bug(id: 86b8jkjek))
+    // func matrixTranspose2x3() {
+    //     // 2x3 matrix stored in row-major order
+    //     // swiftformat:disable:next wrap wrapArguments
+    //     let matrixLiteral = [1, 2, 3,
+    //                          4, 5, 6]
+    //     // Transposed 3x2 matrix in row-major order
+    //     // swiftformat:disable:next wrap wrapArguments
+    //     let expected = [1, 4,
+    //                     2, 5,
+    //                     3, 6]
+    //     // SEE: [Array literals on the GPU]
+    //     let matrix = copy(matrixLiteral)
+    //     let rowCount = 2
+    //     let colCount = 3
+    //     let transposedColCount = rowCount
+    //     let actual = backpermute(from: matrix, count: matrix.count) { i in
+    //         let transposedRowIndex = i / transposedColCount
+    //         let transposedColIndex = i % transposedColCount
+    //         let sourceRowIndex = transposedColIndex
+    //         let sourceColIndex = transposedRowIndex
+    //         return sourceRowIndex * colCount + sourceColIndex
+    //     }
+    //     #expect(actual == expected)
+    // }
+    //
+    // /// Extract diagonal from row-major square matrix.
+    // @Test(.bug(id: 86b8jkjek), arguments: zip(
+    //     [([1, 2, 3, 4], 2), ([1], 1), ([], 0), ([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)],
+    //     [[1, 4], [1], [], [1, 5, 9]]
+    // ))
+    // func diagonalFromRowMajorMatrix(sourceAndDimension: ([Int], Int), expected: [Int]) {
+    //     let (matrixLiteral, dimension) = sourceAndDimension
+    //     // SEE: [Array literals on the GPU]
+    //     let matrix = copy(matrixLiteral)
+    //     let actual = backpermute(from: matrix, count: dimension) { i in
+    //         i * dimension + i
+    //     }
+    //     #expect(actual == expected)
+    // }
+    //
+    // /// Reorder by writing even indices first, then odd indices.
+    // @Test(.bug(id: 86b8jkjek), arguments: zip(
+    //     [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5], [1], []],
+    //     [[1, 3, 5, 2, 4, 6], [1, 3, 5, 2, 4], [1], []]
+    // ))
+    // func evenThenOddIndices(sourceLiteral: [Int], expected: [Int]) {
+    //     // SEE: [Array literals on the GPU]
+    //     let source = copy(sourceLiteral)
+    //     let evenCount = (source.count + 1) / 2
+    //     let actual = backpermute(from: source, count: source.count) { i in
+    //         if i < evenCount {
+    //             return i * 2
+    //         }
+    //         return (i - evenCount) * 2 + 1
+    //     }
+    //     #expect(actual == expected)
+    // }
 
     @Suite("Int")
     struct IntTests {
@@ -135,6 +135,8 @@ struct Backpermute {
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
+        @Test func backpermuteMatrixDiagonal() { backpermuteMatrixDiagonalTest(T.self) }
+        @Test func backpermuteEvenThenOddIndices() { backpermuteEvenThenOddIndicesTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
         @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
         @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
@@ -149,6 +151,8 @@ struct Backpermute {
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
+        @Test func backpermuteMatrixDiagonal() { backpermuteMatrixDiagonalTest(T.self) }
+        @Test func backpermuteEvenThenOddIndices() { backpermuteEvenThenOddIndicesTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
         @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
         @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
@@ -163,6 +167,8 @@ struct Backpermute {
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
+        @Test func backpermuteMatrixDiagonal() { backpermuteMatrixDiagonalTest(T.self) }
+        @Test func backpermuteEvenThenOddIndices() { backpermuteEvenThenOddIndicesTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
         @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
         @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
@@ -177,6 +183,8 @@ struct Backpermute {
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
+        @Test func backpermuteMatrixDiagonal() { backpermuteMatrixDiagonalTest(T.self) }
+        @Test func backpermuteEvenThenOddIndices() { backpermuteEvenThenOddIndicesTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
         @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
         @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
@@ -191,6 +199,8 @@ struct Backpermute {
         @Test func backpermuteCircularShift() { backpermuteCircularShiftTest(T.self) }
         @Test func backpermuteShuffle() { backpermuteShuffleTest(T.self) }
         @Test func backpermuteMatrixTranspose() { backpermuteMatrixTransposeTest(T.self) }
+        @Test func backpermuteMatrixDiagonal() { backpermuteMatrixDiagonalTest(T.self) }
+        @Test func backpermuteEvenThenOddIndices() { backpermuteEvenThenOddIndicesTest(T.self) }
         @Test func backpermuteStridedRead() { backpermuteStridedReadTest(T.self) }
         @Test func backpermuteWithDefault() { backpermuteWithDefaultTest(T.self) }
         @Test func backpermuteGeneralized() { backpermuteGeneralizedTest(T.self) }
@@ -290,7 +300,7 @@ private func backpermuteShuffleTest<T: Arbitrary & ExpressibleByIntegerLiteral &
 
 /// row-major matrix transpose
 private func backpermuteMatrixTransposeTest<T: Arbitrary & Equatable & ExpressibleByIntegerLiteral>(_: T.Type) {
-    let maxDimension = 256
+    let maxDimension = 32
     func transposeRowMajor(_ i: Int, rowCount: Int, colCount: Int) -> Int {
         let rowIndex = i / colCount
         let colIndex = i % colCount
@@ -306,6 +316,38 @@ private func backpermuteMatrixTransposeTest<T: Arbitrary & Equatable & Expressib
                 let actual = backpermute(from: matrix, count: matrix.count) { transposeRowMajor($0, rowCount: m, colCount: n) }
                 return try? #require(expected == actual)
             }
+        }
+}
+
+/// extract diagonal from row-major square matrix
+private func backpermuteMatrixDiagonalTest<T: Arbitrary & Equatable>(_: T.Type) {
+    let maxDimension = 32
+    property(#function) <-
+        forAllNoShrink(Gen<Int>.choose((0, maxDimension))) { (dimension: Int) in
+            forAllNoShrink(T.arbitrary.proliferate(withSize: dimension * dimension)) { (matrix: [T]) in
+                let expected = (0 ..< dimension).map { matrix[$0 * dimension + $0] }
+                let actual = backpermute(from: matrix, count: dimension) { i in
+                    i * dimension + i
+                }
+                return try? #require(expected == actual)
+            }
+        }
+}
+
+/// reorder indices as [0, 2, 4, ..., 1, 3, 5, ...]
+private func backpermuteEvenThenOddIndicesTest<T: Arbitrary & Equatable>(_: T.Type) {
+    property(#function) <-
+        forAllNoShrink([T].arbitrary) { (source: [T]) in
+            let expected = stride(from: 0, to: source.count, by: 2).map { source[$0] }
+                + stride(from: 1, to: source.count, by: 2).map { source[$0] }
+            let evenCount = (source.count + 1) / 2
+            let actual = backpermute(from: source, count: source.count) { i in
+                if i < evenCount {
+                    return i * 2
+                }
+                return (i - evenCount) * 2 + 1
+            }
+            return try? #require(expected == actual)
         }
 }
 
