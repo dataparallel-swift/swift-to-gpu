@@ -27,7 +27,7 @@ struct Backpermute {
     //     [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
     //     [[5, 4, 3, 2, 1], [], [1], [2, 1], [3, 2, 1]]
     // ))
-    // func reversePermutation(sourceLiteral: [Int], expected: [Int]) {
+    // func backpermuteReverse(sourceLiteral: [Int], expected: [Int]) {
     //     // SEE: [Array literals on the GPU]
     //     let source = copy(sourceLiteral)
     //     let actual = backpermute(from: source, count: source.count) { source.count - 1 - $0 }
@@ -39,7 +39,7 @@ struct Backpermute {
     //     [[1, 2, 3, 4, 5, 6], [1, 2], [1], [], [1, 2, 3, 4, 5]],
     //     [[4, 5, 6, 1, 2, 3], [2, 1], [1], [], [3, 4, 5, 1, 2]]
     // ))
-    // func swapHalves(sourceLiteral: [Int], expected: [Int]) {
+    // func backpermuteSwapHalves(sourceLiteral: [Int], expected: [Int]) {
     //     // SEE: [Array literals on the GPU]
     //     let source = copy(sourceLiteral)
     //     let split = source.count / 2
@@ -58,7 +58,7 @@ struct Backpermute {
     //     [[1, 2, 3, 4, 5], [], [1], [1, 2], [1, 2, 3]],
     //     [[3, 4, 5, 1, 2], [], [1], [1, 2], [3, 1, 2]]
     // ))
-    // func circularShift(sourceLiteral: [Int], expected: [Int]) {
+    // func backpermuteCircularShift(sourceLiteral: [Int], expected: [Int]) {
     //     // SEE: [Array literals on the GPU]
     //     let source = copy(sourceLiteral)
     //     let actual = backpermute(from: source, count: source.count) { ($0 + 2) % source.count }
@@ -67,7 +67,7 @@ struct Backpermute {
     //
     // /// 2x3 row-major matrix transpose: [[1,2,3],[4,5,6]] -> [[1,4],[2,5],[3,6]]
     // @Test(.bug(id: "86b8jkjek"))
-    // func matrixTranspose2x3() {
+    // func backpermuteMatrixTranspose2x3() {
     //     // 2x3 matrix stored in row-major order
     //     // swiftformat:disable:next wrap wrapArguments
     //     let matrixLiteral = [1, 2, 3,
@@ -97,7 +97,7 @@ struct Backpermute {
     //     [([1, 2, 3, 4], 2), ([1], 1), ([], 0), ([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)],
     //     [[1, 4], [1], [], [1, 5, 9]]
     // ))
-    // func diagonalFromMatrix(sourceAndDimension: ([Int], Int), expected: [Int]) {
+    // func backpermuteDiagonalFromMatrix(sourceAndDimension: ([Int], Int), expected: [Int]) {
     //     let (matrixLiteral, dimension) = sourceAndDimension
     //     // SEE: [Array literals on the GPU]
     //     let matrix = copy(matrixLiteral)
@@ -112,7 +112,7 @@ struct Backpermute {
     //     [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5], [1], []],
     //     [[1, 3, 5, 2, 4, 6], [1, 3, 5, 2, 4], [1], []]
     // ))
-    // func evenThenOddIndices(sourceLiteral: [Int], expected: [Int]) {
+    // func backpermuteEvenThenOddIndices(sourceLiteral: [Int], expected: [Int]) {
     //     // SEE: [Array literals on the GPU]
     //     let source = copy(sourceLiteral)
     //     let evenCount = (source.count + 1) / 2
