@@ -135,6 +135,10 @@ benchmark-cloud:
   rules:
     - when: never
 
+benchmark-comparison-cloud:
+  rules:
+    - when: never
+
 benchmark-upload-cloud:
   rules:
     - when: never
