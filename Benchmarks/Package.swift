@@ -88,6 +88,17 @@ let package = Package(
                 .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
             ]
         ),
+        .executableTarget(
+            name: "KernelLaunchBenchmark",
+            dependencies: [
+                .product(name: "SwiftToGPU", package: "swift-to-gpu"),
+                .product(name: "Benchmark", package: "package-benchmark"),
+            ],
+            path: "Benchmarks/KernelLaunchBenchmark",
+            plugins: [
+                .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
+            ]
+        ),
     ]
 )
 
