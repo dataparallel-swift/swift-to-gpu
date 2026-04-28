@@ -26,7 +26,11 @@ let benchmarks: @Sendable () -> Void = {
     }
 
     let configs: [(Int, BenchmarkScalingFactor)] = [
+        (1, .kilo),
+        (50, .kilo),
         (100, .kilo),
+        (250, .kilo),
+        (500, .kilo),
         (1000, .kilo),
         (10_000, .kilo),
         (25_000, .kilo),
@@ -37,10 +41,6 @@ let benchmarks: @Sendable () -> Void = {
         (500_000, .kilo),
         (750_000, .kilo),
         (1_000_000, .kilo),
-        (2_500_000, .kilo),
-        (5_000_000, .kilo),
-        (7_500_000, .kilo),
-        (10_000_000, .kilo),
     ]
 
     for (iterations, scalingFactor) in configs {
